@@ -92,21 +92,21 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 bg-background shadow">
-      {/* Top bar */}
+      {/* Top bar — full width so the green panel reaches the right edge */}
       <div className="hidden border-b border-primary-light/10 md:block">
-        <div className="container-content flex w-full flex-col md:flex-row md:items-stretch">
-          <div className="flex w-full items-center bg-logo-bg py-2 pl-4 md:w-[30%] md:py-3 lg:pl-8">
+        <div className="flex w-full flex-col md:flex-row md:items-stretch">
+          <div className="flex w-full max-w-[420px] shrink-0 items-center bg-logo-bg py-2 pl-4 md:w-[30%] md:py-3 lg:pl-8 xl:pl-12">
             <NavbarLogo className="h-14 w-full" imageClassName="h-14 max-w-[220px]" />
           </div>
 
-          <div className="relative w-full bg-logo-bg md:w-[70%]">
+          <div className="relative min-w-0 flex-1 bg-logo-bg">
             <div
               className="absolute inset-0 bg-primary"
               style={{
                 clipPath: "polygon(8% 0, 100% 0, 100% 100%, 0% 100%)",
               }}
             />
-            <div className="relative flex h-full w-full flex-wrap items-center justify-end gap-4 px-6 py-3 text-xs text-background sm:gap-6 sm:px-8 sm:text-sm">
+            <div className="relative flex h-full w-full flex-wrap items-center justify-end gap-4 px-6 py-3 text-xs text-background sm:gap-6 sm:px-8 sm:text-sm lg:pr-8 xl:pr-12">
               <div className="flex items-center gap-3">
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-background/10">
                   <i className="ri-phone-line text-base" aria-hidden />
@@ -140,9 +140,9 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Main navigation */}
+      {/* Main navigation — links left, actions flush right */}
       <div className="border-b border-primary-light/10 bg-background">
-        <div className="container-content flex w-full items-center justify-between gap-3 px-4 py-3 md:flex-wrap lg:px-8">
+        <div className="flex w-full items-center gap-3 px-4 py-3 lg:px-8 xl:px-12">
           <button
             type="button"
             onClick={() => setMobileMenuOpen((open) => !open)}
@@ -160,7 +160,7 @@ export function Navbar() {
 
           <NavbarLogo className="md:hidden" imageClassName="h-8 max-w-[120px]" />
 
-          <nav className="hidden flex-1 flex-wrap items-center gap-2 text-xs font-medium sm:text-sm md:flex">
+          <nav className="hidden items-center gap-1 md:flex lg:gap-2">
             <NavLink href="/">{t("home")}</NavLink>
             <ServicesDropdown />
             <NavLink href="#">{t("industries")}</NavLink>
@@ -169,7 +169,7 @@ export function Navbar() {
             <NavLink href="/kontakt">{t("contact")}</NavLink>
           </nav>
 
-          <div className="ml-auto flex shrink-0 items-center gap-2 sm:gap-3 md:ml-0">
+          <div className="ml-auto flex shrink-0 items-center gap-2 sm:gap-3">
             <LocaleDropdown />
             <DeliveryCtaButton label={t("bookExpressDelivery")} />
           </div>
