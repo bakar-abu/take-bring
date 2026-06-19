@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+@theme {
+  --max-width-content: 1440px;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Brand – logo lime green */
+  --color-primary: #abc629;
+  --color-primary-dark: #8fa622;
+  --color-primary-light: #d4e88a;
+  --color-background: #ffffff;
+  --color-foreground: #0f172a;
+  --color-accent: #abc629;
+  --color-logo-bg: #343432;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    min-height: 100dvh;
+    font-family: var(--font-sans);
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+}
+
+@layer components {
+  .container-content {
+    @apply mx-auto w-full max-w-[1440px];
+  }
+
+  .cta-delivery-btn {
+    background-color: #abc629;
+    background-image: linear-gradient(
+      to right,
+      #8fa622 0%,
+      #8fa622 50%,
+      #abc629 50%,
+      #abc629 100%
+    );
+    background-size: 200% 100%;
+    background-position: 100% 0;
+    color: #ffffff;
+    transition:
+      background-position 0.35s ease,
+      box-shadow 0.35s ease;
+  }
+
+  .cta-delivery-btn:hover {
+    background-position: 0 0;
+    box-shadow: 0 6px 20px rgba(171, 198, 41, 0.45);
+  }
+
+  .hero-slide-fade-in {
+    animation: hero-fade-in 0.6s ease-out;
+  }
+
+  .footer-left {
+    background-color: var(--color-logo-bg);
+    clip-path: none;
+  }
+
+  @media (min-width: 1024px) {
+    .footer-left {
+      clip-path: polygon(0% 0%, 50% 0%, 100% 100%, 0% 100%);
+    }
+  }
+
+  .footer-right-overlay {
+    background: linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0.82) 0%,
+      rgba(255, 255, 255, 0.58) 28%,
+      rgba(255, 255, 255, 0.28) 55%,
+      rgba(255, 255, 255, 0.06) 100%
+    );
+  }
+
+  .contact-form-glass {
+    background: rgba(52, 52, 50, 1);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    clip-path: polygon(
+      0 0,
+      calc(100% - 24px) 0,
+      100% 24px,
+      100% 100%,
+      24px 100%,
+      0 calc(100% - 24px)
+    );
+  }
+
+  .contact-form-glass .input-glass {
+    background: rgba(255, 255, 255, 0.06);
+    border: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+    color: #fff;
+    transition:
+      border-color 0.2s,
+      background 0.2s;
+  }
+
+  .contact-form-glass .input-glass::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .contact-form-glass .input-glass:focus {
+    outline: none;
+    border-bottom-color: var(--color-primary);
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+@keyframes hero-fade-in {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

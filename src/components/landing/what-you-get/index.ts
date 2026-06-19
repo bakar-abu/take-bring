@@ -1,0 +1,2 @@
+export { WhatYouGetSection } from "./WhatYouGetSection";
+
