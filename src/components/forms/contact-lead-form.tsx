@@ -28,6 +28,8 @@ type ContactLeadFormProps = {
     errorMessage: string;
     helperText?: string;
   };
+  defaultInquiryType?: string;
+  hideInquiryType?: boolean;
   style?: {
     formClassName?: string;
     labelClassName?: string;
@@ -40,11 +42,17 @@ type ContactLeadFormProps = {
   };
 };
 
-export function ContactLeadForm({ formKey, labels, style }: ContactLeadFormProps) {
+export function ContactLeadForm({
+  formKey,
+  labels,
+  defaultInquiryType,
+  hideInquiryType = false,
+  style,
+}: ContactLeadFormProps) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
-  const [inquiryType, setInquiryType] = useState("");
+  const [inquiryType, setInquiryType] = useState(defaultInquiryType ?? "");
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -62,7 +70,7 @@ export function ContactLeadForm({ formKey, labels, style }: ContactLeadFormProps
       setFullName("");
       setEmail("");
       setWhatsapp("");
-      setInquiryType("");
+      setInquiryType(defaultInquiryType ?? "");
       setMessage("");
     } catch {
       setSubmitted(false);
@@ -166,21 +174,29 @@ export function ContactLeadForm({ formKey, labels, style }: ContactLeadFormProps
         <label htmlFor={`${formKey}-inquiry`} className={style?.labelClassName}>
           {labels.inquiryType} *
         </label>
-        <select
-          id={`${formKey}-inquiry`}
-          name="inquiryType"
-          required
-          value={inquiryType}
-          onChange={(e) => setInquiryType(e.target.value)}
-          className={style?.selectClassName ?? style?.inputClassName}
-        >
-          <option value="">{labels.inquiryTypePlaceholder}</option>
-          {labels.inquiryOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
+        {hideInquiryType ? (
+          <input
+            type="hidden"
+            name="inquiryType"
+            value={inquiryType || defaultInquiryType || ""}
+          />
+        ) : (
+          <select
+            id={`${formKey}-inquiry`}
+            name="inquiryType"
+            required
+            value={inquiryType}
+            onChange={(e) => setInquiryType(e.target.value)}
+            className={style?.selectClassName ?? style?.inputClassName}
+          >
+            <option value="">{labels.inquiryTypePlaceholder}</option>
+            {labels.inquiryOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
       <div>

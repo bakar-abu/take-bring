@@ -3,6 +3,7 @@
 import React, { useRef } from "react";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
+import { Link } from "@/lib/i18n/navigation";
 import { useTranslations } from "next-intl";
 
 const ITEMS = [
@@ -48,6 +49,13 @@ export function IndustriesSection() {
           <p className="mt-4 text-base leading-relaxed text-foreground/65">
             {t("subtitle")}
           </p>
+          <Link
+            href="/branchen"
+            className="mt-6 inline-flex items-center gap-2 rounded-full bg-logo-bg px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary hover:text-logo-bg"
+          >
+            {t("viewAll")}
+            <i className="ri-arrow-right-line" aria-hidden />
+          </Link>
         </motion.div>
 
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6 lg:gap-6">

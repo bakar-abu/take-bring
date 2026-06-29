@@ -1,11 +1,12 @@
-import { generatePageMetadata, PageSeo } from "@/lib/seo/page-helpers";
+import { ContactPage, ContactSeo } from "@/components/contact";
+import { generatePageMetadata } from "@/lib/seo/page-helpers";
 import { setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 
 const PAGE = {
   metadataKey: "kontakt",
   path: "/kontakt" as const,
-  keywords: ["contact", "kontakt"],
+  keywords: ["contact", "kontakt", "logistics contact", "Take & Bring contact"],
 };
 
 type PageProps = {
@@ -25,8 +26,8 @@ export default async function KontaktPage({ params }: PageProps) {
 
   return (
     <>
-      <PageSeo locale={locale} {...PAGE} />
-      <div className="container-content">{/* Kontakt page HTML */}</div>
+      <ContactSeo locale={locale} />
+      <ContactPage />
     </>
   );
 }

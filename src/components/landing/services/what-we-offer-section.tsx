@@ -74,7 +74,7 @@ const OFFERS: {
     Icon: Truck,
     titleKey: "offerFixedRoutesTitle",
     descriptionKey: "offerFixedRoutesDesc",
-    href: "/spedition-lkw",
+    href: "/feste-routen",
     accent: "#e67e22",
   },
   {
@@ -90,7 +90,7 @@ const OFFERS: {
     Icon: Ship,
     titleKey: "offerInternationalTitle",
     descriptionKey: "offerInternationalDesc",
-    href: "/spedition-lkw",
+    href: "/internationaler-versand",
     accent: "#9b59b6",
   },
 ];

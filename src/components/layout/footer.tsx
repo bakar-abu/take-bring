@@ -236,12 +236,32 @@ export function Footer() {
       </div>
 
       <motion.div
-        className="relative z-10 border-t border-primary/20 bg-white px-6 py-4 text-center text-sm text-primary-dark"
+        className="relative z-10 flex flex-col items-center justify-center gap-x-4 gap-y-2 border-t border-primary/20 bg-white px-6 py-4 text-center text-sm text-primary-dark sm:flex-row"
         variants={bottomBarVariants}
         initial="hidden"
         animate={isInView ? "visible" : "hidden"}
       >
         <span>{t("copyright", { year })}</span>
+        <span className="hidden text-primary/40 sm:inline" aria-hidden>
+          ·
+        </span>
+        <nav className="flex items-center gap-3">
+          <Link
+            href="/datenschutz"
+            className="font-medium text-primary-dark transition-colors hover:text-primary hover:underline"
+          >
+            {t("privacyPolicy")}
+          </Link>
+          <span className="text-primary/40" aria-hidden>
+            ·
+          </span>
+          <Link
+            href="/impressum"
+            className="font-medium text-primary-dark transition-colors hover:text-primary hover:underline"
+          >
+            {t("legalNotice")}
+          </Link>
+        </nav>
       </motion.div>
     </footer>
   );

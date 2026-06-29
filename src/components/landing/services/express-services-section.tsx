@@ -54,7 +54,7 @@ const EXPRESS_SERVICES: ExpressService[] = [
     titleKey: "expressDirectTitle",
     descKey: "expressDirectDesc",
     featurePrefix: "expressDirectFeature",
-    href: "/spedition-lkw",
+    href: "/feste-routen",
     accent: "#e67e22",
   },
   {

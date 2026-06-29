@@ -1,10 +1,11 @@
 import "@/assets/styles/globals.css";
 import "remixicon/fonts/remixicon.css";
-import { NextIntlClientProvider } from "next-intl";
+import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { Inter } from "next/font/google";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/shared/json-ld";
+import { CookieConsent } from "@/components/shared/cookie-consent";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
 import { siteConfig } from "@/config/site";
@@ -86,7 +87,7 @@ export default async function LocaleLayout({
 }: LocaleLayoutProps) {
   const { locale } = await params;
 
-  if (!routing.locales.includes(locale as (typeof routing.locales)[number])) {
+  if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
 
@@ -103,6 +104,7 @@ export default async function LocaleLayout({
           <Header />
           <main>{children}</main>
           <Footer />
+          <CookieConsent />
         </NextIntlClientProvider>
       </body>
     </html>

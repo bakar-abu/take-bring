@@ -1,0 +1,62 @@
+{
+  "tag": "Rechtliches",
+  "title": "Impressum",
+  "lastUpdatedLabel": "Zuletzt aktualisiert:",
+  "lastUpdated": "Juni 2026",
+  "intro": "Angaben gemäß den geltenden Offenlegungspflichten. Dieses Impressum enthält Informationen über das für diese Website verantwortliche Unternehmen.",
+  "sections": [
+    {
+      "heading": "Unternehmensangaben",
+      "body": [
+        "Take & Bring GmbH",
+        "Bergisch Gladbach, Deutschland"
+      ]
+    },
+    {
+      "heading": "Kontakt",
+      "body": [
+        "Telefon: +49 2234 6889977",
+        "E-Mail: info@take-bring.eu"
+      ]
+    },
+    {
+      "heading": "Vertreten durch",
+      "body": [
+        "Die Geschäftsführung der Take & Bring GmbH."
+      ]
+    },
+    {
+      "heading": "Handelsregister",
+      "body": [
+        "Eingetragen im Handelsregister. Die Registerangaben sind auf Anfrage erhältlich.",
+        "Die Umsatzsteuer-Identifikationsnummer gemäß den geltenden steuerrechtlichen Vorschriften ist auf Anfrage erhältlich."
+      ]
+    },
+    {
+      "heading": "Verantwortlich für den Inhalt",
+      "body": [
+        "Die Take & Bring GmbH ist gemäß den geltenden medienrechtlichen Vorschriften für den Inhalt dieser Website verantwortlich."
+      ]
+    },
+    {
+      "heading": "Haftung für Inhalte",
+      "body": [
+        "Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen.",
+        "Als Diensteanbieter sind wir für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich."
+      ]
+    },
+    {
+      "heading": "Haftung für Links",
+      "body": [
+        "Unsere Website kann Links zu externen Websites Dritter enthalten, auf deren Inhalte wir keinen Einfluss haben. Für diese fremden Inhalte können wir daher keine Haftung übernehmen.",
+        "Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber verantwortlich."
+      ]
+    },
+    {
+      "heading": "Urheberrecht",
+      "body": [
+        "Die Inhalte und Werke auf diesen Seiten unterliegen dem Urheberrecht. Jede Vervielfältigung, Bearbeitung, Verbreitung oder Verwertung außerhalb der Grenzen des Urheberrechts bedarf unserer schriftlichen Zustimmung."
+      ]
+    }
+  ]
+}

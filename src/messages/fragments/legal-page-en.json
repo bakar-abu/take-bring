@@ -1,0 +1,62 @@
+{
+  "tag": "Legal",
+  "title": "Legal Notice",
+  "lastUpdatedLabel": "Last updated:",
+  "lastUpdated": "June 2026",
+  "intro": "Information in accordance with applicable disclosure requirements. This Legal Notice provides details about the company responsible for this website.",
+  "sections": [
+    {
+      "heading": "Company information",
+      "body": [
+        "Take & Bring GmbH",
+        "Bergisch Gladbach, Germany"
+      ]
+    },
+    {
+      "heading": "Contact",
+      "body": [
+        "Phone: +49 2234 6889977",
+        "Email: info@take-bring.eu"
+      ]
+    },
+    {
+      "heading": "Represented by",
+      "body": [
+        "The Managing Director of Take & Bring GmbH."
+      ]
+    },
+    {
+      "heading": "Commercial register",
+      "body": [
+        "Registered in the commercial register. Registration details are available on request.",
+        "VAT identification number in accordance with applicable tax law is available on request."
+      ]
+    },
+    {
+      "heading": "Responsible for content",
+      "body": [
+        "Take & Bring GmbH is responsible for the content of this website in accordance with applicable media law."
+      ]
+    },
+    {
+      "heading": "Liability for content",
+      "body": [
+        "The contents of our pages have been created with the greatest care. However, we cannot guarantee the accuracy, completeness, or timeliness of the content.",
+        "As a service provider, we are responsible for our own content on these pages in accordance with general law."
+      ]
+    },
+    {
+      "heading": "Liability for links",
+      "body": [
+        "Our website may contain links to external third-party websites over whose content we have no influence. We therefore cannot accept any liability for this external content.",
+        "The respective provider or operator of the linked pages is always responsible for their content."
+      ]
+    },
+    {
+      "heading": "Copyright",
+      "body": [
+        "The content and works on these pages are subject to copyright. Any reproduction, processing, distribution, or use beyond the limits of copyright requires our written consent."
+      ]
+    }
+  ]
+}

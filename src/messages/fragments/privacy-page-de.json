@@ -1,0 +1,62 @@
+{
+  "tag": "Rechtliches",
+  "title": "Datenschutzerklärung",
+  "lastUpdatedLabel": "Zuletzt aktualisiert:",
+  "lastUpdated": "Juni 2026",
+  "intro": "Bei Take & Bring ist uns der Schutz Ihrer personenbezogenen Daten wichtig. Diese Datenschutzerklärung erläutert, welche Daten wir erheben, wie wir sie verwenden und welche Rechte Sie haben. Sie gilt für unsere Website und die von uns erbrachten Dienstleistungen.",
+  "sections": [
+    {
+      "heading": "1. Wer wir sind",
+      "body": [
+        "Die Take & Bring GmbH mit Sitz in Bergisch Gladbach, Deutschland, ist der Verantwortliche für die in dieser Erklärung beschriebene Verarbeitung Ihrer personenbezogenen Daten.",
+        "Bei Fragen zum Datenschutz erreichen Sie uns per E-Mail unter info@take-bring.eu oder telefonisch unter +49 2234 6889977."
+      ]
+    },
+    {
+      "heading": "2. Welche Daten wir erheben",
+      "body": [
+        "Wir erheben Daten, die Sie uns direkt zur Verfügung stellen, etwa Ihren Namen, Ihre E-Mail-Adresse, Telefonnummer und Nachricht, wenn Sie ein Kontakt- oder Angebotsformular absenden.",
+        "Zudem erfassen wir automatisch begrenzte technische Daten wie Ihre IP-Adresse, den Browsertyp und besuchte Seiten, um die Website zu betreiben und zu verbessern."
+      ]
+    },
+    {
+      "heading": "3. Wie wir Ihre Daten verwenden",
+      "body": [
+        "Wir verwenden Ihre Daten, um Ihre Anfragen zu beantworten, Angebote zu erstellen, unsere Logistikleistungen zu erbringen und mit Ihnen über Ihre Sendungen zu kommunizieren.",
+        "Wir verarbeiten diese Daten auf Grundlage Ihrer Einwilligung, der Vertragserfüllung und unseres berechtigten Interesses am Betrieb unseres Unternehmens und unserer Website."
+      ]
+    },
+    {
+      "heading": "4. Weitergabe Ihrer Daten",
+      "body": [
+        "Wir verkaufen Ihre personenbezogenen Daten nicht. Wir geben sie nur an vertrauenswürdige Dienstleister und Frachtführer weiter, soweit dies zur Erbringung unserer Leistungen erforderlich ist, sowie an Behörden, sofern gesetzlich vorgeschrieben.",
+        "Alle Partner, die Daten in unserem Auftrag verarbeiten, sind durch entsprechende Auftragsverarbeitungsverträge gebunden."
+      ]
+    },
+    {
+      "heading": "5. Speicherdauer",
+      "body": [
+        "Wir bewahren Ihre personenbezogenen Daten nur so lange auf, wie es zur Erfüllung der hier beschriebenen Zwecke erforderlich ist, einschließlich gesetzlicher, buchhalterischer oder berichtspflichtiger Vorgaben."
+      ]
+    },
+    {
+      "heading": "6. Ihre Rechte",
+      "body": [
+        "Nach der DSGVO haben Sie das Recht auf Auskunft, Berichtigung, Löschung oder Einschränkung der Verarbeitung Ihrer personenbezogenen Daten sowie das Recht auf Datenübertragbarkeit und Widerspruch gegen die Verarbeitung.",
+        "Zur Ausübung dieser Rechte kontaktieren Sie uns unter info@take-bring.eu. Sie haben zudem das Recht, sich bei einer Aufsichtsbehörde zu beschweren."
+      ]
+    },
+    {
+      "heading": "7. Cookies",
+      "body": [
+        "Unsere Website kann Cookies und ähnliche Technologien verwenden, um die ordnungsgemäße Funktion sicherzustellen und die Nutzung zu verstehen. Sie können Cookies über die Einstellungen Ihres Browsers steuern."
+      ]
+    },
+    {
+      "heading": "8. Änderungen dieser Erklärung",
+      "body": [
+        "Wir können diese Datenschutzerklärung von Zeit zu Zeit aktualisieren. Die aktuelle Version ist stets auf dieser Seite mit dem Datum der letzten Aktualisierung verfügbar."
+      ]
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import { ServicePage } from "@/components/services";
 import { generatePageMetadata, PageSeo } from "@/lib/seo/page-helpers";
 import { setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
@@ -5,7 +6,7 @@ import type { Metadata } from "next";
 const PAGE = {
   metadataKey: "speditionLkw",
   path: "/spedition-lkw" as const,
-  keywords: ["spedition", "lkw", "freight"],
+  keywords: ["freight", "spedition", "truck", "logistics"],
 };
 
 type PageProps = {
@@ -26,7 +27,7 @@ export default async function SpeditionLkwPage({ params }: PageProps) {
   return (
     <>
       <PageSeo locale={locale} {...PAGE} />
-      <div className="container-content">{/* Spedition LKW page HTML */}</div>
+      <ServicePage serviceId="freight" />
     </>
   );
 }

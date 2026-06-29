@@ -91,7 +91,7 @@ export function Navbar() {
   }, [mobileMenuOpen]);
 
   return (
-    <header className="sticky top-0 z-50 bg-background shadow">
+    <header className="sticky top-0 z-50 overflow-visible bg-background shadow">
       {/* Top bar — full width so the green panel reaches the right edge */}
       <div className="hidden border-b border-primary-light/10 md:block">
         <div className="flex w-full flex-col md:flex-row md:items-stretch">
@@ -160,12 +160,12 @@ export function Navbar() {
 
           <NavbarLogo className="md:hidden" imageClassName="h-8 max-w-[120px]" />
 
-          <nav className="hidden items-center gap-1 md:flex lg:gap-2">
+          <nav className="hidden items-center gap-1 overflow-visible md:flex lg:gap-2">
             <NavLink href="/">{t("home")}</NavLink>
             <ServicesDropdown />
-            <NavLink href="#">{t("industries")}</NavLink>
+            <NavLink href="/branchen">{t("industries")}</NavLink>
             <NavLink href="/ueber-uns">{t("aboutUs")}</NavLink>
-            <NavLink href="#">{t("blogs")}</NavLink>
+            <NavLink href="/blog">{t("blogs")}</NavLink>
             <NavLink href="/kontakt">{t("contact")}</NavLink>
           </nav>
 
@@ -197,7 +197,7 @@ export function Navbar() {
                 <ServicesDropdown onNavigate={() => setMobileMenuOpen(false)} />
               </div>
               <NavLink
-                href="#"
+                href="/branchen"
                 className="block rounded-lg"
                 onClick={() => setMobileMenuOpen(false)}
               >
@@ -211,7 +211,7 @@ export function Navbar() {
                 {t("aboutUs")}
               </NavLink>
               <NavLink
-                href="#"
+                href="/blog"
                 className="block rounded-lg"
                 onClick={() => setMobileMenuOpen(false)}
               >

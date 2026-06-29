@@ -1,3 +1,4 @@
+import { ServicePage } from "@/components/services";
 import { generatePageMetadata, PageSeo } from "@/lib/seo/page-helpers";
 import { setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
@@ -5,7 +6,7 @@ import type { Metadata } from "next";
 const PAGE = {
   metadataKey: "kuehltransporte",
   path: "/kuehltransporte" as const,
-  keywords: ["kühltransport", "refrigerated", "cold chain"],
+  keywords: ["refrigerated", "cold chain", "temperature"],
 };
 
 type PageProps = {
@@ -26,9 +27,7 @@ export default async function KuehltransportePage({ params }: PageProps) {
   return (
     <>
       <PageSeo locale={locale} {...PAGE} />
-      <div className="container-content">
-        {/* Kühltransporte page HTML */}
-      </div>
+      <ServicePage serviceId="refrigerated" />
     </>
   );
 }

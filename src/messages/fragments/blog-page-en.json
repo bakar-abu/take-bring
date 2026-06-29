@@ -1,0 +1,248 @@
+{
+  "heroTag": "Take & Bring Blog",
+  "heroTitle": "Logistics Insights, Tips & Industry News",
+  "heroSubtitle": "Practical guides and expert perspectives on freight forwarding, refrigerated transport, courier services, and supply chain optimisation across Europe.",
+  "featuredTag": "Featured",
+  "featuredTitle": "Editor's Pick",
+  "allTag": "The blog",
+  "allTitle": "Latest Articles",
+  "readMore": "Read article",
+  "readTime": "min read",
+  "backToBlog": "Back to all articles",
+  "takeawaysTitle": "Key takeaways",
+  "relatedTag": "Keep reading",
+  "relatedTitle": "Related Articles",
+  "ctaTitle": "Need a logistics partner you can rely on?",
+  "ctaSubtitle": "From a single urgent courier to recurring European freight, our team is ready to help. Get a tailored quote within two hours.",
+  "ctaButton": "Get in touch",
+  "posts": {
+    "europe-freight-forwarding-guide": {
+      "title": "Freight Forwarding in Europe: A Complete 2026 Guide",
+      "excerpt": "Everything businesses need to know about road freight forwarding across the EU — from FTL vs LTL to choosing the right partner and cutting transit times.",
+      "category": "Freight",
+      "author": "Take & Bring Team",
+      "metaTitle": "Freight Forwarding in Europe: Complete 2026 Guide",
+      "metaDescription": "A complete guide to road freight forwarding in Europe: FTL vs LTL, transit times, costs, customs, and how to choose the right freight partner for your business.",
+      "intro": "Freight forwarding is the backbone of European trade, moving everything from raw materials to finished goods across borders every day. Yet for many businesses, choosing the right freight strategy still feels complicated. This guide breaks down how modern road freight forwarding works in the EU and how to make it work for you.",
+      "sections": [
+        {
+          "heading": "What is freight forwarding?",
+          "body": [
+            "A freight forwarder organises the transport of goods on behalf of shippers, coordinating carriers, routes, documentation, and delivery. Rather than managing multiple carriers yourself, you work with one partner who plans the most efficient way to move your cargo.",
+            "In Europe, road freight remains the dominant mode for both domestic and cross-border shipments thanks to its flexibility, speed, and dense motorway network connecting every major market."
+          ]
+        },
+        {
+          "heading": "FTL vs LTL: which one fits your shipment?",
+          "body": [
+            "Full Truckload (FTL) means your goods occupy an entire vehicle. It's the fastest and most secure option for large or time-sensitive shipments, with no transfers along the way.",
+            "Less Than Truckload (LTL) consolidates your goods with other shipments, so you only pay for the space you use. It's cost-effective for smaller volumes that don't require a dedicated truck, though transit times can be slightly longer."
+          ]
+        },
+        {
+          "heading": "How to choose the right freight partner",
+          "body": [
+            "Look for a forwarder with a modern, mixed fleet (from 7.5t vans to 40t trucks), real-time tracking, and proven cross-border experience. Transparent pricing and a dedicated account manager make a measurable difference to reliability.",
+            "Ask about on-time delivery rates, insurance coverage, and how they handle customs for non-EU lanes. A strong partner reduces your administrative burden while protecting your goods end to end."
+          ]
+        }
+      ],
+      "takeaways": [
+        "Road freight is the most flexible and widely used transport mode in Europe.",
+        "Choose FTL for large or urgent loads, LTL for smaller, cost-sensitive shipments.",
+        "Prioritise partners with real-time tracking and transparent pricing.",
+        "A dedicated account manager dramatically improves reliability and response times."
+      ]
+    },
+    "cold-chain-best-practices": {
+      "title": "Cold Chain Logistics: 7 Best Practices for Temperature-Sensitive Goods",
+      "excerpt": "How to protect food, pharmaceuticals, and perishables in transit with proven cold chain practices, from pre-cooling to continuous temperature monitoring.",
+      "category": "Refrigerated",
+      "author": "Take & Bring Team",
+      "metaTitle": "Cold Chain Logistics: 7 Best Practices for 2026",
+      "metaDescription": "Protect temperature-sensitive goods in transit. Learn 7 cold chain best practices for food and pharma logistics: pre-cooling, monitoring, HACCP, GDP, and more.",
+      "intro": "An unbroken cold chain is non-negotiable for food, pharmaceuticals, and other perishables. A single temperature excursion can spoil an entire load or compromise patient safety. These seven best practices keep your temperature-sensitive goods safe from pickup to delivery.",
+      "sections": [
+        {
+          "heading": "Start with pre-cooling and validation",
+          "body": [
+            "Refrigerated vehicles should be pre-cooled to the target temperature before loading, not after. Loading warm cargo into a warm trailer forces the unit to work harder and risks an early excursion.",
+            "Validated reefer units and calibrated sensors ensure the temperature you set is the temperature your goods actually experience throughout the journey."
+          ]
+        },
+        {
+          "heading": "Monitor continuously and document everything",
+          "body": [
+            "Continuous temperature monitoring with real-time alerts lets dispatchers react before a deviation becomes a loss. Modern telematics record the full temperature history of every shipment.",
+            "Complete documentation isn't just good practice — it's a regulatory requirement under HACCP for food and GDP for pharmaceuticals. A clear audit trail protects you and your customers."
+          ]
+        },
+        {
+          "heading": "Train people and plan for the unexpected",
+          "body": [
+            "Even the best equipment fails without trained drivers and handlers who understand loading patterns, door-opening discipline, and emergency procedures.",
+            "Build contingency into your routes: backup vehicles, alternate plans for breakdowns, and clear escalation paths keep the chain intact when things go wrong."
+          ]
+        }
+      ],
+      "takeaways": [
+        "Always pre-cool the vehicle before loading temperature-sensitive cargo.",
+        "Use validated reefer units and calibrated, continuously monitored sensors.",
+        "Maintain full temperature documentation for HACCP and GDP compliance.",
+        "Train staff and build contingency plans to handle the unexpected."
+      ]
+    },
+    "same-day-courier-business": {
+      "title": "When Same-Day Courier Service Makes Business Sense",
+      "excerpt": "Same-day delivery isn't just for emergencies. Discover the scenarios where express courier service protects revenue, relationships, and reputation.",
+      "category": "Courier",
+      "author": "Take & Bring Team",
+      "metaTitle": "When Same-Day Courier Service Makes Business Sense",
+      "metaDescription": "Discover when same-day and express courier service is worth it for your business — from production line stoppages to high-value goods and customer-critical deliveries.",
+      "intro": "Same-day courier service often gets pigeonholed as an expensive last resort. In reality, for the right situations it's one of the smartest logistics investments a business can make. Here's when express delivery pays for itself many times over.",
+      "sections": [
+        {
+          "heading": "Preventing costly production stoppages",
+          "body": [
+            "A missing component can halt an entire production line, costing thousands per hour. A same-day courier delivering that one critical part is trivial by comparison.",
+            "Just-in-time manufacturers increasingly rely on express courier as an insurance policy against supply gaps that would otherwise idle expensive equipment and staff."
+          ]
+        },
+        {
+          "heading": "High-value, sensitive, and time-critical goods",
+          "body": [
+            "Documents, prototypes, medical samples, and high-value electronics often can't wait — or can't risk sitting in a multi-stop network. Direct, dedicated courier delivery keeps them secure and traceable.",
+            "With a single driver and no transfers, same-day courier minimises handling, reduces loss risk, and provides a clear chain of custody."
+          ]
+        },
+        {
+          "heading": "Protecting customer relationships",
+          "body": [
+            "When a key customer needs something urgently, the ability to say yes can define the relationship. Reliable same-day delivery turns a potential complaint into a loyalty moment.",
+            "The cost of express delivery is almost always lower than the cost of a lost contract or a damaged reputation."
+          ]
+        }
+      ],
+      "takeaways": [
+        "Same-day courier prevents production stoppages that cost far more than delivery.",
+        "It's ideal for high-value, sensitive, or time-critical goods needing a clear chain of custody.",
+        "Express delivery can turn urgent customer requests into loyalty-building moments.",
+        "Weigh courier cost against the real cost of delay, not the standard shipping rate."
+      ]
+    },
+    "fixed-routes-supply-chain": {
+      "title": "How Fixed Routes Bring Predictability to Your Supply Chain",
+      "excerpt": "Scheduled, recurring transport on fixed routes gives your supply chain the one thing it craves most: predictability. Here's how it works.",
+      "category": "Regular Tours",
+      "author": "Take & Bring Team",
+      "metaTitle": "How Fixed Routes Bring Predictability to Your Supply Chain",
+      "metaDescription": "Fixed-route, scheduled transport gives your supply chain predictable capacity and lower costs. Learn how regular tours work and when they're the right choice.",
+      "intro": "Volatility is the enemy of efficient logistics. Fixed-route transport — also called regular tours — replaces uncertainty with a dependable, recurring schedule that your whole operation can plan around. Here's why more businesses are locking in regular tours.",
+      "sections": [
+        {
+          "heading": "What are fixed routes?",
+          "body": [
+            "A fixed route is a pre-agreed transport schedule that runs on set days between set locations. Instead of booking transport ad hoc, you secure guaranteed, recurring capacity.",
+            "This model suits businesses with steady, predictable volumes — manufacturers feeding production lines, retailers replenishing stores, or distributors serving regular customers."
+          ]
+        },
+        {
+          "heading": "The benefits of predictable capacity",
+          "body": [
+            "With fixed routes, you always know when your goods will move and arrive. That predictability lets you tighten inventory, plan staffing, and make firm promises to your own customers.",
+            "Because the carrier can plan and optimise these recurring runs in advance, fixed routes are typically more cost-effective than repeated spot bookings."
+          ]
+        },
+        {
+          "heading": "Is a fixed route right for you?",
+          "body": [
+            "If you ship similar volumes on similar lanes week after week, a fixed route almost always reduces cost and stress. The more regular your flow, the bigger the savings.",
+            "A good logistics partner will analyse your shipping patterns and design a schedule that matches your real demand, with flexibility to scale during peaks."
+          ]
+        }
+      ],
+      "takeaways": [
+        "Fixed routes provide guaranteed, recurring transport capacity on a set schedule.",
+        "Predictability enables tighter inventory and reliable customer commitments.",
+        "Recurring runs are usually cheaper than repeated ad-hoc spot bookings.",
+        "They suit any business with steady, predictable volumes on regular lanes."
+      ]
+    },
+    "international-shipping-customs": {
+      "title": "International Shipping & Customs: Avoiding the 5 Most Common Delays",
+      "excerpt": "Cross-border shipping delays are usually avoidable. Learn the five most common customs pitfalls and how to keep your international freight moving.",
+      "category": "International",
+      "author": "Take & Bring Team",
+      "metaTitle": "International Shipping & Customs: Avoid 5 Common Delays",
+      "metaDescription": "Avoid the most common customs delays in international shipping. Learn how documentation, classification, and the right partner keep cross-border freight on schedule.",
+      "intro": "International shipping opens markets, but customs can turn a smooth journey into a costly wait. The good news: most border delays come from a handful of avoidable mistakes. Here are the five most common — and how to prevent them.",
+      "sections": [
+        {
+          "heading": "Incomplete or inaccurate documentation",
+          "body": [
+            "The single biggest cause of customs delays is paperwork. Missing commercial invoices, incorrect values, or mismatched details between documents trigger inspections and holds.",
+            "Accurate, complete, and consistent documentation — prepared before the goods reach the border — keeps clearance fast and predictable."
+          ]
+        },
+        {
+          "heading": "Wrong commodity classification",
+          "body": [
+            "Every product needs the correct HS (Harmonised System) code. An incorrect code can mean wrong duties, fines, or seized goods.",
+            "Work with a partner who understands tariff classification for your products, especially if you ship a varied or technical range."
+          ]
+        },
+        {
+          "heading": "Underestimating duties, taxes, and lead times",
+          "body": [
+            "Surprise duties and taxes stall shipments when no one is ready to pay them. Know your landed costs in advance and agree who is responsible under the correct Incoterms.",
+            "Build realistic customs lead times into your planning. The right forwarder pre-clears where possible and keeps you informed at every step."
+          ]
+        }
+      ],
+      "takeaways": [
+        "Most customs delays come from incomplete or inconsistent documentation.",
+        "Always use the correct HS classification code for every product.",
+        "Know your landed costs and Incoterms before goods ship.",
+        "A customs-experienced forwarder prevents the most common border holds."
+      ]
+    },
+    "reduce-logistics-costs": {
+      "title": "8 Practical Ways to Reduce Your Logistics Costs",
+      "excerpt": "Logistics spend doesn't have to keep climbing. These eight practical strategies help businesses cut transport costs without sacrificing service.",
+      "category": "Tips",
+      "author": "Take & Bring Team",
+      "metaTitle": "8 Practical Ways to Reduce Your Logistics Costs in 2026",
+      "metaDescription": "Cut transport spend without sacrificing service. 8 practical strategies to reduce logistics costs: consolidation, fixed routes, fleet right-sizing, and more.",
+      "intro": "For most businesses, logistics is one of the largest controllable costs — and one of the most overlooked when it comes to savings. With a few smart changes, you can cut transport spend while improving reliability. Here are eight strategies that deliver real results.",
+      "sections": [
+        {
+          "heading": "Consolidate shipments and right-size your fleet",
+          "body": [
+            "Combining smaller shipments into fuller loads reduces cost per unit and cuts the number of trips. Consolidation is one of the fastest ways to lower spend immediately.",
+            "Matching vehicle size to the load avoids paying for empty space. The right mix of van and truck capacity keeps every kilometre efficient."
+          ]
+        },
+        {
+          "heading": "Use fixed routes and optimise planning",
+          "body": [
+            "Recurring fixed-route contracts are typically cheaper than repeated spot bookings, because carriers can plan and fill them efficiently.",
+            "Route optimisation — sequencing stops intelligently and reducing empty running — trims fuel, time, and labour on every journey."
+          ]
+        },
+        {
+          "heading": "Partner strategically and track performance",
+          "body": [
+            "Consolidating your transport with one capable partner often unlocks better rates and simpler management than juggling many carriers.",
+            "What gets measured gets managed. Tracking on-time rates, cost per shipment, and utilisation reveals exactly where further savings hide."
+          ]
+        }
+      ],
+      "takeaways": [
+        "Consolidate shipments and right-size vehicles to cut cost per unit.",
+        "Fixed-route contracts beat repeated spot bookings on price.",
+        "Route optimisation reduces fuel, time, and empty running.",
+        "Track KPIs and consolidate with one strong partner for the best rates."
+      ]
+    }
+  }
+}

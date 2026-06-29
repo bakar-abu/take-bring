@@ -1,0 +1,21 @@
+{
+  "fullName": "Nume complet",
+  "fullNamePlaceholder": "Numele dvs. complet",
+  "email": "E-mail",
+  "emailPlaceholder": "email@exemplu.ro",
+  "phone": "Telefon / WhatsApp",
+  "phonePlaceholder": "+40 ...",
+  "inquiryType": "Tip solicitare",
+  "inquiryTypePlaceholder": "Selectați tipul",
+  "inquiryFreight": "Expediere marfă",
+  "inquiryRefrigerated": "Transport frigorific",
+  "inquiryCourier": "Serviciu curier",
+  "inquiryRegularTours": "Tururi regulate",
+  "inquiryInternational": "Transport internațional",
+  "inquiryGeneral": "Solicitare generală",
+  "message": "Mesajul dvs.",
+  "submitButton": "Trimite solicitarea",
+  "submitSending": "Se trimite...",
+  "successMessage": "Mulțumim! Echipa noastră vă va contacta în 2 ore.",
+  "errorMessage": "Ceva nu a funcționat. Încercați din nou sau sunați-ne."
+}

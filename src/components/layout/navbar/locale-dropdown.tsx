@@ -5,7 +5,11 @@ import type { Locale } from "@/types/locale";
 import { Link, usePathname } from "@/lib/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { useLocale, useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
+import type { ComponentProps } from "react";
 import { useEffect, useRef, useState } from "react";
+
+type LinkHref = ComponentProps<typeof Link>["href"];
 
 const locales = siteConfig.locales as readonly Locale[];
 
@@ -18,7 +22,10 @@ const localeFlags: Record<Locale, string> = {
 export function LocaleDropdown() {
   const locale = useLocale() as Locale;
   const pathname = usePathname();
+  const params = useParams();
   const t = useTranslations("locale");
+
+  const localeHref = { pathname, params } as LinkHref;
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -62,7 +69,7 @@ export function LocaleDropdown() {
           {locales.map((loc) => (
             <li key={loc} role="option" aria-selected={locale === loc}>
               <Link
-                href={pathname}
+                href={localeHref}
                 locale={loc}
                 onClick={() => setOpen(false)}
                 className={cn(

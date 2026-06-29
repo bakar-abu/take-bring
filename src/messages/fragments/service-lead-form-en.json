@@ -1,0 +1,21 @@
+{
+  "fullName": "Full name",
+  "fullNamePlaceholder": "Your full name",
+  "email": "Email",
+  "emailPlaceholder": "your@email.com",
+  "phone": "Phone / WhatsApp",
+  "phonePlaceholder": "+49 ...",
+  "inquiryType": "Inquiry type",
+  "inquiryTypePlaceholder": "Select inquiry type",
+  "inquiryFreight": "Freight forwarding",
+  "inquiryRefrigerated": "Refrigerated transport",
+  "inquiryCourier": "Courier service",
+  "inquiryRegularTours": "Regular tours",
+  "inquiryInternational": "International shipping",
+  "inquiryGeneral": "General inquiry",
+  "message": "Your message",
+  "submitButton": "Submit request",
+  "submitSending": "Sending...",
+  "successMessage": "Thank you! Our team will contact you within 2 hours.",
+  "errorMessage": "Something went wrong. Please try again or call us directly."
+}

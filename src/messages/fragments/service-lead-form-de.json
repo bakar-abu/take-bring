@@ -1,0 +1,21 @@
+{
+  "fullName": "Vollständiger Name",
+  "fullNamePlaceholder": "Ihr vollständiger Name",
+  "email": "E-Mail",
+  "emailPlaceholder": "ihre@email.de",
+  "phone": "Telefon / WhatsApp",
+  "phonePlaceholder": "+49 ...",
+  "inquiryType": "Anfrageart",
+  "inquiryTypePlaceholder": "Anfrageart wählen",
+  "inquiryFreight": "Spedition LKW",
+  "inquiryRefrigerated": "Kühltransporte",
+  "inquiryCourier": "Kuriertransporte",
+  "inquiryRegularTours": "Feste Routen",
+  "inquiryInternational": "Internationaler Versand",
+  "inquiryGeneral": "Allgemeine Anfrage",
+  "message": "Ihre Nachricht",
+  "submitButton": "Anfrage senden",
+  "submitSending": "Wird gesendet...",
+  "successMessage": "Vielen Dank! Unser Team meldet sich innerhalb von 2 Stunden.",
+  "errorMessage": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut oder rufen Sie uns an."
+}

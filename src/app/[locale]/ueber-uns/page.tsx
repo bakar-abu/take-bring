@@ -1,12 +1,9 @@
-import { generatePageMetadata, PageSeo } from "@/lib/seo/page-helpers";
+import { AboutPage } from "@/components/about/about-page";
+import { AboutSeo } from "@/components/about/about-seo";
+import { ABOUT_PAGE } from "@/config/about-page";
+import { generatePageMetadata } from "@/lib/seo/page-helpers";
 import { setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
-
-const PAGE = {
-  metadataKey: "ueberUns",
-  path: "/ueber-uns" as const,
-  keywords: ["about", "über uns"],
-};
 
 type PageProps = {
   params: Promise<{ locale: string }>;
@@ -16,7 +13,11 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  return generatePageMetadata(locale, PAGE);
+  return generatePageMetadata(locale, {
+    metadataKey: ABOUT_PAGE.metadataKey,
+    path: ABOUT_PAGE.path,
+    keywords: ABOUT_PAGE.keywords,
+  });
 }
 
 export default async function UeberUnsPage({ params }: PageProps) {
@@ -25,8 +26,8 @@ export default async function UeberUnsPage({ params }: PageProps) {
 
   return (
     <>
-      <PageSeo locale={locale} {...PAGE} />
-      <div className="container-content">{/* Über uns page HTML */}</div>
+      <AboutSeo locale={locale} />
+      <AboutPage />
     </>
   );
 }

@@ -1,0 +1,248 @@
+{
+  "heroTag": "Blog Take & Bring",
+  "heroTitle": "Informații logistice, sfaturi și știri din industrie",
+  "heroSubtitle": "Ghiduri practice și perspective de specialitate despre expediții de marfă, transport frigorific, servicii de curierat și optimizarea lanțului de aprovizionare în toată Europa.",
+  "featuredTag": "Recomandat",
+  "featuredTitle": "Alegerea redacției",
+  "allTag": "Blogul",
+  "allTitle": "Cele mai noi articole",
+  "readMore": "Citește articolul",
+  "readTime": "min. citire",
+  "backToBlog": "Înapoi la toate articolele",
+  "takeawaysTitle": "Concluzii cheie",
+  "relatedTag": "Continuă lectura",
+  "relatedTitle": "Articole similare",
+  "ctaTitle": "Ai nevoie de un partener logistic pe care să te bazezi?",
+  "ctaSubtitle": "De la un singur curier urgent până la transport european recurent, echipa noastră este pregătită să te ajute. Primește o ofertă personalizată în două ore.",
+  "ctaButton": "Ia legătura",
+  "posts": {
+    "europe-freight-forwarding-guide": {
+      "title": "Expediții de marfă în Europa: Ghidul complet 2026",
+      "excerpt": "Tot ce trebuie să știe companiile despre expedițiile rutiere de marfă în UE – de la FTL vs LTL la alegerea partenerului potrivit și reducerea timpilor de tranzit.",
+      "category": "Marfă",
+      "author": "Echipa Take & Bring",
+      "metaTitle": "Expediții de marfă în Europa: Ghidul complet 2026",
+      "metaDescription": "Un ghid complet despre expedițiile rutiere de marfă în Europa: FTL vs LTL, timpi de tranzit, costuri, vamă și cum să alegi partenerul potrivit pentru afacerea ta.",
+      "intro": "Expedițiile de marfă sunt coloana vertebrală a comerțului european, mișcând zilnic totul, de la materii prime la produse finite, peste granițe. Totuși, pentru multe companii, alegerea strategiei potrivite de transport pare încă complicată. Acest ghid explică modul în care funcționează expedițiile rutiere moderne în UE și cum le poți face să lucreze pentru tine.",
+      "sections": [
+        {
+          "heading": "Ce sunt expedițiile de marfă?",
+          "body": [
+            "Un expeditor organizează transportul mărfurilor în numele expeditorului, coordonând transportatori, rute, documentație și livrare. În loc să gestionezi mai mulți transportatori, lucrezi cu un singur partener care planifică cea mai eficientă cale de a-ți muta marfa.",
+            "În Europa, transportul rutier rămâne modul dominant atât pentru expedierile interne, cât și pentru cele transfrontaliere, datorită flexibilității, vitezei și rețelei dense de autostrăzi care leagă fiecare piață importantă."
+          ]
+        },
+        {
+          "heading": "FTL vs LTL: care se potrivește expedierii tale?",
+          "body": [
+            "Încărcătura completă (FTL) înseamnă că marfa ta ocupă un vehicul întreg. Este cea mai rapidă și mai sigură opțiune pentru expedieri mari sau urgente, fără transferuri pe parcurs.",
+            "Încărcătura parțială (LTL) consolidează marfa ta cu alte expedieri, așa că plătești doar pentru spațiul folosit. Este eficientă din punct de vedere al costurilor pentru volume mai mici care nu necesită un camion dedicat, deși timpii de tranzit pot fi puțin mai lungi."
+          ]
+        },
+        {
+          "heading": "Cum alegi partenerul potrivit de transport",
+          "body": [
+            "Caută un expeditor cu o flotă modernă și mixtă (de la dube de 7,5 t la camioane de 40 t), urmărire în timp real și experiență dovedită transfrontalieră. Prețurile transparente și un manager de cont dedicat fac o diferență măsurabilă în fiabilitate.",
+            "Întreabă despre ratele de livrare la timp, acoperirea asigurării și modul de gestionare a vămii pentru rutele non-UE. Un partener puternic îți reduce povara administrativă și îți protejează marfa de la cap la coadă."
+          ]
+        }
+      ],
+      "takeaways": [
+        "Transportul rutier este cel mai flexibil și mai utilizat mod de transport din Europa.",
+        "Alege FTL pentru încărcături mari sau urgente, LTL pentru expedieri mai mici, sensibile la cost.",
+        "Prioritizează partenerii cu urmărire în timp real și prețuri transparente.",
+        "Un manager de cont dedicat îmbunătățește semnificativ fiabilitatea și timpii de răspuns."
+      ]
+    },
+    "cold-chain-best-practices": {
+      "title": "Logistica lanțului frigorific: 7 bune practici pentru mărfuri sensibile la temperatură",
+      "excerpt": "Cum să protejezi alimentele, produsele farmaceutice și perisabilele în tranzit cu practici dovedite ale lanțului frigorific, de la prerăcire la monitorizarea continuă a temperaturii.",
+      "category": "Frigorific",
+      "author": "Echipa Take & Bring",
+      "metaTitle": "Logistica lanțului frigorific: 7 bune practici pentru 2026",
+      "metaDescription": "Protejează mărfurile sensibile la temperatură în tranzit. Învață 7 bune practici ale lanțului frigorific pentru logistica alimentară și farmaceutică: prerăcire, monitorizare, HACCP, GDP și altele.",
+      "intro": "Un lanț frigorific neîntrerupt este obligatoriu pentru alimente, produse farmaceutice și alte perisabile. O singură abatere de temperatură poate strica o întreagă încărcătură sau compromite siguranța pacientului. Aceste șapte bune practici îți mențin mărfurile sensibile la temperatură în siguranță, de la ridicare la livrare.",
+      "sections": [
+        {
+          "heading": "Începe cu prerăcirea și validarea",
+          "body": [
+            "Vehiculele frigorifice trebuie prerăcite la temperatura țintă înainte de încărcare, nu după. Încărcarea mărfii calde într-o remorcă caldă forțează unitatea să lucreze mai mult și riscă o abatere timpurie.",
+            "Unitățile frigorifice validate și senzorii calibrați asigură că temperatura setată este temperatura pe care marfa o experimentează efectiv pe tot parcursul călătoriei."
+          ]
+        },
+        {
+          "heading": "Monitorizează continuu și documentează totul",
+          "body": [
+            "Monitorizarea continuă a temperaturii cu alerte în timp real permite dispecerilor să reacționeze înainte ca o abatere să devină o pierdere. Telematica modernă înregistrează întregul istoric de temperatură al fiecărei expedieri.",
+            "Documentația completă nu este doar o bună practică – este o cerință de reglementare: HACCP pentru alimente și GDP pentru produse farmaceutice. O pistă de audit clară te protejează pe tine și pe clienții tăi."
+          ]
+        },
+        {
+          "heading": "Instruiește oamenii și planifică pentru neprevăzut",
+          "body": [
+            "Chiar și cel mai bun echipament eșuează fără șoferi și manipulanți instruiți care înțeleg schemele de încărcare, disciplina deschiderii ușilor și procedurile de urgență.",
+            "Include planuri de rezervă în rutele tale: vehicule de rezervă, planuri alternative pentru defecțiuni și căi clare de escaladare mențin lanțul intact când lucrurile merg prost."
+          ]
+        }
+      ],
+      "takeaways": [
+        "Prerăcește întotdeauna vehiculul înainte de a încărca marfă sensibilă la temperatură.",
+        "Folosește unități frigorifice validate și senzori calibrați, monitorizați continuu.",
+        "Menține o documentație completă a temperaturii pentru conformitatea HACCP și GDP.",
+        "Instruiește personalul și creează planuri de rezervă pentru a gestiona neprevăzutul."
+      ]
+    },
+    "same-day-courier-business": {
+      "title": "Când serviciul de curierat în aceeași zi are sens pentru afaceri",
+      "excerpt": "Livrarea în aceeași zi nu este doar pentru urgențe. Descoperă scenariile în care serviciul de curierat express protejează veniturile, relațiile și reputația.",
+      "category": "Curier",
+      "author": "Echipa Take & Bring",
+      "metaTitle": "Când serviciul de curierat în aceeași zi are sens pentru afaceri",
+      "metaDescription": "Descoperă când serviciul de curierat în aceeași zi și express merită pentru afacerea ta – de la opriri ale liniei de producție la mărfuri de mare valoare și livrări critice pentru clienți.",
+      "intro": "Serviciul de curierat în aceeași zi este adesea catalogat drept o ultimă soluție costisitoare. În realitate, pentru situațiile potrivite, este una dintre cele mai inteligente investiții logistice pe care o companie le poate face. Iată când livrarea express se amortizează de multe ori.",
+      "sections": [
+        {
+          "heading": "Prevenirea opririlor costisitoare de producție",
+          "body": [
+            "O componentă lipsă poate opri o întreagă linie de producție, costând mii pe oră. Un curier în aceeași zi care livrează acea piesă critică este nesemnificativ prin comparație.",
+            "Producătorii just-in-time se bazează tot mai mult pe curieratul express ca poliță de asigurare împotriva lipsurilor de aprovizionare care altfel ar lăsa inactive echipamente și personal scumpe."
+          ]
+        },
+        {
+          "heading": "Mărfuri de mare valoare, sensibile și critice ca timp",
+          "body": [
+            "Documentele, prototipurile, probele medicale și electronicele de mare valoare adesea nu pot aștepta – sau nu pot risca să stea într-o rețea cu opriri multiple. Livrarea directă, dedicată, prin curier le menține în siguranță și trasabile.",
+            "Cu un singur șofer și fără transferuri, curieratul în aceeași zi minimizează manipularea, reduce riscul de pierdere și oferă un lanț clar de custodie."
+          ]
+        },
+        {
+          "heading": "Protejarea relațiilor cu clienții",
+          "body": [
+            "Când un client important are nevoie urgentă de ceva, capacitatea de a spune da poate defini relația. Livrarea fiabilă în aceeași zi transformă o posibilă reclamație într-un moment de loialitate.",
+            "Costul livrării express este aproape întotdeauna mai mic decât costul unui contract pierdut sau al unei reputații afectate."
+          ]
+        }
+      ],
+      "takeaways": [
+        "Curieratul în aceeași zi previne opriri de producție care costă mult mai mult decât livrarea.",
+        "Este ideal pentru mărfuri de mare valoare, sensibile sau critice ca timp, cu lanț clar de custodie.",
+        "Livrarea express poate transforma cererile urgente ale clienților în momente de loialitate.",
+        "Cântărește costul curieratului față de costul real al întârzierii, nu față de tariful standard."
+      ]
+    },
+    "fixed-routes-supply-chain": {
+      "title": "Cum aduc rutele fixe predictibilitate lanțului tău de aprovizionare",
+      "excerpt": "Transportul programat și recurent pe rute fixe oferă lanțului tău de aprovizionare exact ce își dorește cel mai mult: predictibilitate. Iată cum funcționează.",
+      "category": "Rute regulate",
+      "author": "Echipa Take & Bring",
+      "metaTitle": "Cum aduc rutele fixe predictibilitate lanțului de aprovizionare",
+      "metaDescription": "Transportul programat pe rute fixe oferă lanțului tău de aprovizionare capacitate predictibilă și costuri mai mici. Află cum funcționează cursele regulate și când sunt alegerea potrivită.",
+      "intro": "Volatilitatea este dușmanul logisticii eficiente. Transportul pe rute fixe – numit și curse regulate – înlocuiește incertitudinea cu un program de încredere, recurent, în jurul căruia întreaga ta operațiune poate planifica. Iată de ce tot mai multe companii își fixează cursele regulate.",
+      "sections": [
+        {
+          "heading": "Ce sunt rutele fixe?",
+          "body": [
+            "O rută fixă este un program de transport convenit în prealabil, care rulează în zile stabilite, între locații stabilite. În loc să rezervi transport ad-hoc, îți asiguri capacitate garantată și recurentă.",
+            "Acest model se potrivește companiilor cu volume constante și predictibile – producători care alimentează linii de producție, retaileri care reaprovizionează magazine sau distribuitori care deservesc clienți obișnuiți."
+          ]
+        },
+        {
+          "heading": "Beneficiile capacității predictibile",
+          "body": [
+            "Cu rute fixe, știi mereu când marfa ta se va mișca și va ajunge. Această predictibilitate îți permite să reduci stocurile, să planifici personalul și să faci promisiuni ferme propriilor clienți.",
+            "Deoarece transportatorul poate planifica și optimiza aceste curse recurente din timp, rutele fixe sunt de obicei mai eficiente din punct de vedere al costurilor decât rezervările punctuale repetate."
+          ]
+        },
+        {
+          "heading": "Este o rută fixă potrivită pentru tine?",
+          "body": [
+            "Dacă expediezi volume similare pe rute similare săptămână de săptămână, o rută fixă aproape întotdeauna reduce costul și stresul. Cu cât fluxul este mai regulat, cu atât economiile sunt mai mari.",
+            "Un partener logistic bun îți va analiza tiparele de expediere și va proiecta un program care se potrivește cererii tale reale, cu flexibilitate pentru a crește în perioadele de vârf."
+          ]
+        }
+      ],
+      "takeaways": [
+        "Rutele fixe oferă capacitate de transport garantată și recurentă, după un program stabilit.",
+        "Predictibilitatea permite stocuri mai reduse și angajamente fiabile față de clienți.",
+        "Cursele recurente sunt de obicei mai ieftine decât rezervările punctuale repetate.",
+        "Se potrivesc oricărei companii cu volume constante și predictibile pe rute regulate."
+      ]
+    },
+    "international-shipping-customs": {
+      "title": "Transport internațional și vamă: evitarea celor 5 cele mai frecvente întârzieri",
+      "excerpt": "Întârzierile la transportul transfrontalier sunt de obicei evitabile. Învață cele mai frecvente cinci capcane vamale și cum să-ți menții marfa internațională în mișcare.",
+      "category": "Internațional",
+      "author": "Echipa Take & Bring",
+      "metaTitle": "Transport internațional și vamă: evită 5 întârzieri frecvente",
+      "metaDescription": "Evită cele mai frecvente întârzieri vamale la transportul internațional. Află cum documentația, clasificarea și partenerul potrivit mențin marfa transfrontalieră la timp.",
+      "intro": "Transportul internațional deschide piețe, dar vama poate transforma o călătorie lină într-o așteptare costisitoare. Vestea bună: majoritatea întârzierilor la graniță provin dintr-o mână de greșeli evitabile. Iată cele cinci cele mai frecvente – și cum să le previi.",
+      "sections": [
+        {
+          "heading": "Documentație incompletă sau inexactă",
+          "body": [
+            "Cea mai mare cauză a întârzierilor vamale o reprezintă actele. Facturile comerciale lipsă, valorile incorecte sau detaliile nepotrivite între documente declanșează inspecții și rețineri.",
+            "O documentație exactă, completă și consecventă – pregătită înainte ca marfa să ajungă la graniță – menține vămuirea rapidă și predictibilă."
+          ]
+        },
+        {
+          "heading": "Clasificarea greșită a mărfurilor",
+          "body": [
+            "Fiecare produs are nevoie de codul SA (Sistemul Armonizat) corect. Un cod incorect poate însemna taxe greșite, amenzi sau mărfuri confiscate.",
+            "Lucrează cu un partener care înțelege clasificarea tarifară pentru produsele tale, mai ales dacă expediezi o gamă variată sau tehnică."
+          ]
+        },
+        {
+          "heading": "Subestimarea taxelor și a timpilor de pregătire",
+          "body": [
+            "Taxele și impozitele neașteptate blochează expedierile când nimeni nu este pregătit să le plătească. Cunoaște-ți costurile finale în avans și stabilește cine este responsabil prin Incoterms-urile corecte.",
+            "Include timpi realiști de vămuire în planificarea ta. Expeditorul potrivit vămuiește în avans acolo unde este posibil și te ține informat la fiecare pas."
+          ]
+        }
+      ],
+      "takeaways": [
+        "Majoritatea întârzierilor vamale provin din documentație incompletă sau inconsecventă.",
+        "Folosește întotdeauna codul de clasificare SA corect pentru fiecare produs.",
+        "Cunoaște-ți costurile finale și Incoterms-urile înainte de expediere.",
+        "Un expeditor cu experiență vamală previne cele mai frecvente rețineri la graniță."
+      ]
+    },
+    "reduce-logistics-costs": {
+      "title": "8 moduri practice de a-ți reduce costurile logistice",
+      "excerpt": "Cheltuielile logistice nu trebuie să crească mereu. Aceste opt strategii practice ajută companiile să reducă costurile de transport fără a sacrifica serviciul.",
+      "category": "Sfaturi",
+      "author": "Echipa Take & Bring",
+      "metaTitle": "8 moduri practice de a-ți reduce costurile logistice în 2026",
+      "metaDescription": "Reduce cheltuielile de transport fără a sacrifica serviciul. 8 strategii practice pentru a reduce costurile logistice: consolidare, rute fixe, dimensionarea flotei și altele.",
+      "intro": "Pentru majoritatea companiilor, logistica este unul dintre cele mai mari costuri controlabile – și unul dintre cele mai trecute cu vederea când vine vorba de economii. Cu câteva schimbări inteligente, poți reduce cheltuielile de transport îmbunătățind în același timp fiabilitatea. Iată opt strategii care aduc rezultate reale.",
+      "sections": [
+        {
+          "heading": "Consolidează expedierile și dimensionează corect flota",
+          "body": [
+            "Combinarea expedierilor mai mici în încărcături mai pline reduce costul pe unitate și numărul de curse. Consolidarea este una dintre cele mai rapide modalități de a reduce imediat cheltuielile.",
+            "Potrivirea dimensiunii vehiculului cu încărcătura evită plata pentru spațiul gol. Mixul potrivit de capacitate de dubă și camion menține fiecare kilometru eficient."
+          ]
+        },
+        {
+          "heading": "Folosește rute fixe și optimizează planificarea",
+          "body": [
+            "Contractele recurente pe rute fixe sunt de obicei mai ieftine decât rezervările punctuale repetate, deoarece transportatorii le pot planifica și umple eficient.",
+            "Optimizarea rutelor – secvențierea inteligentă a opririlor și reducerea curselor goale – reduce combustibilul, timpul și munca la fiecare călătorie."
+          ]
+        },
+        {
+          "heading": "Colaborează strategic și măsoară performanța",
+          "body": [
+            "Consolidarea transportului cu un singur partener capabil deblochează adesea tarife mai bune și un management mai simplu decât jonglarea cu mulți transportatori.",
+            "Ceea ce se măsoară se gestionează. Urmărirea ratelor de livrare la timp, a costului pe expediere și a gradului de utilizare dezvăluie exact unde se ascund economii suplimentare."
+          ]
+        }
+      ],
+      "takeaways": [
+        "Consolidează expedierile și dimensionează corect vehiculele pentru a reduce costul pe unitate.",
+        "Contractele pe rute fixe bat rezervările punctuale repetate la preț.",
+        "Optimizarea rutelor reduce combustibilul, timpul și cursele goale.",
+        "Urmărește KPI-urile și consolidează cu un partener puternic pentru cele mai bune tarife."
+      ]
+    }
+  }
+}
