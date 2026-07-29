@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ArrowDownRight,
   ArrowUpRight,
   ExternalLink,
   Eye,
+  Info,
   MousePointerClick,
   Percent,
   Users,
@@ -84,11 +85,100 @@ function SectionCard({
   );
 }
 
+type DataSource = "mock" | "live" | "mixed";
+
+function DataSourceBadge({ source }: { source: DataSource }) {
+  const label =
+    source === "live" ? "Live data" : source === "mixed" ? "Mixed" : "Mock preview";
+  const className =
+    source === "live"
+      ? "bg-emerald-100 text-emerald-800 ring-emerald-600/20"
+      : source === "mixed"
+        ? "bg-amber-100 text-amber-800 ring-amber-600/20"
+        : "bg-black/[0.05] text-foreground/55 ring-black/10";
+
+  return (
+    <span
+      className={cn(
+        "rounded-md px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide ring-1",
+        className,
+      )}
+    >
+      {label}
+    </span>
+  );
+}
+
+function KpiCard({
+  label,
+  value,
+  icon,
+  source,
+  footer,
+  changePct,
+}: {
+  label: string;
+  value: string;
+  icon: React.ReactNode;
+  source: DataSource;
+  footer?: string;
+  changePct?: number;
+}) {
+  return (
+    <div className="rounded-2xl border border-black/10 bg-white p-5 shadow-sm">
+      <div className="flex items-start justify-between gap-2">
+        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-foreground/50">
+          {label}
+        </p>
+        <div className="flex items-center gap-2">
+          <DataSourceBadge source={source} />
+          {icon}
+        </div>
+      </div>
+      <p className="mt-2 text-3xl font-bold text-logo-bg">{value}</p>
+      {changePct !== undefined ? (
+        <div className="mt-2">
+          <ChangeBadge value={changePct} />
+        </div>
+      ) : null}
+      {footer ? (
+        <p className="mt-2 text-xs text-foreground/50">{footer}</p>
+      ) : null}
+    </div>
+  );
+}
+
+function KpiSkeleton() {
+  return (
+    <div className="animate-pulse rounded-2xl border border-black/10 bg-white p-5 shadow-sm">
+      <div className="h-3 w-20 rounded bg-black/[0.06]" />
+      <div className="mt-4 h-8 w-24 rounded bg-black/[0.06]" />
+      <div className="mt-3 h-3 w-16 rounded bg-black/[0.06]" />
+    </div>
+  );
+}
+
 export function WebsiteAnalyticsPanel({
   storedLeads,
   clarityProjectId,
 }: WebsiteAnalyticsPanelProps) {
   const [period, setPeriod] = useState<AnalyticsPeriod>("30d");
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  useEffect(() => {
+    if (!isRefreshing) return;
+    const timer = window.setTimeout(() => setIsRefreshing(false), 320);
+    return () => window.clearTimeout(timer);
+  }, [isRefreshing, period]);
+
+  function handlePeriodChange(next: AnalyticsPeriod) {
+    if (next === period) return;
+    setIsRefreshing(true);
+    setPeriod(next);
+  }
+
+  const hasStoredLeads = storedLeads.length > 0;
+  const leadsSource: DataSource = hasStoredLeads ? "live" : "mock";
 
   const snapshot: WebsiteAnalyticsSnapshot = useMemo(() => {
     // TODO(integrate): load traffic/CTA/page metrics from GA4 or Clarity API.
@@ -125,8 +215,9 @@ export function WebsiteAnalyticsPanel({
             Website Analytics
           </h2>
           <p className="mt-1 text-sm text-foreground/55">
-            Traffic, conversions, and service demand to guide marketing and UX
-            decisions.
+            Traffic, conversions, and service demand. Traffic metrics are mock
+            until GA4 integration; lead counts use stored submissions when
+            available.
           </p>
         </div>
 
@@ -144,9 +235,10 @@ export function WebsiteAnalyticsPanel({
             <button
               key={option.id}
               type="button"
-              onClick={() => setPeriod(option.id)}
+              onClick={() => handlePeriodChange(option.id)}
+              disabled={isRefreshing}
               className={cn(
-                "rounded-md px-3 py-1.5 text-xs font-bold transition-colors",
+                "rounded-md px-3 py-1.5 text-xs font-bold transition-colors disabled:opacity-60",
                 period === option.id
                   ? "bg-logo-bg text-white"
                   : "text-logo-bg/70 hover:text-logo-bg",
@@ -159,72 +251,72 @@ export function WebsiteAnalyticsPanel({
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <div className="rounded-2xl border border-black/10 bg-white p-5 shadow-sm">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-foreground/50">
-              Visitors
-            </p>
-            <Users className="h-4 w-4 text-primary-dark" aria-hidden />
-          </div>
-          <p className="mt-2 text-3xl font-bold text-logo-bg">
-            {formatNumber(snapshot.kpis.visitors)}
-          </p>
-          <div className="mt-2">
-            <ChangeBadge value={snapshot.kpis.visitorsChangePct} />
-          </div>
-        </div>
+      <div className="flex gap-3 rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-950">
+        <Info className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
+        <p>
+          <strong>Preview mode:</strong> visitors, CTA clicks, page views, and
+          blog metrics are mock snapshots. Leads by source merge real data from{" "}
+          <code className="rounded bg-white/70 px-1">data/leads.json</code> when
+          forms have been submitted.
+        </p>
+      </div>
 
-        <div className="rounded-2xl border border-black/10 bg-white p-5 shadow-sm">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-foreground/50">
-              Leads
-            </p>
-            <MousePointerClick
-              className="h-4 w-4 text-primary-dark"
-              aria-hidden
+      <div
+        className={cn(
+          "grid gap-4 sm:grid-cols-2 xl:grid-cols-4",
+          isRefreshing && "opacity-60",
+        )}
+        aria-busy={isRefreshing}
+      >
+        {isRefreshing ? (
+          <>
+            <KpiSkeleton />
+            <KpiSkeleton />
+            <KpiSkeleton />
+            <KpiSkeleton />
+          </>
+        ) : (
+          <>
+            <KpiCard
+              label="Visitors"
+              value={formatNumber(snapshot.kpis.visitors)}
+              source="mock"
+              changePct={snapshot.kpis.visitorsChangePct}
+              icon={<Users className="h-4 w-4 text-primary-dark" aria-hidden />}
             />
-          </div>
-          <p className="mt-2 text-3xl font-bold text-logo-bg">
-            {formatNumber(snapshot.kpis.leads)}
-          </p>
-          <div className="mt-2">
-            <ChangeBadge value={snapshot.kpis.leadsChangePct} />
-          </div>
-          {storedLeads.length > 0 ? (
-            <p className="mt-1 text-[11px] text-foreground/45">
-              Includes stored website leads
-            </p>
-          ) : null}
-        </div>
-
-        <div className="rounded-2xl border border-black/10 bg-white p-5 shadow-sm">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-foreground/50">
-              Conversion rate
-            </p>
-            <Percent className="h-4 w-4 text-primary-dark" aria-hidden />
-          </div>
-          <p className="mt-2 text-3xl font-bold text-logo-bg">
-            {snapshot.kpis.conversionRate.toFixed(2)}%
-          </p>
-          <p className="mt-2 text-xs text-foreground/50">Leads ÷ visitors</p>
-        </div>
-
-        <div className="rounded-2xl border border-black/10 bg-white p-5 shadow-sm">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-foreground/50">
-              Consent rate
-            </p>
-            <Eye className="h-4 w-4 text-primary-dark" aria-hidden />
-          </div>
-          <p className="mt-2 text-3xl font-bold text-logo-bg">
-            {snapshot.kpis.consentRate}%
-          </p>
-          <p className="mt-2 text-xs text-foreground/50">
-            Cookie accept → Clarity coverage
-          </p>
-        </div>
+            <KpiCard
+              label="Leads"
+              value={formatNumber(snapshot.kpis.leads)}
+              source={leadsSource}
+              changePct={snapshot.kpis.leadsChangePct}
+              footer={
+                hasStoredLeads
+                  ? `${storedLeads.length} stored submission(s) merged`
+                  : "Submit a test form to see live lead counts"
+              }
+              icon={
+                <MousePointerClick
+                  className="h-4 w-4 text-primary-dark"
+                  aria-hidden
+                />
+              }
+            />
+            <KpiCard
+              label="Conversion rate"
+              value={`${snapshot.kpis.conversionRate.toFixed(2)}%`}
+              source={hasStoredLeads ? "mixed" : "mock"}
+              footer="Leads ÷ visitors (mock visitors denominator)"
+              icon={<Percent className="h-4 w-4 text-primary-dark" aria-hidden />}
+            />
+            <KpiCard
+              label="Consent rate"
+              value={`${snapshot.kpis.consentRate}%`}
+              source="mock"
+              footer="Cookie accept → Clarity coverage"
+              icon={<Eye className="h-4 w-4 text-primary-dark" aria-hidden />}
+            />
+          </>
+        )}
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
@@ -251,7 +343,20 @@ export function WebsiteAnalyticsPanel({
         <SectionCard
           title="Leads by source"
           description="Which form / page produces inquiries — use this to prioritize pages."
+          action={
+            hasStoredLeads ? (
+              <DataSourceBadge source="live" />
+            ) : (
+              <DataSourceBadge source="mock" />
+            )
+          }
         >
+          {snapshot.leadSources.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-black/10 px-4 py-10 text-center text-sm text-foreground/55">
+              No lead sources yet. Submit a contact, service, or newsletter form
+              on the public site to populate this table.
+            </div>
+          ) : (
           <div className="overflow-x-auto">
             <table className="w-full table-fixed border-collapse text-left text-sm">
               <thead>
@@ -289,6 +394,7 @@ export function WebsiteAnalyticsPanel({
               </tbody>
             </table>
           </div>
+          )}
         </SectionCard>
       </div>
 
@@ -438,6 +544,23 @@ export function WebsiteAnalyticsPanel({
             </a>
           }
         >
+          <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-foreground/45">
+            Clarity setup checklist
+          </p>
+          <ul className="mb-4 space-y-2 text-sm">
+            <ClarityChecklistItem
+              done={Boolean(clarityProjectId)}
+              label="NEXT_PUBLIC_CLARITY_PROJECT_ID configured"
+            />
+            <ClarityChecklistItem
+              done
+              label="Cookie consent gates Clarity script on public site"
+            />
+            <ClarityChecklistItem
+              done={Boolean(clarityProjectId)}
+              label="Deep link opens your Clarity project dashboard"
+            />
+          </ul>
           <ul className="space-y-3 text-sm text-foreground/70">
             <li className="rounded-lg border border-black/10 px-3 py-2">
               Watch recordings of the <strong>price calculator</strong> and
@@ -469,5 +592,30 @@ export function WebsiteAnalyticsPanel({
         update from stored website submissions when available.
       </p>
     </div>
+  );
+}
+
+function ClarityChecklistItem({
+  done,
+  label,
+}: {
+  done: boolean;
+  label: string;
+}) {
+  return (
+    <li className="flex items-center gap-2 text-logo-bg/80">
+      <span
+        className={cn(
+          "flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold",
+          done
+            ? "bg-emerald-100 text-emerald-800"
+            : "bg-black/[0.06] text-foreground/40",
+        )}
+        aria-hidden
+      >
+        {done ? "✓" : "·"}
+      </span>
+      {label}
+    </li>
   );
 }
