@@ -1,6 +1,7 @@
 "use client";
 
 import { flexRender } from "@tanstack/react-table";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   ArrowDown,
@@ -48,6 +49,11 @@ export function LeadsDataGrid({
     filteredSummary,
   } = useLeadsTable({ data: leads, stateMode });
 
+  const resetFilters = () => {
+    onTypeQuickFilterChange("all");
+    table.setGlobalFilter("");
+  };
+
   if (leads.length === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-black/10 px-6 py-16 text-center">
@@ -56,6 +62,20 @@ export function LeadsDataGrid({
           Submissions from contact, service, price calculator, and newsletter
           forms will appear here.
         </p>
+        <div className="mt-6 flex flex-col items-center gap-2 sm:flex-row sm:justify-center">
+          <Link
+            href="/"
+            className="rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-logo-bg transition-colors hover:bg-primary/90"
+          >
+            Test calculator on homepage
+          </Link>
+          <Link
+            href="/kontakt"
+            className="rounded-lg border border-black/15 px-4 py-2.5 text-sm font-semibold text-logo-bg/80 transition-colors hover:border-primary/50 hover:text-logo-bg"
+          >
+            Test contact form
+          </Link>
+        </div>
       </div>
     );
   }
@@ -230,7 +250,24 @@ export function LeadsDataGrid({
                   colSpan={table.getVisibleLeafColumns().length}
                   className="px-2 py-12 text-center text-sm text-foreground/50"
                 >
-                  No leads match your filters.
+                  <div className="mx-auto max-w-xl space-y-3">
+                    <p>No leads match your filters.</p>
+                    <div className="flex flex-wrap items-center justify-center gap-2">
+                      <button
+                        type="button"
+                        className="rounded-lg border border-black/15 px-3 py-1.5 text-sm font-semibold text-logo-bg/80 transition-colors hover:border-primary/50 hover:text-logo-bg"
+                        onClick={resetFilters}
+                      >
+                        Reset filters
+                      </button>
+                      <Link
+                        href="/kontakt"
+                        className="rounded-lg bg-primary px-3 py-1.5 text-sm font-semibold text-logo-bg transition-colors hover:bg-primary/90"
+                      >
+                        Send a test message
+                      </Link>
+                    </div>
+                  </div>
                 </td>
               </tr>
             ) : (
