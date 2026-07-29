@@ -113,7 +113,10 @@ export function TrackingSection() {
     e.preventDefault();
     const id = trackingId.trim();
     if (id) {
-      router.push(`/tracking?q=${encodeURIComponent(id)}`);
+      router.push({
+        pathname: "/tracking",
+        query: { q: id },
+      });
     }
   };
 

@@ -8,7 +8,7 @@ import type { Metadata } from "next";
 type PageSeoConfig = {
   metadataKey: string;
   path: `/${string}` | "/";
-  keywords?: string[];
+  keywords?: readonly string[];
 };
 
 export async function generatePageMetadata(
