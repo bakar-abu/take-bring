@@ -12,7 +12,7 @@ import {
 type CreateUserModalProps = {
   open: boolean;
   onClose: () => void;
-  onCreate: (input: CreateDashboardUserInput) => void;
+  onCreate: (input: CreateDashboardUserInput) => boolean | void;
 };
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -75,13 +75,15 @@ export function CreateUserModal({
       return;
     }
 
-    onCreate({
+    const created = onCreate({
       name: trimmedName,
       email: trimmedEmail,
       password,
       role,
     });
-    onClose();
+    if (created !== false) {
+      onClose();
+    }
   }
 
   return (
@@ -122,7 +124,8 @@ export function CreateUserModal({
                   Create user
                 </h2>
                 <p className="mt-1 text-sm text-foreground/55">
-                  Add a dashboard account with a role.
+                  Add a dashboard account with a role. Password is collected for
+                  UI preview only — login is enabled after backend integration.
                 </p>
               </div>
               <button
@@ -210,6 +213,10 @@ export function CreateUserModal({
                     </option>
                   ))}
                 </select>
+                <p className="mt-1 text-xs text-foreground/50">
+                  Admin: full access · Content Manager: blogs · Viewer:
+                  read-only leads
+                </p>
               </label>
 
               {error ? (
