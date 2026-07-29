@@ -18,6 +18,7 @@ import { TestimonialsSection } from "@/components/landing/testimonials";
 import { CaseStudiesSection } from "@/components/landing/case-studies";
 import { NewsletterSection } from "@/components/landing/newsletter";
 import { FaqSection } from "@/components/landing/faq/FaqSection";
+import { MissionVisionSection } from "@/components/landing/mission-vision";
 import { ContactMapSection } from "@/components/landing/contact-map";
 
 const SECTION_COMPONENTS: Partial<
@@ -28,6 +29,7 @@ const SECTION_COMPONENTS: Partial<
   about: <AboutSection />,
   shippingDetails: <ShippingDetailsSection />,
   tracking: <TrackingSection />,
+  missionVision: <MissionVisionSection />,
   keyBenefits: <KeyBenefitsSection />,
   warehouse: <WarehouseSection />,
   industries: <IndustriesSection />,
@@ -46,7 +48,6 @@ export function LandingPage() {
     <>
       {LANDING_SECTION_ORDER.map((sectionId) => {
         if (LANDING_SECTION_STATUS[sectionId] !== "done") return null;
-        if (sectionId === "missionVision") return null;
         const node = SECTION_COMPONENTS[sectionId];
         return node != null ? (
           <React.Fragment key={sectionId}>{node}</React.Fragment>
