@@ -4,8 +4,13 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ImagePlus, Save } from "lucide-react";
+import { ArrowLeft, ExternalLink, ImagePlus, Save } from "lucide-react";
 import { useToast } from "@/components/shared/toast";
+import {
+  blogSlugHint,
+  isValidBlogSlug,
+  slugifyBlogTitle,
+} from "@/lib/dashboard-blogs/helpers";
 import {
   addDashboardBlogImage,
   createDashboardBlog,
@@ -84,6 +89,11 @@ export function BlogEditorPanel({ blogId }: BlogEditorPanelProps) {
   const [seoDescription, setSeoDescription] = useState("");
   const [bodyHtml, setBodyHtml] = useState("");
   const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
+  const [slugTouched, setSlugTouched] = useState(false);
+
+  const slugIsValid = isValidBlogSlug(blogSlug);
+  const slugHint = blogSlugHint(blogSlug);
+  const previewSlug = blogSlug.trim() || slugifyBlogTitle(blogTitle);
 
   useEffect(() => {
     setIsLoading(true);
@@ -109,6 +119,7 @@ export function BlogEditorPanel({ blogId }: BlogEditorPanelProps) {
         setBlogDate(blog.dateLabel);
         setBodyHtml(blog.bodyHtml);
         setSelectedImageUrl(blog.coverImageUrl || null);
+        setSlugTouched(true);
       } else {
         resetBlogForm({
           setBlogTitle,
@@ -122,6 +133,7 @@ export function BlogEditorPanel({ blogId }: BlogEditorPanelProps) {
           setBodyHtml,
           setSelectedImageUrl,
         });
+        setSlugTouched(false);
       }
     } finally {
       setIsLoading(false);
@@ -137,6 +149,10 @@ export function BlogEditorPanel({ blogId }: BlogEditorPanelProps) {
   function handleSaveBlog() {
     if (!blogTitle.trim()) {
       showToast("Blog title is required.");
+      return;
+    }
+    if (!slugIsValid) {
+      showToast("Fix the slug format before saving.");
       return;
     }
     if (!selectedImageUrl) {
@@ -214,16 +230,33 @@ export function BlogEditorPanel({ blogId }: BlogEditorPanelProps) {
           <div className="grid gap-3 md:grid-cols-2">
             <input
               value={blogTitle}
-              onChange={(e) => setBlogTitle(e.target.value)}
+              onChange={(e) => {
+                const nextTitle = e.target.value;
+                setBlogTitle(nextTitle);
+                if (!slugTouched && !isEditMode) {
+                  setBlogSlug(slugifyBlogTitle(nextTitle));
+                }
+              }}
               placeholder="Blog title"
               className={inputClassName}
             />
-            <input
-              value={blogSlug}
-              onChange={(e) => setBlogSlug(e.target.value)}
-              placeholder="Slug (optional)"
-              className={inputClassName}
-            />
+            <div>
+              <input
+                value={blogSlug}
+                onChange={(e) => {
+                  setSlugTouched(true);
+                  setBlogSlug(e.target.value);
+                }}
+                placeholder="Slug (optional)"
+                aria-invalid={!slugIsValid}
+                className={`${inputClassName} w-full ${!slugIsValid ? "border-red-300 focus:border-red-400 focus:ring-red-200" : ""}`}
+              />
+              <p
+                className={`mt-1 text-xs ${slugIsValid ? "text-foreground/50" : "text-red-600"}`}
+              >
+                {slugHint}
+              </p>
+            </div>
             <input
               value={seoTitle}
               onChange={(e) => setSeoTitle(e.target.value)}
@@ -267,6 +300,23 @@ export function BlogEditorPanel({ blogId }: BlogEditorPanelProps) {
             rows={2}
           />
 
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
+            <button
+              type="button"
+              disabled
+              title="Preview will open the public /blog page after integration"
+              className="inline-flex cursor-not-allowed items-center gap-2 rounded-lg border border-black/10 px-3 py-2 text-sm font-semibold text-foreground/40"
+            >
+              <ExternalLink size={15} />
+              Preview on site
+            </button>
+            {previewSlug ? (
+              <p className="text-xs text-foreground/45">
+                Future URL: /blog/{previewSlug}
+              </p>
+            ) : null}
+          </div>
+
           <div className="mt-4 rounded-xl border border-black/10 p-4">
             <p className="text-sm font-semibold text-logo-bg">
               Blog Body (WYSIWYG)
@@ -284,8 +334,9 @@ export function BlogEditorPanel({ blogId }: BlogEditorPanelProps) {
         <div className="rounded-2xl border border-black/10 bg-white p-5 shadow-sm lg:col-span-4">
           <p className="text-sm font-semibold text-logo-bg">Images Bucket</p>
           <p className="mt-1 text-xs text-foreground/55">
-            Select one image for this blog. Uploaded images are stored for this
-            dashboard session (mock).
+            Select one cover image. Uploads are stored as base64 in browser
+            localStorage for this UI preview only — they will not sync across
+            devices until the backend image API is integrated.
           </p>
 
           <label className="mt-3 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-primary/50 px-3 py-2 text-sm font-semibold text-logo-bg hover:bg-primary/10">
