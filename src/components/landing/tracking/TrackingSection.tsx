@@ -2,7 +2,7 @@
 
 import React, { useRef, useState } from "react";
 import Image from "next/image";
-import { Link } from "@/lib/i18n/navigation";
+import { Link, useRouter } from "@/lib/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { AnimatePresence, motion, useInView } from "framer-motion";
 import {
@@ -101,6 +101,7 @@ function FeatureTile({
 
 export function TrackingSection() {
   const t = useTranslations("trackingSection");
+  const router = useRouter();
   const [trackingId, setTrackingId] = useState("");
   const [activeGroup, setActiveGroup] = useState(0);
   const heroRef = useRef<HTMLDivElement>(null);
@@ -110,8 +111,9 @@ export function TrackingSection() {
 
   const handleTrack = (e: React.FormEvent) => {
     e.preventDefault();
-    if (trackingId.trim()) {
-      window.location.href = `/tracking?q=${encodeURIComponent(trackingId.trim())}`;
+    const id = trackingId.trim();
+    if (id) {
+      router.push(`/tracking?q=${encodeURIComponent(id)}`);
     }
   };
 
@@ -145,7 +147,40 @@ export function TrackingSection() {
                 {t("subtitle")}
               </p>
 
-             
+              <form
+                onSubmit={handleTrack}
+                className="mt-8 max-w-lg rounded-2xl border border-black/10 bg-white p-5 shadow-sm"
+              >
+                <p className="text-sm font-bold text-logo-bg">{t("trackYourShipment")}</p>
+                <p className="mt-1 text-xs text-foreground/55">{t("trackSubtitle")}</p>
+                <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+                  <label className="relative min-w-0 flex-1">
+                    <span className="sr-only">{t("placeholder")}</span>
+                    <Search
+                      className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground/40"
+                      aria-hidden
+                    />
+                    <input
+                      type="text"
+                      value={trackingId}
+                      onChange={(event) => setTrackingId(event.target.value)}
+                      placeholder={t("placeholder")}
+                      className="w-full rounded-xl border border-black/15 py-3 pl-10 pr-3 text-sm text-logo-bg outline-none placeholder:text-foreground/40 focus:border-primary focus:ring-2 focus:ring-primary/25"
+                    />
+                  </label>
+                  <button
+                    type="submit"
+                    className="rounded-xl bg-logo-bg px-5 py-3 text-sm font-bold text-white transition-opacity hover:opacity-90"
+                  >
+                    {t("button")}
+                  </button>
+                </div>
+                <p className="mt-3 text-xs text-foreground/50">
+                  <Link href="/kontakt" className="font-semibold text-primary-dark underline-offset-2 hover:underline">
+                    {t("orGetQuote")}
+                  </Link>
+                </p>
+              </form>
             </motion.div>
 
             <motion.div
@@ -172,7 +207,7 @@ export function TrackingSection() {
                 animate={{ y: [0, -6, 0] }}
                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
               >
-                GPS Live
+                {t("gpsLiveBadge")}
               </motion.div>
             </motion.div>
           </div>
