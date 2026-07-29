@@ -32,7 +32,10 @@ export default async function ImpressumPage({ params }: PageProps) {
         path={PAGE.path}
         navKey="legalNotice"
       />
-      <LegalPage namespace="legalPage" />
+      <LegalPage
+        namespace="legalPage"
+        heroImage="/images/legal-notice-hero.webp"
+      />
     </>
   );
 }

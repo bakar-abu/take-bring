@@ -4,16 +4,64 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Mail } from "lucide-react";
+import { MathCaptchaModal } from "@/components/shared/math-captcha-modal";
+import { useToast } from "@/components/shared/toast";
 
 export function NewsletterSection() {
   const t = useTranslations("newsletterSection");
+  const { showToast } = useToast();
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [captchaOpen, setCaptchaOpen] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) return;
-    setSubmitted(true);
+    if (!email.trim() || isSubmitting) return;
+    setError(null);
+    setCaptchaOpen(true);
+  };
+
+  const sendMail = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          sourcePage:
+            typeof window !== "undefined" ? window.location.pathname : "/",
+          website: "",
+        }),
+      });
+
+      const data = (await response.json().catch(() => null)) as {
+        ok?: boolean;
+        error?: string;
+      } | null;
+
+      if (!response.ok || !data?.ok) {
+        throw new Error(data?.error || "Could not subscribe. Please try again.");
+      }
+
+      setCaptchaOpen(false);
+      setSubmitted(true);
+      setEmail("");
+      showToast("Your mail is submitted");
+    } catch (err) {
+      setError(
+        err instanceof Error && err.message
+          ? err.message
+          : "Could not subscribe. Please try again.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -57,22 +105,38 @@ export function NewsletterSection() {
                   className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center"
                 >
                   <input
+                    type="text"
+                    name="website"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    className="hidden"
+                    aria-hidden
+                    defaultValue=""
+                  />
+                  <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder={t("emailPlaceholder")}
                     required
+                    disabled={isSubmitting}
                     className="min-w-0 flex-1 rounded-xl border border-logo-bg/15 bg-logo-bg/5 px-4 py-3.5 text-logo-bg placeholder:text-logo-bg/50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
                     aria-label={t("emailPlaceholder")}
                   />
                   <button
                     type="submit"
-                    className="cta-delivery-btn rounded-xl px-8 py-3.5 text-sm font-semibold shadow-md"
+                    disabled={isSubmitting}
+                    className="cta-delivery-btn rounded-xl px-8 py-3.5 text-sm font-semibold shadow-md disabled:opacity-70"
                   >
-                    {t("subscribe")}
+                    {isSubmitting ? "..." : t("subscribe")}
                   </button>
                 </form>
               )}
+              {error ? (
+                <p className="mt-3 text-sm font-medium text-red-600" role="alert">
+                  {error}
+                </p>
+              ) : null}
               <p className="mt-3 text-xs text-foreground/55">{t("privacyNote")}</p>
             </div>
 
@@ -84,6 +148,15 @@ export function NewsletterSection() {
           </div>
         </motion.div>
       </div>
+
+      <MathCaptchaModal
+        open={captchaOpen}
+        onClose={() => {
+          if (!isSubmitting) setCaptchaOpen(false);
+        }}
+        onVerified={sendMail}
+        isSubmitting={isSubmitting}
+      />
     </section>
   );
 }

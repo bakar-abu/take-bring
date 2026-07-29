@@ -31,40 +31,67 @@ export function BlogArticle({ slug }: { slug: string }) {
 
   return (
     <article>
-      <header className="relative overflow-hidden bg-logo-bg pb-12 pt-28 md:pb-16 md:pt-32">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(171,198,41,0.14),transparent_60%)]" />
-        <div className="container-content relative px-4 md:px-8">
-          <Link
-            href="/blog"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-white/70 transition-colors hover:text-primary-light"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            {t("backToBlog")}
-          </Link>
-          <div className="mt-6 max-w-3xl">
-            <span
-              className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold text-logo-bg shadow-lg"
-              style={{ background: post.accent }}
+      <header className="relative min-h-[56vh] overflow-hidden md:min-h-[64vh]">
+        <Image
+          src={post.image}
+          alt={t(`${base}.title`)}
+          fill
+          className="object-cover"
+          sizes="100vw"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-logo-bg/95 via-logo-bg/82 to-logo-bg/55" />
+        <div
+          className="absolute inset-0 opacity-30"
+          style={{
+            background: `radial-gradient(ellipse at top right, ${post.accent}55, transparent 55%)`,
+          }}
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.05]"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(-45deg, #abc629 0, #abc629 1px, transparent 0, transparent 50%)",
+            backgroundSize: "32px 32px",
+          }}
+          aria-hidden
+        />
+
+        <div className="container-content relative z-10 flex min-h-[56vh] items-end px-4 pb-14 pt-28 md:min-h-[64vh] md:px-8 md:pb-20 md:pt-32">
+          <div className="max-w-3xl">
+            <Link
+              href="/blog"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-white/75 transition-colors hover:text-primary-light"
             >
-              <Icon className="h-4 w-4" strokeWidth={2.2} />
-              {t(`${base}.category`)}
-            </span>
-            <h1 className="mt-5 text-3xl font-extrabold leading-tight tracking-tight text-white md:text-4xl lg:text-[2.75rem]">
-              {t(`${base}.title`)}
-            </h1>
-            <div className="mt-6 flex flex-wrap items-center gap-5 text-sm font-medium text-white/70">
-              <span className="inline-flex items-center gap-2">
-                <User className="h-4 w-4 text-primary" />
-                {t(`${base}.author`)}
+              <ArrowLeft className="h-4 w-4" />
+              {t("backToBlog")}
+            </Link>
+            <div className="mt-6">
+              <span
+                className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold text-logo-bg shadow-lg"
+                style={{ background: post.accent }}
+              >
+                <Icon className="h-4 w-4" strokeWidth={2.2} />
+                {t(`${base}.category`)}
               </span>
-              <span className="inline-flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-primary" />
-                {formatBlogDate(post.date, locale)}
-              </span>
-              <span className="inline-flex items-center gap-2">
-                <Clock className="h-4 w-4 text-primary" />
-                {post.readTime} {t("readTime")}
-              </span>
+              <h1 className="mt-5 text-3xl font-extrabold leading-tight tracking-tight text-white md:text-4xl lg:text-[2.75rem]">
+                {t(`${base}.title`)}
+              </h1>
+              <div className="mt-6 flex flex-wrap items-center gap-5 text-sm font-medium text-white/75">
+                <span className="inline-flex items-center gap-2">
+                  <User className="h-4 w-4 text-primary" />
+                  {t(`${base}.author`)}
+                </span>
+                <span className="inline-flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-primary" />
+                  {formatBlogDate(post.date, locale)}
+                </span>
+                <span className="inline-flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-primary" />
+                  {post.readTime} {t("readTime")}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -77,21 +104,8 @@ export function BlogArticle({ slug }: { slug: string }) {
             initial={{ opacity: 0, y: 24 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5, ease: EASE }}
-            className="relative -mt-8 mb-12 overflow-hidden rounded-3xl shadow-2xl md:-mt-12"
+            className="mx-auto max-w-3xl pt-12 pb-16 md:pt-16 md:pb-24"
           >
-            <div className="relative aspect-[16/9]">
-              <Image
-                src={post.image}
-                alt={t(`${base}.title`)}
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 1100px"
-                priority
-              />
-            </div>
-          </motion.div>
-
-          <div className="mx-auto max-w-3xl pb-16 md:pb-24">
             <p className="text-lg font-medium leading-relaxed text-logo-bg md:text-xl">
               {t(`${base}.intro`)}
             </p>
@@ -129,7 +143,7 @@ export function BlogArticle({ slug }: { slug: string }) {
                 ))}
               </ul>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </article>

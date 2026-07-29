@@ -32,7 +32,10 @@ export default async function DatenschutzPage({ params }: PageProps) {
         path={PAGE.path}
         navKey="privacyPolicy"
       />
-      <LegalPage namespace="privacyPage" />
+      <LegalPage
+        namespace="privacyPage"
+        heroImage="/images/privacy-hero.webp"
+      />
     </>
   );
 }

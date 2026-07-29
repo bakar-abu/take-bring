@@ -38,3 +38,12 @@ next-env.d.ts
 
 # vercel
 .vercel
+
+# local lead store
+/data/leads.json
+
+# Cursor MCP / local agent config (do not commit)
+.cursor/
+
+# Asana bootstrap / seed scripts (local only)
+scripts/asana/

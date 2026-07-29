@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import { ArrowUpRight, Mail, Phone, User } from "lucide-react";
+import { MathCaptchaModal } from "@/components/shared/math-captcha-modal";
+import { useToast } from "@/components/shared/toast";
 
 type InquiryOption = {
   value: string;
@@ -49,6 +51,7 @@ export function ContactLeadForm({
   hideInquiryType = false,
   style,
 }: ContactLeadFormProps) {
+  const { showToast } = useToast();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
@@ -56,24 +59,72 @@ export function ContactLeadForm({
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [captchaOpen, setCaptchaOpen] = useState(false);
 
   const showIcons = Boolean(style?.showIcons);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const selectedInquiryLabel =
+    labels.inquiryOptions.find((option) => option.value === inquiryType)
+      ?.label ||
+    inquiryType ||
+    defaultInquiryType ||
+    "";
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return;
+    setError(null);
+    setCaptchaOpen(true);
+  };
+
+  const sendMail = async () => {
+    if (isSubmitting) return;
     setIsSubmitting(true);
+    setError(null);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 600));
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          formKey,
+          fullName,
+          email,
+          phone: whatsapp,
+          whatsapp,
+          inquiryType: selectedInquiryLabel || inquiryType || defaultInquiryType || "",
+          message,
+          sourcePage:
+            typeof window !== "undefined" ? window.location.pathname : "",
+          website: "",
+        }),
+      });
+
+      const data = (await response.json().catch(() => null)) as {
+        ok?: boolean;
+        error?: string;
+      } | null;
+
+      if (!response.ok || !data?.ok) {
+        throw new Error(data?.error || labels.errorMessage);
+      }
+
+      setCaptchaOpen(false);
       setSubmitted(true);
       setFullName("");
       setEmail("");
       setWhatsapp("");
       setInquiryType(defaultInquiryType ?? "");
       setMessage("");
-    } catch {
+      showToast("Your mail is submitted");
+    } catch (err) {
       setSubmitted(false);
+      setError(
+        err instanceof Error && err.message
+          ? err.message
+          : labels.errorMessage,
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -86,143 +137,170 @@ export function ContactLeadForm({
   }
 
   return (
-    <form
-      data-form-key={formKey}
-      onSubmit={handleSubmit}
-      className={style?.formClassName ?? "space-y-4"}
-      noValidate
-    >
-      <div>
-        <label htmlFor={`${formKey}-name`} className={style?.labelClassName}>
-          {labels.fullName} *
-        </label>
-        <div className="relative">
-          <input
-            id={`${formKey}-name`}
-            type="text"
-            name="fullName"
-            required
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            placeholder={labels.fullNamePlaceholder}
-            className={style?.inputClassName}
-          />
-          {showIcons ? (
-            <User
-              className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-white/50"
-              strokeWidth={1.5}
-              aria-hidden
-            />
-          ) : null}
-        </div>
-      </div>
-
-      <div>
-        <label htmlFor={`${formKey}-email`} className={style?.labelClassName}>
-          {labels.email} *
-        </label>
-        <div className="relative">
-          <input
-            id={`${formKey}-email`}
-            type="email"
-            name="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder={labels.emailPlaceholder}
-            className={style?.inputClassName}
-          />
-          {showIcons ? (
-            <Mail
-              className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-white/50"
-              strokeWidth={1.5}
-              aria-hidden
-            />
-          ) : null}
-        </div>
-      </div>
-
-      <div>
-        <label htmlFor={`${formKey}-phone`} className={style?.labelClassName}>
-          {labels.phone} *
-        </label>
-        <div className="relative">
-          <input
-            id={`${formKey}-phone`}
-            type="tel"
-            name="whatsapp"
-            required
-            value={whatsapp}
-            onChange={(e) => setWhatsapp(e.target.value)}
-            placeholder={labels.phonePlaceholder}
-            className={style?.inputClassName}
-          />
-          {showIcons ? (
-            <Phone
-              className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-white/50"
-              strokeWidth={1.5}
-              aria-hidden
-            />
-          ) : null}
-        </div>
-        {labels.helperText ? (
-          <p className={style?.helperTextClassName}>{labels.helperText}</p>
-        ) : null}
-      </div>
-
-      <div>
-        <label htmlFor={`${formKey}-inquiry`} className={style?.labelClassName}>
-          {labels.inquiryType} *
-        </label>
-        {hideInquiryType ? (
-          <input
-            type="hidden"
-            name="inquiryType"
-            value={inquiryType || defaultInquiryType || ""}
-          />
-        ) : (
-          <select
-            id={`${formKey}-inquiry`}
-            name="inquiryType"
-            required
-            value={inquiryType}
-            onChange={(e) => setInquiryType(e.target.value)}
-            className={style?.selectClassName ?? style?.inputClassName}
-          >
-            <option value="">{labels.inquiryTypePlaceholder}</option>
-            {labels.inquiryOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        )}
-      </div>
-
-      <div>
-        <label htmlFor={`${formKey}-message`} className={style?.labelClassName}>
-          {labels.message} *
-        </label>
-        <textarea
-          id={`${formKey}-message`}
-          name="message"
-          required
-          rows={4}
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder={labels.messagePlaceholder}
-          className={style?.textareaClassName ?? style?.inputClassName}
-        />
-      </div>
-
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className={style?.buttonClassName}
+    <>
+      <form
+        data-form-key={formKey}
+        onSubmit={handleSubmit}
+        className={style?.formClassName ?? "space-y-4"}
+        noValidate
       >
-        {isSubmitting ? labels.submitSending : labels.submitButton}
-        <ArrowUpRight className="h-5 w-5" strokeWidth={2} aria-hidden />
-      </button>
-    </form>
+        <input
+          type="text"
+          name="website"
+          tabIndex={-1}
+          autoComplete="off"
+          className="hidden"
+          aria-hidden
+          defaultValue=""
+        />
+
+        <div>
+          <label htmlFor={`${formKey}-name`} className={style?.labelClassName}>
+            {labels.fullName} *
+          </label>
+          <div className="relative">
+            <input
+              id={`${formKey}-name`}
+              type="text"
+              name="fullName"
+              required
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              placeholder={labels.fullNamePlaceholder}
+              className={style?.inputClassName}
+            />
+            {showIcons ? (
+              <User
+                className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-white/50"
+                strokeWidth={1.5}
+                aria-hidden
+              />
+            ) : null}
+          </div>
+        </div>
+
+        <div>
+          <label htmlFor={`${formKey}-email`} className={style?.labelClassName}>
+            {labels.email} *
+          </label>
+          <div className="relative">
+            <input
+              id={`${formKey}-email`}
+              type="email"
+              name="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={labels.emailPlaceholder}
+              className={style?.inputClassName}
+            />
+            {showIcons ? (
+              <Mail
+                className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-white/50"
+                strokeWidth={1.5}
+                aria-hidden
+              />
+            ) : null}
+          </div>
+        </div>
+
+        <div>
+          <label htmlFor={`${formKey}-phone`} className={style?.labelClassName}>
+            {labels.phone} *
+          </label>
+          <div className="relative">
+            <input
+              id={`${formKey}-phone`}
+              type="tel"
+              name="whatsapp"
+              required
+              value={whatsapp}
+              onChange={(e) => setWhatsapp(e.target.value)}
+              placeholder={labels.phonePlaceholder}
+              className={style?.inputClassName}
+            />
+            {showIcons ? (
+              <Phone
+                className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-white/50"
+                strokeWidth={1.5}
+                aria-hidden
+              />
+            ) : null}
+          </div>
+          {labels.helperText ? (
+            <p className={style?.helperTextClassName}>{labels.helperText}</p>
+          ) : null}
+        </div>
+
+        <div>
+          <label htmlFor={`${formKey}-inquiry`} className={style?.labelClassName}>
+            {labels.inquiryType} *
+          </label>
+          {hideInquiryType ? (
+            <input
+              type="hidden"
+              name="inquiryType"
+              value={inquiryType || defaultInquiryType || ""}
+            />
+          ) : (
+            <select
+              id={`${formKey}-inquiry`}
+              name="inquiryType"
+              required
+              value={inquiryType}
+              onChange={(e) => setInquiryType(e.target.value)}
+              className={style?.selectClassName ?? style?.inputClassName}
+            >
+              <option value="">{labels.inquiryTypePlaceholder}</option>
+              {labels.inquiryOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor={`${formKey}-message`} className={style?.labelClassName}>
+            {labels.message} *
+          </label>
+          <textarea
+            id={`${formKey}-message`}
+            name="message"
+            required
+            rows={4}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder={labels.messagePlaceholder}
+            className={style?.textareaClassName ?? style?.inputClassName}
+          />
+        </div>
+
+        {error ? (
+          <p className="text-sm font-medium text-red-300" role="alert">
+            {error}
+          </p>
+        ) : null}
+
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className={style?.buttonClassName}
+        >
+          {isSubmitting ? labels.submitSending : labels.submitButton}
+          <ArrowUpRight className="h-5 w-5" strokeWidth={2} aria-hidden />
+        </button>
+      </form>
+
+      <MathCaptchaModal
+        open={captchaOpen}
+        onClose={() => {
+          if (!isSubmitting) setCaptchaOpen(false);
+        }}
+        onVerified={sendMail}
+        isSubmitting={isSubmitting}
+      />
+    </>
   );
 }

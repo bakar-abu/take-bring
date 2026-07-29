@@ -95,6 +95,7 @@ export function getRelatedPosts(slug: string, limit = 3): BlogPost[] {
 export const BLOG_PAGE = {
   path: "/blog" as const,
   metadataKey: "blog",
+  heroImage: "/images/blog-hero.webp",
   keywords: [
     "logistics blog",
     "freight forwarding tips",

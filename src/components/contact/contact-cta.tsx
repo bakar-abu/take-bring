@@ -5,6 +5,7 @@ import { motion, useInView } from "framer-motion";
 import { MessageCircle, Phone } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { siteConfig } from "@/config/site";
+import { PageCtaSection } from "@/components/shared/page-cta-section";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const phoneHref = `tel:${siteConfig.contact.phone.replace(/\s/g, "")}`;
@@ -15,15 +16,14 @@ export function ContactCta() {
   const inView = useInView(ref, { once: true, margin: "-60px" });
 
   return (
-    <section className="bg-logo-bg py-16 md:py-20" aria-labelledby="contact-cta-heading">
-      <div className="container-content px-4 md:px-8">
-        <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, ease: EASE }}
-          className="mx-auto max-w-3xl text-center"
-        >
+    <PageCtaSection id="contact-cta-heading">
+      <motion.div
+        ref={ref}
+        initial={{ opacity: 0, y: 20 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.5, ease: EASE }}
+        className="mx-auto max-w-3xl text-center"
+      >
           <h2
             id="contact-cta-heading"
             className="text-2xl font-extrabold text-white md:text-3xl lg:text-4xl"
@@ -51,8 +51,7 @@ export function ContactCta() {
               {t("ctaWhatsapp")}
             </a>
           </div>
-        </motion.div>
-      </div>
-    </section>
+      </motion.div>
+    </PageCtaSection>
   );
 }

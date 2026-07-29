@@ -1,8 +1,9 @@
 "use client";
 
-import { DeliveryCtaButton } from "@/components/ui/delivery-cta-button";
 import { CALCULATOR_STATS } from "@/config/hero";
 import { cn } from "@/lib/utils";
+import { MathCaptchaModal } from "@/components/shared/math-captcha-modal";
+import { useToast } from "@/components/shared/toast";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
@@ -11,6 +12,7 @@ const inputClassName =
 
 export function PriceCalculator() {
   const t = useTranslations("hero");
+  const { showToast } = useToast();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [number, setNumber] = useState("");
@@ -22,6 +24,8 @@ export function PriceCalculator() {
   const [isCalculating, setIsCalculating] = useState(false);
   const [requestSent, setRequestSent] = useState(false);
   const [revealText, setRevealText] = useState(false);
+  const [captchaOpen, setCaptchaOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (isCalculating) {
@@ -33,20 +37,98 @@ export function PriceCalculator() {
 
   const showResultArea = isCalculating || requestSent;
 
-  async function handleCalculate(event: React.FormEvent) {
+  function handleCalculate(event: React.FormEvent) {
     event.preventDefault();
 
-    if (!name.trim() || !email.trim() || !number.trim() || !pickUp.trim() || !delivery.trim()) {
+    if (
+      !name.trim() ||
+      !email.trim() ||
+      !number.trim() ||
+      !pickUp.trim() ||
+      !delivery.trim()
+    ) {
       return;
     }
 
+    setError(null);
+    setCaptchaOpen(true);
+  }
+
+  async function sendMail() {
+    if (isCalculating) return;
+
     setIsCalculating(true);
     setRequestSent(false);
+    setError(null);
 
-    await new Promise((resolve) => setTimeout(resolve, 1200));
+    const dimensions = [length, width, height]
+      .map((value) => value.trim())
+      .filter(Boolean)
+      .join(" × ");
 
-    setIsCalculating(false);
-    setRequestSent(true);
+    const message = [
+      "Price calculation request",
+      `Pick up: ${pickUp.trim()}`,
+      `Delivery: ${delivery.trim()}`,
+      dimensions
+        ? `Dimensions (L×W×H cm): ${dimensions}`
+        : "Dimensions: not provided",
+    ].join("\n");
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          formKey: "price-calculator-form",
+          fullName: name.trim(),
+          email: email.trim(),
+          phone: number.trim(),
+          inquiryType: "Price calculation request",
+          message,
+          pickupAddress: pickUp.trim(),
+          deliveryAddress: delivery.trim(),
+          length: length.trim(),
+          width: width.trim(),
+          height: height.trim(),
+          sourcePage:
+            typeof window !== "undefined" ? window.location.pathname : "/",
+          website: "",
+        }),
+      });
+
+      const data = (await response.json().catch(() => null)) as {
+        ok?: boolean;
+        error?: string;
+      } | null;
+
+      if (!response.ok || !data?.ok) {
+        throw new Error(
+          data?.error || "Could not send your request. Please try again.",
+        );
+      }
+
+      setCaptchaOpen(false);
+      setIsCalculating(false);
+      setRequestSent(true);
+      setName("");
+      setEmail("");
+      setNumber("");
+      setPickUp("");
+      setDelivery("");
+      setLength("");
+      setWidth("");
+      setHeight("");
+      showToast("Your mail is submitted");
+    } catch (err) {
+      setIsCalculating(false);
+      setRequestSent(false);
+      setError(
+        err instanceof Error && err.message
+          ? err.message
+          : "Could not send your request. Please try again.",
+      );
+    }
   }
 
   return (
@@ -56,10 +138,27 @@ export function PriceCalculator() {
           {t("calculatorHeading")}
         </h2>
 
-        <form onSubmit={handleCalculate} className="mx-auto max-w-4xl">
+        <form
+          data-form-key="price-calculator-form"
+          onSubmit={handleCalculate}
+          className="mx-auto max-w-4xl"
+        >
+          <input
+            type="text"
+            name="website"
+            tabIndex={-1}
+            autoComplete="off"
+            className="hidden"
+            aria-hidden
+            defaultValue=""
+          />
+
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label htmlFor="hero-name" className="mb-1 block text-sm font-medium text-foreground">
+              <label
+                htmlFor="hero-name"
+                className="mb-1 block text-sm font-medium text-foreground"
+              >
                 {t("nameLabel")} *
               </label>
               <input
@@ -73,7 +172,10 @@ export function PriceCalculator() {
               />
             </div>
             <div>
-              <label htmlFor="hero-email" className="mb-1 block text-sm font-medium text-foreground">
+              <label
+                htmlFor="hero-email"
+                className="mb-1 block text-sm font-medium text-foreground"
+              >
                 {t("emailLabel")} *
               </label>
               <input
@@ -89,7 +191,10 @@ export function PriceCalculator() {
           </div>
 
           <div className="mt-4">
-            <label htmlFor="hero-number" className="mb-1 block text-sm font-medium text-foreground">
+            <label
+              htmlFor="hero-number"
+              className="mb-1 block text-sm font-medium text-foreground"
+            >
               {t("numberLabel")} *
             </label>
             <input
@@ -105,7 +210,10 @@ export function PriceCalculator() {
 
           <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label htmlFor="hero-pickup" className="mb-1 block text-sm font-medium text-foreground">
+              <label
+                htmlFor="hero-pickup"
+                className="mb-1 block text-sm font-medium text-foreground"
+              >
                 {t("pickUpLocation")} *
               </label>
               <div className="relative">
@@ -125,7 +233,10 @@ export function PriceCalculator() {
               </div>
             </div>
             <div>
-              <label htmlFor="hero-delivery" className="mb-1 block text-sm font-medium text-foreground">
+              <label
+                htmlFor="hero-delivery"
+                className="mb-1 block text-sm font-medium text-foreground"
+              >
                 {t("deliveryLocationLabel")} *
               </label>
               <div className="relative">
@@ -171,12 +282,19 @@ export function PriceCalculator() {
             </div>
             <button
               type="submit"
-              className="cta-delivery-btn inline-flex w-full items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 sm:w-auto"
+              disabled={isCalculating}
+              className="cta-delivery-btn inline-flex w-full items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-70 sm:w-auto"
             >
               <i className="ri-truck-line text-lg" aria-hidden />
               {t("calculatePriceBtn")}
             </button>
           </div>
+
+          {error ? (
+            <p className="mt-4 text-center text-sm font-medium text-red-600" role="alert">
+              {error}
+            </p>
+          ) : null}
 
           {showResultArea ? (
             <div className="relative mt-4 flex min-h-[5rem] w-full items-center justify-center overflow-hidden rounded-2xl bg-primary px-4 py-5">
@@ -193,7 +311,9 @@ export function PriceCalculator() {
               ) : requestSent ? (
                 <div className="flex flex-col items-center justify-center gap-3 text-center">
                   <i className="ri-checkbox-circle-line text-5xl text-white" aria-hidden />
-                  <p className="text-lg font-semibold text-white">{t("requestSentMessage")}</p>
+                  <p className="text-lg font-semibold text-white">
+                    {t("requestSentMessage")}
+                  </p>
                 </div>
               ) : null}
             </div>
@@ -209,6 +329,15 @@ export function PriceCalculator() {
           ))}
         </div>
       </div>
+
+      <MathCaptchaModal
+        open={captchaOpen}
+        onClose={() => {
+          if (!isCalculating) setCaptchaOpen(false);
+        }}
+        onVerified={sendMail}
+        isSubmitting={isCalculating}
+      />
     </section>
   );
 }

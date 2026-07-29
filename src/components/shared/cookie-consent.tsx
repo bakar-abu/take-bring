@@ -5,8 +5,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Cookie } from "lucide-react";
 import { Link } from "@/lib/i18n/navigation";
+import {
+  COOKIE_CONSENT_EVENT,
+  COOKIE_CONSENT_KEY,
+  type CookieConsentValue,
+} from "@/lib/cookie-consent";
 
-const STORAGE_KEY = "tb-cookie-consent";
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 export function CookieConsent() {
@@ -15,7 +19,7 @@ export function CookieConsent() {
 
   useEffect(() => {
     try {
-      const stored = window.localStorage.getItem(STORAGE_KEY);
+      const stored = window.localStorage.getItem(COOKIE_CONSENT_KEY);
       if (!stored) {
         setOpen(true);
       }
@@ -24,12 +28,17 @@ export function CookieConsent() {
     }
   }, []);
 
-  const persist = (value: "accepted" | "rejected") => {
+  const persist = (value: CookieConsentValue) => {
     try {
-      window.localStorage.setItem(STORAGE_KEY, value);
+      window.localStorage.setItem(COOKIE_CONSENT_KEY, value);
     } catch {
       // ignore storage errors (e.g. private mode)
     }
+    window.dispatchEvent(
+      new CustomEvent<CookieConsentValue>(COOKIE_CONSENT_EVENT, {
+        detail: value,
+      }),
+    );
     setOpen(false);
   };
 

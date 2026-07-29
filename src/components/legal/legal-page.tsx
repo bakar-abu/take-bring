@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef } from "react";
+import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { useTranslations } from "next-intl";
 
@@ -11,7 +12,13 @@ type LegalSection = {
   body: string[];
 };
 
-export function LegalPage({ namespace }: { namespace: string }) {
+export function LegalPage({
+  namespace,
+  heroImage,
+}: {
+  namespace: string;
+  heroImage?: string;
+}) {
   const t = useTranslations(namespace);
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
@@ -21,20 +28,48 @@ export function LegalPage({ namespace }: { namespace: string }) {
   return (
     <>
       <section
-        className="relative overflow-hidden bg-logo-bg py-20 md:py-24"
+        className={`relative overflow-hidden ${
+          heroImage
+            ? "min-h-[48vh] md:min-h-[52vh]"
+            : "bg-logo-bg py-20 md:py-24"
+        }`}
         aria-labelledby="legal-hero-title"
       >
+        {heroImage ? (
+          <>
+            <Image
+              src={heroImage}
+              alt={t("title")}
+              fill
+              className="object-cover"
+              sizes="100vw"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-logo-bg/92 via-logo-bg/80 to-logo-bg/55" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(171,198,41,0.18),transparent_55%)]" />
+          </>
+        ) : (
+          <>
+            <div
+              className="pointer-events-none absolute inset-0 opacity-[0.04]"
+              style={{
+                backgroundImage:
+                  "repeating-linear-gradient(-45deg, #abc629 0, #abc629 1px, transparent 0, transparent 50%)",
+                backgroundSize: "32px 32px",
+              }}
+              aria-hidden
+            />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(171,198,41,0.14),transparent_60%)]" />
+          </>
+        )}
+
         <div
-          className="pointer-events-none absolute inset-0 opacity-[0.04]"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(-45deg, #abc629 0, #abc629 1px, transparent 0, transparent 50%)",
-            backgroundSize: "32px 32px",
-          }}
-          aria-hidden
-        />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(171,198,41,0.14),transparent_60%)]" />
-        <div className="container-content relative px-4 md:px-8">
+          className={`container-content relative z-10 px-4 md:px-8 ${
+            heroImage
+              ? "flex min-h-[48vh] items-center py-20 md:min-h-[52vh] md:py-24"
+              : ""
+          }`}
+        >
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}

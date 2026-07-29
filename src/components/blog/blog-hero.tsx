@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useRef } from "react";
+import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { useTranslations } from "next-intl";
+import { BLOG_PAGE } from "@/config/blog";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -33,21 +35,21 @@ export function BlogHero() {
 
   return (
     <section
-      className="relative overflow-hidden bg-logo-bg py-20 md:py-28"
+      className="relative min-h-[52vh] overflow-hidden md:min-h-[58vh]"
       aria-labelledby="blog-hero-title"
     >
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.04]"
-        style={{
-          backgroundImage:
-            "repeating-linear-gradient(-45deg, #abc629 0, #abc629 1px, transparent 0, transparent 50%)",
-          backgroundSize: "32px 32px",
-        }}
-        aria-hidden
+      <Image
+        src={BLOG_PAGE.heroImage}
+        alt={t("heroTitle")}
+        fill
+        className="object-cover"
+        sizes="100vw"
+        priority
       />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(171,198,41,0.14),transparent_60%)]" />
+      <div className="absolute inset-0 bg-gradient-to-r from-logo-bg/92 via-logo-bg/78 to-logo-bg/45" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(171,198,41,0.18),transparent_55%)]" />
 
-      <div className="container-content relative px-4 md:px-8">
+      <div className="container-content relative z-10 flex min-h-[52vh] items-center px-4 py-20 md:min-h-[58vh] md:px-8">
         <motion.div
           ref={ref}
           initial={{ opacity: 0, y: 28 }}

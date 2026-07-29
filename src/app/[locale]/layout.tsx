@@ -6,6 +6,8 @@ import { Inter } from "next/font/google";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/shared/json-ld";
 import { CookieConsent } from "@/components/shared/cookie-consent";
+import { MicrosoftClarity } from "@/components/shared/microsoft-clarity";
+import { ToastProvider } from "@/components/shared/toast";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
 import { siteConfig } from "@/config/site";
@@ -98,13 +100,16 @@ export default async function LocaleLayout({
     <html lang={locale} className={inter.variable}>
       <body className="min-h-dvh font-sans antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <JsonLd
-            data={[buildOrganizationJsonLd(), buildLocalBusinessJsonLd()]}
-          />
-          <Header />
-          <main>{children}</main>
-          <Footer />
-          <CookieConsent />
+          <ToastProvider>
+            <JsonLd
+              data={[buildOrganizationJsonLd(), buildLocalBusinessJsonLd()]}
+            />
+            <Header />
+            <main>{children}</main>
+            <Footer />
+            <CookieConsent />
+            <MicrosoftClarity />
+          </ToastProvider>
         </NextIntlClientProvider>
       </body>
     </html>
