@@ -36,10 +36,10 @@ export function MissionVisionSection() {
 
   return (
     <section
-      className="bg-[#f4f7f6] px-4 py-16 sm:px-6 md:px-8"
+      className="overflow-hidden bg-[#f4f7f6] py-16 md:py-24"
       aria-labelledby="mission-vision-heading"
     >
-      <div className="mx-auto max-w-5xl">
+      <div className="container-content px-4 md:px-8">
         <motion.div
           className="mb-10 text-center"
           initial={{ opacity: 0, y: 20 }}

@@ -67,7 +67,7 @@ export function PriceCalculator() {
       .join(" × ");
 
     const message = [
-      "Price calculation request",
+      "Delivery quote request",
       `Pick up: ${pickUp.trim()}`,
       `Delivery: ${delivery.trim()}`,
       dimensions
@@ -84,7 +84,7 @@ export function PriceCalculator() {
           fullName: name.trim(),
           email: email.trim(),
           phone: number.trim(),
-          inquiryType: "Price calculation request",
+          inquiryType: "Delivery quote request",
           message,
           pickupAddress: pickUp.trim(),
           deliveryAddress: delivery.trim(),
