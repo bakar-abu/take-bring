@@ -16,6 +16,7 @@ import type { DashboardUser } from "@/lib/dashboard-users/types";
 
 type UsersDataGridProps = {
   users: DashboardUser[];
+  onCreateClick?: () => void;
 };
 
 function SortIcon({ sorted }: { sorted: false | "asc" | "desc" }) {
@@ -27,7 +28,7 @@ function SortIcon({ sorted }: { sorted: false | "asc" | "desc" }) {
 /**
  * Product UI for the headless TanStack users table (same format as leads).
  */
-export function UsersDataGrid({ users }: UsersDataGridProps) {
+export function UsersDataGrid({ users, onCreateClick }: UsersDataGridProps) {
   const {
     table,
     activeRoleFilter,
@@ -37,13 +38,28 @@ export function UsersDataGrid({ users }: UsersDataGridProps) {
     filteredSummary,
   } = useUsersTable({ data: users });
 
+  const resetFilters = () => {
+    onRoleQuickFilterChange("all");
+    table.setGlobalFilter("");
+  };
+
   if (users.length === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-black/10 px-6 py-16 text-center">
         <p className="text-base font-semibold text-logo-bg">No users yet</p>
         <p className="mt-2 text-sm text-foreground/55">
-          Create a dashboard user to get started.
+          Create dashboard accounts with Admin, Content Manager, or Viewer roles.
+          Login integration comes in a later backend ticket.
         </p>
+        {onCreateClick ? (
+          <button
+            type="button"
+            onClick={onCreateClick}
+            className="mt-5 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-logo-bg"
+          >
+            Create your first user
+          </button>
+        ) : null}
       </div>
     );
   }
@@ -218,7 +234,16 @@ export function UsersDataGrid({ users }: UsersDataGridProps) {
                   colSpan={table.getVisibleLeafColumns().length}
                   className="px-2 py-12 text-center text-sm text-foreground/50"
                 >
-                  No users match your filters.
+                  <div className="mx-auto max-w-xl space-y-3">
+                    <p>No users match your filters.</p>
+                    <button
+                      type="button"
+                      onClick={resetFilters}
+                      className="rounded-lg border border-black/15 px-3 py-1.5 text-sm font-semibold text-logo-bg/80 transition-colors hover:border-primary/50 hover:text-logo-bg"
+                    >
+                      Reset filters
+                    </button>
+                  </div>
                 </td>
               </tr>
             ) : (

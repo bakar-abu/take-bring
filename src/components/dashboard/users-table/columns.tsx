@@ -1,6 +1,8 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
+import { Pencil, Trash2 } from "lucide-react";
+import { userRoleBadgeClass } from "@/lib/dashboard-users/helpers";
 import {
   DASHBOARD_USER_ROLES,
   type DashboardUser,
@@ -24,19 +26,6 @@ export function formatUserDate(iso: string) {
     }).format(new Date(iso));
   } catch {
     return iso;
-  }
-}
-
-export function userRoleBadgeClass(role: DashboardUserRole) {
-  switch (role) {
-    case "Admin":
-      return "text-emerald-700 ring-1 ring-emerald-600/30";
-    case "Content Manager":
-      return "text-amber-700 ring-1 ring-amber-600/30";
-    case "Viewer":
-      return "text-sky-700 ring-1 ring-sky-600/30";
-    default:
-      return "text-logo-bg/70 ring-1 ring-black/15";
   }
 }
 
@@ -143,6 +132,34 @@ export function createUsersColumns(): ColumnDef<DashboardUser>[] {
         </span>
       ),
       sortingFn: "datetime",
+    },
+    {
+      id: "actions",
+      enableSorting: false,
+      enableHiding: false,
+      header: "Actions",
+      cell: () => (
+        <div className="flex gap-1">
+          <button
+            type="button"
+            disabled
+            title="Edit user — available after backend integration"
+            className="inline-flex cursor-not-allowed items-center gap-1 rounded-md border border-black/10 px-2 py-1 text-[11px] font-semibold text-foreground/35"
+          >
+            <Pencil className="h-3 w-3" aria-hidden />
+            Edit
+          </button>
+          <button
+            type="button"
+            disabled
+            title="Delete user — available after backend integration"
+            className="inline-flex cursor-not-allowed items-center gap-1 rounded-md border border-black/10 px-2 py-1 text-[11px] font-semibold text-foreground/35"
+          >
+            <Trash2 className="h-3 w-3" aria-hidden />
+            Delete
+          </button>
+        </div>
+      ),
     },
   ];
 }
