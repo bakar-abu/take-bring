@@ -59,4 +59,4 @@ src/
 
 ## SEO
 
-Set `INDEXING_ENABLED=false` in `.env.local` for staging; `true` (or omit) for production. See `.env.example`.
+Set `INDEXING_ENABLED=false` in `.env` for staging; `true` (or omit) for production.

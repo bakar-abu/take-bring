@@ -9,10 +9,10 @@ const fs = require("fs");
 const path = require("path");
 const nodemailer = require("nodemailer");
 
-function loadEnvLocal() {
-  const envPath = path.join(__dirname, "..", ".env.local");
+function loadEnv() {
+  const envPath = path.join(__dirname, "..", ".env");
   if (!fs.existsSync(envPath)) {
-    throw new Error("Missing .env.local — create it from .env.example first.");
+    throw new Error("Missing .env — create it with SMTP and app settings first.");
   }
 
   const lines = fs.readFileSync(envPath, "utf8").split(/\r?\n/);
@@ -36,7 +36,7 @@ function loadEnvLocal() {
 }
 
 async function main() {
-  loadEnvLocal();
+  loadEnv();
 
   const to =
     process.argv[2]?.trim() ||
@@ -54,7 +54,7 @@ async function main() {
   const fromName = process.env.MAIL_FROM_NAME || "Take & Bring Website";
 
   if (!host || !user || !pass) {
-    throw new Error("SMTP_HOST, SMTP_USER, and SMTP_PASS must be set in .env.local");
+    throw new Error("SMTP_HOST, SMTP_USER, and SMTP_PASS must be set in .env");
   }
 
   console.log("Sending test mail...");
