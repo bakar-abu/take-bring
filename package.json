@@ -12,6 +12,7 @@
     "test:mail": "node scripts/test-mail.cjs"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.112.0",
     "@tanstack/react-table": "^8.21.3",
     "@tiptap/extension-link": "^3.28.0",
     "@tiptap/extension-underline": "^3.28.0",

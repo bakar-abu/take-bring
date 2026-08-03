@@ -24,7 +24,7 @@ export async function POST(request: Request) {
         {
           ok: false,
           error:
-            "Email is not configured yet. Add SMTP_PASS in .env.local and restart the server.",
+            "Email is not configured yet. Add SMTP_PASS in .env and restart the server.",
         },
         { status: 503 },
       );
