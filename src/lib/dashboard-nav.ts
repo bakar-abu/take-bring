@@ -7,9 +7,14 @@ import {
   Users,
   type LucideIcon,
 } from "lucide-react";
+import {
+  canAccessNav,
+  type DashboardNavId,
+} from "@/lib/dashboard-permissions";
+import type { DashboardUserRole } from "@/lib/dashboard-users/types";
 
 export type DashboardNavItem = {
-  id: string;
+  id: DashboardNavId;
   label: string;
   href: string;
   icon: LucideIcon;
@@ -47,6 +52,12 @@ export const dashboardNavItems: DashboardNavItem[] = [
     icon: Users,
   },
 ];
+
+export function getNavItemsForRole(
+  role: DashboardUserRole | string | undefined,
+) {
+  return dashboardNavItems.filter((item) => canAccessNav(role, item.id));
+}
 
 export const dashboardLogoutItem = {
   id: "logout",

@@ -21,13 +21,29 @@ function statusBadgeClass(status: LeadStatus) {
   }
 }
 
-export function LeadDetailActions({ lead }: { lead: Lead }) {
+export function LeadDetailActions({
+  lead,
+  readOnly = false,
+}: {
+  lead: Lead;
+  readOnly?: boolean;
+}) {
   const router = useRouter();
   const { showToast } = useToast();
   const [status, setStatus] = useState<LeadStatus>(lead.status);
   const [statusPending, setStatusPending] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deletePending, setDeletePending] = useState(false);
+
+  if (readOnly) {
+    return (
+      <span
+        className={`rounded-md px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${statusBadgeClass(status)}`}
+      >
+        {status}
+      </span>
+    );
+  }
 
   async function handleStatusChange(next: LeadStatus) {
     if (statusPending || next === status) return;

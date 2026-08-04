@@ -48,7 +48,7 @@ export async function PATCH(request: Request, context: RouteContext) {
   }
 
   const { id } = await context.params;
-  let body: { name?: string; role?: string; password?: string };
+  let body: { name?: string; role?: string; password?: string; isActive?: boolean };
   try {
     body = await request.json();
   } catch {
@@ -68,11 +68,19 @@ export async function PATCH(request: Request, context: RouteContext) {
     );
   }
 
+  if (body.isActive === false && auth.user.id === id) {
+    return NextResponse.json(
+      { ok: false, error: "You cannot deactivate your own account." },
+      { status: 400 },
+    );
+  }
+
   try {
     const user = await updateUser(id, {
       name: body.name,
       role: body.role as DashboardUserRole | undefined,
       password: body.password,
+      isActive: typeof body.isActive === "boolean" ? body.isActive : undefined,
     });
     return NextResponse.json({ ok: true, user });
   } catch (err) {

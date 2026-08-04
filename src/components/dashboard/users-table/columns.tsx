@@ -1,7 +1,7 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Power, Trash2 } from "lucide-react";
 import { userRoleBadgeClass } from "@/lib/dashboard-users/helpers";
 import {
   DASHBOARD_USER_ROLES,
@@ -44,6 +44,7 @@ function getInitials(name: string) {
 export function createUsersColumns(options?: {
   onEditUser?: (user: DashboardUser) => void;
   onDeleteUser?: (user: DashboardUser) => void;
+  onToggleActive?: (user: DashboardUser) => void;
   busyUserId?: string | null;
 }): ColumnDef<DashboardUser>[] {
   return [
@@ -102,7 +103,10 @@ export function createUsersColumns(options?: {
       id: "email",
       header: "Email",
       cell: ({ row }) => (
-        <span className="block truncate text-foreground/80" title={row.original.email}>
+        <span
+          className="block truncate text-foreground/80"
+          title={row.original.email}
+        >
           {row.original.email}
         </span>
       ),
@@ -127,6 +131,21 @@ export function createUsersColumns(options?: {
       },
     },
     {
+      accessorKey: "isActive",
+      id: "isActive",
+      header: "Status",
+      cell: ({ row }) =>
+        row.original.isActive ? (
+          <span className="inline-flex rounded-md bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-800">
+            Active
+          </span>
+        ) : (
+          <span className="inline-flex rounded-md bg-black/5 px-2 py-0.5 text-xs font-semibold text-logo-bg/55">
+            Inactive
+          </span>
+        ),
+    },
+    {
       accessorKey: "createdAt",
       id: "createdAt",
       header: "Created",
@@ -143,7 +162,7 @@ export function createUsersColumns(options?: {
       enableHiding: false,
       header: "Actions",
       cell: ({ row }) => (
-        <div className="flex gap-1">
+        <div className="flex flex-wrap gap-1">
           <button
             type="button"
             onClick={(event) => {
@@ -155,6 +174,18 @@ export function createUsersColumns(options?: {
           >
             <Pencil className="h-3 w-3" aria-hidden />
             Edit
+          </button>
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              options?.onToggleActive?.(row.original);
+            }}
+            disabled={options?.busyUserId === row.original.id}
+            className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-black/10 px-2 py-1 text-[11px] font-semibold text-logo-bg/80 transition-colors hover:border-primary/40 disabled:cursor-not-allowed disabled:opacity-45"
+          >
+            <Power className="h-3 w-3" aria-hidden />
+            {row.original.isActive ? "Deactivate" : "Activate"}
           </button>
           <button
             type="button"

@@ -11,12 +11,17 @@ import {
   Users,
 } from "lucide-react";
 import type { DashboardBlog } from "@/lib/dashboard-blogs/types";
-import { MOCK_USERS } from "@/lib/dashboard-users/mock-users";
+import {
+  canAccessNav,
+  canWriteBlogs,
+} from "@/lib/dashboard-permissions";
 import { siteConfig } from "@/config/site";
 
 type OverviewPanelProps = {
   leadCount: number;
+  userCount: number;
   recentLeadLabels: string[];
+  role?: string;
 };
 
 type DockItem = {
@@ -24,32 +29,40 @@ type DockItem = {
   label: string;
   hint: string;
   icon: React.ComponentType<{ className?: string; "aria-hidden"?: boolean }>;
+  navId: "blogs" | "leads" | "users";
+  writeBlogs?: boolean;
 };
 
-const DOCK_ITEMS: DockItem[] = [
+const ALL_DOCK_ITEMS: DockItem[] = [
   {
     href: "/tb-dashboard/blogs/create-new",
     label: "Create blog",
     hint: "New post",
     icon: FilePlus2,
+    navId: "blogs",
+    writeBlogs: true,
   },
   {
     href: "/tb-dashboard/leads",
     label: "Leads",
     hint: "Inbox",
     icon: Inbox,
+    navId: "leads",
   },
   {
     href: "/tb-dashboard/users",
     label: "Users",
     hint: "Accounts",
     icon: UserPlus,
+    navId: "users",
   },
 ];
 
 export function OverviewPanel({
   leadCount,
+  userCount,
   recentLeadLabels,
+  role,
 }: OverviewPanelProps) {
   const [blogCount, setBlogCount] = useState(0);
   const [publishedCount, setPublishedCount] = useState(0);
@@ -96,11 +109,22 @@ export function OverviewPanel({
     };
   }, []);
 
-  const userCount = MOCK_USERS.length;
-
   const summaryLine = useMemo(() => {
     return `${siteConfig.name} dashboard — leads, content, users, and site insights in one place.`;
   }, []);
+
+  const dockItems = useMemo(
+    () =>
+      ALL_DOCK_ITEMS.filter((item) => {
+        if (!canAccessNav(role, item.navId)) return false;
+        if (item.writeBlogs && !canWriteBlogs(role)) return false;
+        return true;
+      }),
+    [role],
+  );
+
+  const showUsersCard = canAccessNav(role, "users");
+  const showBlogsCard = canAccessNav(role, "blogs");
 
   return (
     <div className="relative space-y-6 pb-28">
@@ -122,20 +146,24 @@ export function OverviewPanel({
           href="/tb-dashboard/leads"
           icon={Inbox}
         />
-        <StatCard
-          label="Blog posts"
-          value={String(blogCount)}
-          hint={`${publishedCount} published · ${draftCount} draft`}
-          href="/tb-dashboard/blogs"
-          icon={FileText}
-        />
-        <StatCard
-          label="Users"
-          value={String(userCount)}
-          hint="Dashboard accounts"
-          href="/tb-dashboard/users"
-          icon={Users}
-        />
+        {showBlogsCard ? (
+          <StatCard
+            label="Blog posts"
+            value={String(blogCount)}
+            hint={`${publishedCount} published · ${draftCount} draft`}
+            href="/tb-dashboard/blogs"
+            icon={FileText}
+          />
+        ) : null}
+        {showUsersCard ? (
+          <StatCard
+            label="Users"
+            value={String(userCount)}
+            hint="Dashboard accounts"
+            href="/tb-dashboard/users"
+            icon={Users}
+          />
+        ) : null}
         <StatCard
           label="Analytics"
           value={analyticsLive ? String(analyticsVisitors) : "—"}
@@ -192,7 +220,7 @@ export function OverviewPanel({
         className="pointer-events-none fixed inset-x-0 bottom-4 z-20 flex justify-center px-4 lg:left-72"
       >
         <div className="pointer-events-auto flex items-end gap-1 rounded-2xl border border-black/10 bg-white/95 p-2 shadow-xl backdrop-blur-md sm:gap-2 sm:p-2.5">
-          {DOCK_ITEMS.map((item) => {
+          {dockItems.map((item) => {
             const Icon = item.icon;
             return (
               <Link

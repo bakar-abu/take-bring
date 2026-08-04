@@ -31,6 +31,7 @@ type UseUsersTableOptions = {
   pageSize?: number;
   onEditUser?: (user: DashboardUser) => void;
   onDeleteUser?: (user: DashboardUser) => void;
+  onToggleActive?: (user: DashboardUser) => void;
   busyUserId?: string | null;
 };
 
@@ -42,11 +43,18 @@ export function useUsersTable({
   pageSize = 8,
   onEditUser,
   onDeleteUser,
+  onToggleActive,
   busyUserId,
 }: UseUsersTableOptions) {
   const columns = useMemo(
-    () => createUsersColumns({ onEditUser, onDeleteUser, busyUserId }),
-    [onDeleteUser, onEditUser, busyUserId],
+    () =>
+      createUsersColumns({
+        onEditUser,
+        onDeleteUser,
+        onToggleActive,
+        busyUserId,
+      }),
+    [onDeleteUser, onEditUser, onToggleActive, busyUserId],
   );
 
   const [sorting, setSorting] = useState<SortingState>([

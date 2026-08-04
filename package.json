@@ -14,7 +14,8 @@
     "migrate:blogs": "node scripts/migrate-blogs.cjs",
     "migrate:leads": "node scripts/migrate-leads.cjs",
     "migrate:analytics": "node scripts/migrate-analytics.cjs",
-    "migrate:analytics-context": "node scripts/migrate-analytics-context.cjs"
+    "migrate:analytics-context": "node scripts/migrate-analytics-context.cjs",
+    "migrate:users-active": "node scripts/migrate-users-active.cjs"
   },
   "dependencies": {
     "@microsoft/clarity": "^1.0.2",

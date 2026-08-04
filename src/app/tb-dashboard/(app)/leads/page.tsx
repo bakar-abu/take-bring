@@ -1,10 +1,12 @@
 import { Suspense } from "react";
 import { LeadsDataGrid } from "@/components/dashboard/leads-table";
+import { requireNavAccess } from "@/lib/dashboard-require-nav";
 import { listLeads } from "@/lib/leads/storage";
 
 export const dynamic = "force-dynamic";
 
 export default async function LeadsPage() {
+  await requireNavAccess("leads");
   const leads = await listLeads();
 
   return (

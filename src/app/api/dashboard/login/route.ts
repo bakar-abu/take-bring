@@ -27,22 +27,29 @@ export async function POST(request: Request) {
     );
   }
 
-  let user;
+  let result;
   try {
-    user = await authenticateUser(email, password);
+    result = await authenticateUser(email, password);
   } catch (err) {
     const message =
       err instanceof Error ? err.message : "Login service unavailable.";
     return NextResponse.json({ ok: false, error: message }, { status: 503 });
   }
 
-  if (!user) {
+  if (!result.ok) {
+    if (result.reason === "deactivated") {
+      return NextResponse.json(
+        { ok: false, error: "This account has been deactivated." },
+        { status: 403 },
+      );
+    }
     return NextResponse.json(
       { ok: false, error: "Invalid email or password." },
       { status: 401 },
     );
   }
 
+  const user = result.user;
   const tokens = await createTokenPair({
     id: user.id,
     email: user.email,

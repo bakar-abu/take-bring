@@ -11,6 +11,7 @@ export type DashboardUser = {
   name: string;
   email: string;
   role: DashboardUserRole;
+  isActive: boolean;
   createdAt: string;
 };
 
