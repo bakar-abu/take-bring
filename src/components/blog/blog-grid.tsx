@@ -3,18 +3,16 @@
 import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { useTranslations } from "next-intl";
-import { BLOG_POSTS } from "@/config/blog";
+import type { PublicBlogPost } from "@/lib/public-blogs";
 import { BlogCard } from "./blog-card";
 import { SectionTag } from "./blog-hero";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-export function BlogGrid() {
+export function BlogGrid({ posts }: { posts: PublicBlogPost[] }) {
   const t = useTranslations("blogPage");
   const headerRef = useRef<HTMLDivElement>(null);
   const headerInView = useInView(headerRef, { once: true, margin: "-60px" });
-
-  const posts = BLOG_POSTS.filter((p) => !p.featured);
 
   return (
     <section className="bg-white py-16 md:py-24" aria-labelledby="blog-grid-heading">
@@ -35,11 +33,17 @@ export function BlogGrid() {
           </h2>
         </motion.div>
 
-        <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
-          {posts.map((post, index) => (
-            <BlogCard key={post.slug} post={post} index={index} />
-          ))}
-        </div>
+        {posts.length === 0 ? (
+          <p className="rounded-2xl border border-dashed border-logo-bg/15 px-6 py-12 text-center text-sm text-foreground/55">
+            No published posts yet.
+          </p>
+        ) : (
+          <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+            {posts.map((post, index) => (
+              <BlogCard key={post.slug} post={post} index={index} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

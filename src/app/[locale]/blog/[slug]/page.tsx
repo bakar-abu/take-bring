@@ -1,35 +1,44 @@
 import { BlogDetailPage, BlogPostSeo } from "@/components/blog";
-import { BLOG_POSTS, getBlogPost } from "@/config/blog";
 import { buildMetadata } from "@/lib/seo/metadata";
 import type { Locale } from "@/types/locale";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import {
+  getPublishedBlogBySlug,
+  getPublishedBlogs,
+  getRelatedPublishedBlogs,
+  incrementBlogViews,
+} from "@/lib/public-blogs";
+import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+
+export const dynamic = "force-dynamic";
 
 type PageProps = {
   params: Promise<{ locale: string; slug: string }>;
 };
 
-export function generateStaticParams() {
-  return BLOG_POSTS.map((post) => ({ slug: post.slug }));
+export async function generateStaticParams() {
+  try {
+    const posts = await getPublishedBlogs();
+    return posts.map((post) => ({ slug: post.slug }));
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale, slug } = await params;
-  const post = getBlogPost(slug);
+  const post = await getPublishedBlogBySlug(slug);
   if (!post) return {};
-
-  const t = await getTranslations({ locale, namespace: "blogPage" });
-  const base = `posts.${slug}`;
 
   return buildMetadata({
     locale: locale as Locale,
-    title: t(`${base}.metaTitle`),
-    description: t(`${base}.metaDescription`),
+    title: post.seoTitle || post.title,
+    description: post.seoDescription || post.excerpt,
     path: `/blog/${slug}`,
-    keywords: [t(`${base}.category`), "logistics", "Take & Bring"],
+    keywords: [post.category, "logistics", "Take & Bring"].filter(Boolean),
   });
 }
 
@@ -37,13 +46,23 @@ export default async function BlogPostPage({ params }: PageProps) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  const post = getBlogPost(slug);
+  const post = await getPublishedBlogBySlug(slug);
   if (!post) notFound();
+
+  // Count a view when the public detail page is opened.
+  let viewsCount = post.viewsCount;
+  try {
+    viewsCount = await incrementBlogViews(slug);
+  } catch {
+    // Keep existing count if increment fails
+  }
+
+  const related = await getRelatedPublishedBlogs(slug, 3);
 
   return (
     <>
-      <BlogPostSeo locale={locale} slug={slug} />
-      <BlogDetailPage slug={slug} />
+      <BlogPostSeo locale={locale} post={{ ...post, viewsCount }} />
+      <BlogDetailPage post={{ ...post, viewsCount }} related={related} />
     </>
   );
 }

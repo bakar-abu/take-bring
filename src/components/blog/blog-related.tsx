@@ -3,19 +3,18 @@
 import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { useTranslations } from "next-intl";
-import { getRelatedPosts } from "@/config/blog";
+import type { PublicBlogPost } from "@/lib/public-blogs";
 import { BlogCard } from "./blog-card";
 import { SectionTag } from "./blog-hero";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-export function BlogRelated({ slug }: { slug: string }) {
+export function BlogRelated({ posts }: { posts: PublicBlogPost[] }) {
   const t = useTranslations("blogPage");
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
-  const related = getRelatedPosts(slug, 3);
 
-  if (related.length === 0) return null;
+  if (posts.length === 0) return null;
 
   return (
     <section
@@ -40,7 +39,7 @@ export function BlogRelated({ slug }: { slug: string }) {
         </motion.div>
 
         <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
-          {related.map((post, index) => (
+          {posts.map((post, index) => (
             <BlogCard key={post.slug} post={post} index={index} />
           ))}
         </div>

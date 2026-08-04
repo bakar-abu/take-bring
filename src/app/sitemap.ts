@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { baseUrl, indexingEnabled } from "@/lib/seo-config";
 import { buildLanguageAlternates } from "@/lib/seo-helpers";
 import { routing } from "@/lib/i18n/routing";
-import { BLOG_POSTS } from "@/config/blog";
+import { getPublishedBlogs } from "@/lib/public-blogs";
 import type { Locale } from "@/types/locale";
 
 type PathnameKey = keyof typeof routing.pathnames;
@@ -18,7 +18,7 @@ function getLocalizedPath(
 const pathnames = Object.keys(routing.pathnames) as PathnameKey[];
 const defaultLocale = routing.defaultLocale as Locale;
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (!indexingEnabled) {
     return [];
   }
@@ -47,18 +47,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
       };
     });
 
-  const blogEntries = BLOG_POSTS.map((post) => {
-    const internalPath = `/blog/${post.slug}` as `/${string}`;
-    return {
-      url: `${baseUrl}/blog/${post.slug}`,
-      lastModified: new Date(post.date),
-      changeFrequency: "monthly" as const,
-      priority: 0.7,
-      alternates: {
-        languages: buildLanguageAlternates(internalPath),
-      },
-    };
-  });
+  let blogEntries: MetadataRoute.Sitemap = [];
+  try {
+    const posts = await getPublishedBlogs();
+    blogEntries = posts.map((post) => {
+      const internalPath = `/blog/${post.slug}` as `/${string}`;
+      return {
+        url: `${baseUrl}/blog/${post.slug}`,
+        lastModified: new Date(post.dateIso),
+        changeFrequency: "monthly" as const,
+        priority: 0.7,
+        alternates: {
+          languages: buildLanguageAlternates(internalPath),
+        },
+      };
+    });
+  } catch {
+    blogEntries = [];
+  }
 
   return [...staticEntries, ...blogEntries];
 }

@@ -3,39 +3,33 @@
 import React, { useRef } from "react";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
-import { ArrowLeft, Calendar, Check, Clock, User } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, Eye, FileText } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
-import { formatBlogDate, getBlogPost } from "@/config/blog";
+import { formatBlogDate } from "@/config/blog";
+import type { PublicBlogPost } from "@/lib/public-blogs";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-type ArticleSection = {
-  heading: string;
-  body: string[];
-};
+function displayDate(post: PublicBlogPost, locale: string) {
+  if (post.dateLabel?.trim()) return post.dateLabel.trim();
+  return formatBlogDate(post.dateIso.slice(0, 10), locale);
+}
 
-export function BlogArticle({ slug }: { slug: string }) {
+export function BlogArticle({ post }: { post: PublicBlogPost }) {
   const t = useTranslations("blogPage");
   const locale = useLocale();
-  const post = getBlogPost(slug);
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
-
-  if (!post) return null;
-
-  const Icon = post.icon;
-  const base = `posts.${slug}`;
-  const sections = t.raw(`${base}.sections`) as ArticleSection[];
-  const takeaways = t.raw(`${base}.takeaways`) as string[];
 
   return (
     <article>
       <header className="relative min-h-[56vh] overflow-hidden md:min-h-[64vh]">
         <Image
-          src={post.image}
-          alt={t(`${base}.title`)}
+          src={post.coverImageUrl}
+          alt={post.title}
           fill
+          unoptimized
           className="object-cover"
           sizes="100vw"
           priority
@@ -72,24 +66,24 @@ export function BlogArticle({ slug }: { slug: string }) {
                 className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold text-logo-bg shadow-lg"
                 style={{ background: post.accent }}
               >
-                <Icon className="h-4 w-4" strokeWidth={2.2} />
-                {t(`${base}.category`)}
+                <FileText className="h-4 w-4" strokeWidth={2.2} />
+                {post.category}
               </span>
               <h1 className="mt-5 text-3xl font-extrabold leading-tight tracking-tight text-white md:text-4xl lg:text-[2.75rem]">
-                {t(`${base}.title`)}
+                {post.title}
               </h1>
               <div className="mt-6 flex flex-wrap items-center gap-5 text-sm font-medium text-white/75">
                 <span className="inline-flex items-center gap-2">
-                  <User className="h-4 w-4 text-primary" />
-                  {t(`${base}.author`)}
-                </span>
-                <span className="inline-flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-primary" />
-                  {formatBlogDate(post.date, locale)}
+                  {displayDate(post, locale)}
                 </span>
                 <span className="inline-flex items-center gap-2">
                   <Clock className="h-4 w-4 text-primary" />
                   {post.readTime} {t("readTime")}
+                </span>
+                <span className="inline-flex items-center gap-2">
+                  <Eye className="h-4 w-4 text-primary" />
+                  {(post.viewsCount ?? 0).toLocaleString()} views
                 </span>
               </div>
             </div>
@@ -106,43 +100,16 @@ export function BlogArticle({ slug }: { slug: string }) {
             transition={{ duration: 0.5, ease: EASE }}
             className="mx-auto max-w-3xl pt-12 pb-16 md:pt-16 md:pb-24"
           >
-            <p className="text-lg font-medium leading-relaxed text-logo-bg md:text-xl">
-              {t(`${base}.intro`)}
-            </p>
+            {post.excerpt ? (
+              <p className="text-lg font-medium leading-relaxed text-logo-bg md:text-xl">
+                {post.excerpt}
+              </p>
+            ) : null}
 
-            {sections.map((section, index) => (
-              <section key={index} className="mt-10">
-                <h2 className="text-2xl font-extrabold tracking-tight text-logo-bg md:text-[1.75rem]">
-                  {section.heading}
-                </h2>
-                {section.body.map((paragraph, pIndex) => (
-                  <p
-                    key={pIndex}
-                    className="mt-4 text-base leading-relaxed text-foreground/75"
-                  >
-                    {paragraph}
-                  </p>
-                ))}
-              </section>
-            ))}
-
-            <div className="mt-12 rounded-3xl border border-logo-bg/10 bg-[#f8f9f5] p-7 md:p-8">
-              <h2 className="text-xl font-extrabold text-logo-bg">
-                {t("takeawaysTitle")}
-              </h2>
-              <ul className="mt-5 space-y-3">
-                {takeaways.map((item, index) => (
-                  <li key={index} className="flex items-start gap-3">
-                    <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/20 text-primary">
-                      <Check className="h-3.5 w-3.5" strokeWidth={3} />
-                    </span>
-                    <span className="text-sm font-medium leading-relaxed text-logo-bg md:text-base">
-                      {item}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <div
+              className="blog-prose mt-8 text-base leading-relaxed text-foreground/80 [&_a]:font-semibold [&_a]:text-primary-dark [&_a]:underline [&_h1]:mb-4 [&_h1]:mt-8 [&_h1]:text-3xl [&_h1]:font-extrabold [&_h1]:text-logo-bg [&_h2]:mb-3 [&_h2]:mt-8 [&_h2]:text-2xl [&_h2]:font-extrabold [&_h2]:text-logo-bg [&_h3]:mb-2 [&_h3]:mt-6 [&_h3]:text-xl [&_h3]:font-bold [&_h3]:text-logo-bg [&_li]:my-1 [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_p]:my-4 [&_ul]:my-4 [&_ul]:list-disc [&_ul]:pl-6"
+              dangerouslySetInnerHTML={{ __html: post.bodyHtml }}
+            />
           </motion.div>
         </div>
       </div>
