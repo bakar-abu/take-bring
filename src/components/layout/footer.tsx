@@ -5,8 +5,10 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import { motion, useInView } from "framer-motion";
-import takeBringLogo from "@/assets/images/take-bring-logo.png";
 import { serviceLinks } from "@/config/navigation";
+
+const BRAND_LOGO =
+  "/images/c__Users_abuza_AppData_Roaming_Cursor_User_workspaceStorage_2e410bc3959c12af5b1f43beac22d1e6_images_logo-png-768x153-a88831ff-1cf3-42a5-b7a0-9271339be69d.webp";
 
 const SOCIAL_LINKS = [
   { href: "https://facebook.com", icon: "ri-facebook-fill", labelKey: "Facebook" },
@@ -106,7 +108,7 @@ export function Footer() {
             >
               <Link href="/" className="inline-block">
                 <Image
-                  src={takeBringLogo}
+                  src={BRAND_LOGO}
                   alt={t("logoAlt")}
                   width={180}
                   height={56}

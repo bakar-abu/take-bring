@@ -17,7 +17,9 @@ import type { DashboardUser } from "@/lib/dashboard-users/types";
 type UsersDataGridProps = {
   users: DashboardUser[];
   onCreateClick?: () => void;
+  onEditUser?: (user: DashboardUser) => void;
   onDeleteUser?: (user: DashboardUser) => void;
+  busyUserId?: string | null;
 };
 
 function SortIcon({ sorted }: { sorted: false | "asc" | "desc" }) {
@@ -32,7 +34,9 @@ function SortIcon({ sorted }: { sorted: false | "asc" | "desc" }) {
 export function UsersDataGrid({
   users,
   onCreateClick,
+  onEditUser,
   onDeleteUser,
+  busyUserId,
 }: UsersDataGridProps) {
   const {
     table,
@@ -41,7 +45,7 @@ export function UsersDataGrid({
     selectedCount,
     sortedSummary,
     filteredSummary,
-  } = useUsersTable({ data: users, onDeleteUser });
+  } = useUsersTable({ data: users, onEditUser, onDeleteUser, busyUserId });
 
   const resetFilters = () => {
     onRoleQuickFilterChange("all");
@@ -54,7 +58,7 @@ export function UsersDataGrid({
         <p className="text-base font-semibold text-logo-bg">No users yet</p>
         <p className="mt-2 text-sm text-foreground/55">
           Create dashboard accounts with Admin, Content Manager, or Viewer roles.
-          Login integration comes in a later backend ticket.
+          New users are created in the database and can log in immediately.
         </p>
         {onCreateClick ? (
           <button

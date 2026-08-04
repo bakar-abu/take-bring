@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
-import takeBringLogo from "@/assets/images/take-bring-logo.png";
 import { siteConfig } from "@/config/site";
 import { DASHBOARD_PATH } from "@/lib/dashboard-constants";
 import {
@@ -17,9 +16,12 @@ import {
 import { cn } from "@/lib/utils";
 
 type DashboardShellProps = {
-  user: { email: string };
+  user: { email: string; name?: string; role?: string };
   children: React.ReactNode;
 };
+
+const BRAND_LOGO =
+  "/images/c__Users_abuza_AppData_Roaming_Cursor_User_workspaceStorage_2e410bc3959c12af5b1f43beac22d1e6_images_logo-png-768x153-a88831ff-1cf3-42a5-b7a0-9271339be69d.webp";
 
 function getInitials(name: string) {
   return name
@@ -37,7 +39,7 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
   const [logoutPending, setLogoutPending] = useState(false);
 
   const pageTitle = getDashboardPageTitle(pathname);
-  const displayName = getUserDisplayName(user.email);
+  const displayName = user.name?.trim() || getUserDisplayName(user.email);
   const initials = getInitials(displayName);
 
   useEffect(() => {
@@ -67,7 +69,7 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
       <div className="flex h-16 items-center border-b border-white/10 px-5">
         <Link href="/tb-dashboard/overview" className="flex items-center gap-3">
           <Image
-            src={takeBringLogo}
+            src={BRAND_LOGO}
             alt={`${siteConfig.name} logo`}
             width={140}
             height={36}

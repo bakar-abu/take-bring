@@ -4,10 +4,11 @@ import Image from "next/image";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
-import takeBringLogo from "@/assets/images/take-bring-logo.png";
 import { siteConfig } from "@/config/site";
 
 const LOGIN_HERO = "/images/audience-business.webp";
+const BRAND_LOGO =
+  "/images/c__Users_abuza_AppData_Roaming_Cursor_User_workspaceStorage_2e410bc3959c12af5b1f43beac22d1e6_images_logo-png-768x153-a88831ff-1cf3-42a5-b7a0-9271339be69d.webp";
 
 export function DashboardLogin() {
   const router = useRouter();
@@ -19,6 +20,7 @@ export function DashboardLogin() {
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (pending) return;
     setError(null);
     setPending(true);
 
@@ -51,7 +53,7 @@ export function DashboardLogin() {
         <div className="mx-auto w-full max-w-[380px]">
           <div className="mb-10 flex items-center gap-3">
             <Image
-              src={takeBringLogo}
+              src={BRAND_LOGO}
               alt={`${siteConfig.name} logo`}
               width={160}
               height={40}
