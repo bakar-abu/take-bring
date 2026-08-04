@@ -27,6 +27,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const staticEntries = pathnames
     .filter((pathname) => !pathname.includes("["))
+    // Public tracking deferred — do not list until product is enabled
+    .filter((pathname) => pathname !== "/tracking")
     .map((pathname) => {
       const pathConfig = routing.pathnames[pathname];
       const localizedPath = getLocalizedPath(pathConfig, defaultLocale);

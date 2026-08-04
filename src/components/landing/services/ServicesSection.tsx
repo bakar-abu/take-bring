@@ -212,7 +212,7 @@ export function ServicesSection() {
                 <LogisticsServiceCard
                   image={service.image}
                   icon={service.Icon}
-                  category={t("tracking")}
+                  category={t("typesOfLogistics")}
                   title={tSlide(service.titleKey)}
                   href={service.href}
                   readMore={t("readMore")}

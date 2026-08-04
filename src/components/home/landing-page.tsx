@@ -6,7 +6,8 @@ import {
 import { HeroSection } from "@/components/home/hero-section";
 import { ServicesSection } from "@/components/landing/services/ServicesSection";
 import { ShippingDetailsSection } from "@/components/landing/shippingdetails";
-import { TrackingSection } from "@/components/landing/tracking";
+// TrackingSection deferred — shipment tracking available on demand later
+// import { TrackingSection } from "@/components/landing/tracking";
 import { AboutSection } from "@/components/landing/about/AboutSection";
 import { KeyBenefitsSection } from "@/components/landing/keybenefits";
 import { WarehouseSection } from "@/components/landing/warehouse";
@@ -28,7 +29,7 @@ const SECTION_COMPONENTS: Partial<
   services: <ServicesSection />,
   about: <AboutSection />,
   shippingDetails: <ShippingDetailsSection />,
-  tracking: <TrackingSection />,
+  // tracking: <TrackingSection />,
   missionVision: <MissionVisionSection />,
   keyBenefits: <KeyBenefitsSection />,
   warehouse: <WarehouseSection />,
