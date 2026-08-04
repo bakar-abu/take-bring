@@ -35,8 +35,9 @@ function readOrCreateId(key: string) {
 }
 
 function detectLocale(pathname: string) {
+  // /en/... → English, /de/... → German, unprefixed `/` → Romanian (default)
   const match = pathname.match(/^\/(en|de|ro)(?=\/|$)/);
-  return match?.[1] ?? "de";
+  return match?.[1] ?? "ro";
 }
 
 function stripLocale(pathname: string) {
