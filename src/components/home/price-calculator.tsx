@@ -103,9 +103,7 @@ export function PriceCalculator() {
       } | null;
 
       if (!response.ok || !data?.ok) {
-        throw new Error(
-          data?.error || "Could not send your request. Please try again.",
-        );
+        throw new Error(data?.error || t("sendError"));
       }
 
       setCaptchaOpen(false);
@@ -119,14 +117,12 @@ export function PriceCalculator() {
       setLength("");
       setWidth("");
       setHeight("");
-      showToast("Your mail is submitted");
+      showToast(t("toastSubmitted"));
     } catch (err) {
       setIsCalculating(false);
       setRequestSent(false);
       setError(
-        err instanceof Error && err.message
-          ? err.message
-          : "Could not send your request. Please try again.",
+        err instanceof Error && err.message ? err.message : t("sendError"),
       );
     }
   }

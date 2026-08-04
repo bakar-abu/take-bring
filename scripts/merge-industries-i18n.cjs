@@ -4,18 +4,7 @@ const path = require("path");
 const root = path.join(__dirname, "..");
 const fragDir = path.join(root, "src/messages/fragments");
 
-const industriesEn = JSON.parse(
-  fs.readFileSync(path.join(fragDir, "industries-page-en.json"), "utf8"),
-);
-
-fs.writeFileSync(
-  path.join(fragDir, "industries-page-de.json"),
-  JSON.stringify(industriesEn, null, 2),
-);
-fs.writeFileSync(
-  path.join(fragDir, "industries-page-ro.json"),
-  JSON.stringify(industriesEn, null, 2),
-);
+// Do NOT overwrite industries-page-de/ro.json — those hold real translations.
 
 const metadata = {
   en: {

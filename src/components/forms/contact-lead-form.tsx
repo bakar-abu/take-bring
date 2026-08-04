@@ -117,7 +117,7 @@ export function ContactLeadForm({
       setWhatsapp("");
       setInquiryType(defaultInquiryType ?? "");
       setMessage("");
-      showToast("Your mail is submitted");
+      showToast(labels.successMessage);
     } catch (err) {
       setSubmitted(false);
       setError(

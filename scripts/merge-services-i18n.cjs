@@ -67,21 +67,11 @@ function mergeLocale(locale) {
   fs.writeFileSync(file, `${JSON.stringify(data, null, 2)}\n`);
 }
 
-const enSp = JSON.parse(
-  fs.readFileSync(path.join(fragDir, "services-pages-en.json"), "utf8"),
-);
 const enSlf = JSON.parse(
   fs.readFileSync(path.join(fragDir, "service-lead-form-en.json"), "utf8"),
 );
 
-fs.writeFileSync(
-  path.join(fragDir, "services-pages-de.json"),
-  JSON.stringify(enSp, null, 2),
-);
-fs.writeFileSync(
-  path.join(fragDir, "services-pages-ro.json"),
-  JSON.stringify(enSp, null, 2),
-);
+// Do NOT overwrite services-pages-de/ro.json — those hold real translations.
 fs.writeFileSync(
   path.join(fragDir, "service-lead-form-de.json"),
   JSON.stringify(

@@ -136,6 +136,7 @@ function LogisticsServiceCard({
 export function ServicesSection() {
   const t = useTranslations("servicesSection");
   const tSlide = useTranslations("slideshow");
+  const tCommon = useTranslations("common");
 
   const [startIndex, setStartIndex] = useState(0);
   const [animating, setAnimating] = useState(false);
@@ -235,7 +236,7 @@ export function ServicesSection() {
                   type="button"
                   role="tab"
                   aria-selected={i === startIndex}
-                  aria-label={`Go to slide ${i + 1}`}
+                  aria-label={tCommon("goToSlide", { n: i + 1 })}
                   className={`h-2 rounded-full transition-all ${
                     i === startIndex
                       ? "w-7 bg-primary"

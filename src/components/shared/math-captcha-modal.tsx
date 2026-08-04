@@ -3,6 +3,7 @@
 import React, { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ShieldCheck, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 type MathChallenge = {
   question: string;
@@ -44,6 +45,7 @@ export function MathCaptchaModal({
   onVerified,
   isSubmitting = false,
 }: MathCaptchaModalProps) {
+  const t = useTranslations("common");
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
   const [challenge, setChallenge] = useState<MathChallenge>(() =>
@@ -67,7 +69,7 @@ export function MathCaptchaModal({
 
     const parsed = Number(value.trim());
     if (!Number.isFinite(parsed) || parsed !== challenge.answer) {
-      setError("Incorrect answer. Please try again.");
+      setError(t("captchaIncorrect"));
       setChallenge(createChallenge());
       setValue("");
       inputRef.current?.focus();
@@ -93,7 +95,7 @@ export function MathCaptchaModal({
           <button
             type="button"
             className="absolute inset-0 bg-logo-bg/70 backdrop-blur-sm"
-            aria-label="Close verification"
+            aria-label={t("captchaCloseVerification")}
             onClick={onClose}
             disabled={isSubmitting}
           />
@@ -117,10 +119,10 @@ export function MathCaptchaModal({
                       id="math-captcha-title"
                       className="text-lg font-extrabold tracking-tight text-logo-bg"
                     >
-                      Quick verification
+                      {t("captchaTitle")}
                     </h2>
                     <p className="mt-1 text-sm text-foreground/65">
-                      Solve this to confirm you&apos;re human.
+                      {t("captchaSubtitle")}
                     </p>
                   </div>
                 </div>
@@ -129,7 +131,7 @@ export function MathCaptchaModal({
                   onClick={onClose}
                   disabled={isSubmitting}
                   className="rounded-full p-1.5 text-logo-bg/50 transition hover:bg-logo-bg/5 hover:text-logo-bg"
-                  aria-label="Close"
+                  aria-label={t("captchaClose")}
                 >
                   <X className="h-5 w-5" />
                 </button>
@@ -141,7 +143,7 @@ export function MathCaptchaModal({
                     htmlFor={inputId}
                     className="mb-2 block text-sm font-semibold text-logo-bg"
                   >
-                    What is {challenge.question}?
+                    {t("captchaQuestion", { question: challenge.question })}
                   </label>
                   <input
                     ref={inputRef}
@@ -153,7 +155,7 @@ export function MathCaptchaModal({
                     required
                     disabled={isSubmitting}
                     className="w-full rounded-xl border border-logo-bg/15 bg-logo-bg/5 px-4 py-3 text-logo-bg outline-none ring-primary/30 focus:border-primary focus:ring-2"
-                    placeholder="Your answer"
+                    placeholder={t("captchaAnswerPlaceholder")}
                   />
                 </div>
 
@@ -170,14 +172,14 @@ export function MathCaptchaModal({
                     disabled={isSubmitting}
                     className="inline-flex flex-1 items-center justify-center rounded-full border border-logo-bg/20 px-5 py-3 text-sm font-bold text-logo-bg transition hover:bg-logo-bg/5"
                   >
-                    Cancel
+                    {t("captchaCancel")}
                   </button>
                   <button
                     type="submit"
                     disabled={isSubmitting}
                     className="cta-delivery-btn inline-flex flex-1 items-center justify-center rounded-full px-5 py-3 text-sm font-bold disabled:opacity-70"
                   >
-                    {isSubmitting ? "Sending..." : "Verify & send"}
+                    {isSubmitting ? t("captchaSending") : t("captchaVerifySend")}
                   </button>
                 </div>
               </form>

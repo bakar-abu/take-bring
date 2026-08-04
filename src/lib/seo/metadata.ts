@@ -76,18 +76,19 @@ export function buildMetadata({
   const canonical = buildCanonicalUrl(locale, path);
   const fullTitle = path === "/" ? title : `${title} | ${siteConfig.name}`;
   const socialImages = buildSocialImages();
+  const ogLocale =
+    locale === "de" ? "de_DE" : locale === "ro" ? "ro_RO" : "en_US";
+  const defaultKeywords =
+    locale === "de"
+      ? ["Logistik", "Kurier", "Expresslieferung", "Spedition", "Take & Bring"]
+      : locale === "ro"
+        ? ["logistică", "curier", "livrare express", "expediere", "Take & Bring"]
+        : ["logistics", "courier", "express delivery", "freight", "Take & Bring"];
 
   return {
     title: fullTitle,
     description,
-    keywords: [
-      "logistics",
-      "courier",
-      "express delivery",
-      "freight",
-      "Take & Bring",
-      ...keywords,
-    ],
+    keywords: [...defaultKeywords, ...keywords],
     authors: [{ name: siteConfig.name, url: siteConfig.url }],
     creator: siteConfig.name,
     publisher: siteConfig.name,
@@ -98,7 +99,7 @@ export function buildMetadata({
     },
     openGraph: {
       type: "website",
-      locale,
+      locale: ogLocale,
       url: canonical,
       siteName: siteConfig.name,
       title: fullTitle,

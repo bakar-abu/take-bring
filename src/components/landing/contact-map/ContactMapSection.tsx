@@ -80,10 +80,8 @@ export function ContactMapSection() {
                   messagePlaceholder: t("messagePlaceholder"),
                   submitButton: t("submitButton"),
                   submitSending: t("submitSending"),
-                  successMessage:
-                    "Your query has been submitted. Our representative will contact you within 2 hours.",
-                  errorMessage:
-                    "We are having trouble sending your query. Please contact us via mail or WhatsApp.",
+                  successMessage: t("successMessage"),
+                  errorMessage: t("errorMessage"),
                 }}
                 style={{
                   formClassName: "space-y-4",
