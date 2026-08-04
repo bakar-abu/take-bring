@@ -6,6 +6,7 @@ import type { Lead } from "@/lib/leads/types";
 
 type LeadDetailViewProps = {
   lead: Lead;
+  readOnly?: boolean;
 };
 
 function formatDate(iso: string) {
@@ -39,7 +40,7 @@ function DetailRow({
   );
 }
 
-export function LeadDetailView({ lead }: LeadDetailViewProps) {
+export function LeadDetailView({ lead, readOnly = false }: LeadDetailViewProps) {
   const dimensions =
     [lead.length, lead.width, lead.height].filter((v) => v.trim()).length > 0
       ? [lead.length, lead.width, lead.height]
@@ -77,7 +78,7 @@ export function LeadDetailView({ lead }: LeadDetailViewProps) {
             <span className="rounded-full bg-primary/20 px-3 py-1 text-xs font-bold uppercase tracking-wide text-logo-bg">
               {lead.type.replace("-", " ")}
             </span>
-            <LeadDetailActions lead={lead} />
+            <LeadDetailActions lead={lead} readOnly={readOnly} />
           </div>
         </div>
 

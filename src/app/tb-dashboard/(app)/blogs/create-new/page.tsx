@@ -1,6 +1,7 @@
 import { BlogEditorPanel } from "@/components/dashboard/blog-editor-panel";
+import { requireNavAccess } from "@/lib/dashboard-require-nav";
 
-// Same editor UI as /tb-dashboard/blogs/[id] — create mode.
-export default function CreateBlogPage() {
+export default async function CreateBlogPage() {
+  await requireNavAccess("blogs");
   return <BlogEditorPanel />;
 }

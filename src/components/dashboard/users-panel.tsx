@@ -25,6 +25,7 @@ export function UsersPanel({ initialUsers }: UsersPanelProps) {
   const [createPending, setCreatePending] = useState(false);
   const [updatePending, setUpdatePending] = useState(false);
   const [deletePending, setDeletePending] = useState(false);
+  const [togglePendingId, setTogglePendingId] = useState<string | null>(null);
 
   const roleCounts = useMemo(() => countUsersByRole(users), [users]);
 
@@ -123,6 +124,37 @@ export function UsersPanel({ initialUsers }: UsersPanelProps) {
     }
   }
 
+  async function handleToggleActive(user: DashboardUser) {
+    if (togglePendingId) return;
+    setTogglePendingId(user.id);
+    try {
+      const response = await fetch(`/api/dashboard/users/${user.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isActive: !user.isActive }),
+      });
+      const data = (await response.json()) as {
+        ok?: boolean;
+        error?: string;
+        user?: DashboardUser;
+      };
+      if (!response.ok || !data.ok || !data.user) {
+        showToast(data.error || "Could not update user status.");
+        return;
+      }
+      setUsers((prev) =>
+        prev.map((item) => (item.id === data.user!.id ? data.user! : item)),
+      );
+      showToast(
+        data.user.isActive ? "User activated." : "User deactivated.",
+      );
+    } catch {
+      showToast("Could not update user status.");
+    } finally {
+      setTogglePendingId(null);
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -164,12 +196,14 @@ export function UsersPanel({ initialUsers }: UsersPanelProps) {
         users={users}
         onEditUser={(user) => setEditUser(user)}
         onDeleteUser={(user) => setDeleteUser(user)}
+        onToggleActive={(user) => void handleToggleActive(user)}
         busyUserId={
-          deletePending
+          togglePendingId ??
+          (deletePending
             ? deleteUser?.id ?? null
             : updatePending
               ? editUser?.id ?? null
-              : null
+              : null)
         }
       />
 

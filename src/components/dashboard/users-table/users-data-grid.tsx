@@ -19,6 +19,7 @@ type UsersDataGridProps = {
   onCreateClick?: () => void;
   onEditUser?: (user: DashboardUser) => void;
   onDeleteUser?: (user: DashboardUser) => void;
+  onToggleActive?: (user: DashboardUser) => void;
   busyUserId?: string | null;
 };
 
@@ -36,6 +37,7 @@ export function UsersDataGrid({
   onCreateClick,
   onEditUser,
   onDeleteUser,
+  onToggleActive,
   busyUserId,
 }: UsersDataGridProps) {
   const {
@@ -45,7 +47,13 @@ export function UsersDataGrid({
     selectedCount,
     sortedSummary,
     filteredSummary,
-  } = useUsersTable({ data: users, onEditUser, onDeleteUser, busyUserId });
+  } = useUsersTable({
+    data: users,
+    onEditUser,
+    onDeleteUser,
+    onToggleActive,
+    busyUserId,
+  });
 
   const resetFilters = () => {
     onRoleQuickFilterChange("all");

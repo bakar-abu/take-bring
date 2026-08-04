@@ -9,8 +9,8 @@ import { siteConfig } from "@/config/site";
 import { DASHBOARD_PATH } from "@/lib/dashboard-constants";
 import {
   dashboardLogoutItem,
-  dashboardNavItems,
   getDashboardPageTitle,
+  getNavItemsForRole,
   getUserDisplayName,
 } from "@/lib/dashboard-nav";
 import { cn } from "@/lib/utils";
@@ -41,6 +41,7 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
   const pageTitle = getDashboardPageTitle(pathname);
   const displayName = user.name?.trim() || getUserDisplayName(user.email);
   const initials = getInitials(displayName);
+  const navItems = getNavItemsForRole(user.role);
 
   useEffect(() => {
     setMobileOpen(false);
@@ -80,7 +81,7 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
       </div>
 
       <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
-        {dashboardNavItems.map((item) => {
+        {navItems.map((item) => {
           const Icon = item.icon;
           const active =
             pathname === item.href || pathname.startsWith(`${item.href}/`);

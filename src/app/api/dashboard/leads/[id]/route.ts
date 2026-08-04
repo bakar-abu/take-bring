@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireDashboardUser } from "@/lib/dashboard-auth";
+import { requireDashboardRole, requireDashboardUser } from "@/lib/dashboard-auth";
 import {
   deleteLead,
   getLeadById,
@@ -40,7 +40,7 @@ export async function GET(_request: Request, context: RouteContext) {
 }
 
 export async function PATCH(request: Request, context: RouteContext) {
-  const auth = await requireDashboardUser();
+  const auth = await requireDashboardRole("Admin", "Content Manager");
   if (!auth.ok) {
     return NextResponse.json(
       { ok: false, error: auth.error },
@@ -79,7 +79,7 @@ export async function PATCH(request: Request, context: RouteContext) {
 }
 
 export async function DELETE(_request: Request, context: RouteContext) {
-  const auth = await requireDashboardUser();
+  const auth = await requireDashboardRole("Admin", "Content Manager");
   if (!auth.ok) {
     return NextResponse.json(
       { ok: false, error: auth.error },

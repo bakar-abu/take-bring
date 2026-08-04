@@ -14,7 +14,7 @@ import {
 const BCRYPT_ROUNDS = 12;
 
 const USER_SELECT =
-  "id, email, full_name, role, created_at, updated_at" as const;
+  "id, email, full_name, role, is_active, created_at, updated_at" as const;
 
 export async function listUsers(): Promise<DashboardUser[]> {
   const supabase = getSupabaseAdmin();
@@ -48,7 +48,9 @@ export async function getUserByEmail(
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
     .from("users")
-    .select("id, email, full_name, role, created_at, updated_at, password_hash")
+    .select(
+      "id, email, full_name, role, is_active, created_at, updated_at, password_hash",
+    )
     .eq("email", email.trim().toLowerCase())
     .maybeSingle();
 
@@ -92,6 +94,7 @@ export async function createUser(
       full_name: name,
       password_hash: passwordHash,
       role: input.role,
+      is_active: true,
     })
     .select(USER_SELECT)
     .single();
@@ -109,12 +112,14 @@ export async function updateUser(
     name?: string;
     role?: string;
     password?: string;
+    isActive?: boolean;
   },
 ): Promise<DashboardUser> {
   const updates: {
     full_name?: string;
     role?: DashboardUserRole;
     password_hash?: string;
+    is_active?: boolean;
   } = {};
 
   if (typeof patch.name === "string" && patch.name.trim()) {
@@ -133,6 +138,10 @@ export async function updateUser(
       throw new Error("Password must be at least 8 characters.");
     }
     updates.password_hash = await bcrypt.hash(patch.password, BCRYPT_ROUNDS);
+  }
+
+  if (typeof patch.isActive === "boolean") {
+    updates.is_active = patch.isActive;
   }
 
   if (Object.keys(updates).length === 0) {
@@ -168,19 +177,27 @@ export async function deleteUser(id: string): Promise<void> {
 export async function authenticateUser(
   email: string,
   password: string,
-): Promise<DashboardUser | null> {
+): Promise<
+  | { ok: true; user: DashboardUser }
+  | { ok: false; reason: "invalid" | "deactivated" }
+> {
   const user = await getUserByEmail(email);
-  if (!user) return null;
+  if (!user) return { ok: false, reason: "invalid" };
+  if (!user.isActive) return { ok: false, reason: "deactivated" };
 
-  const ok = await bcrypt.compare(password, user.passwordHash);
-  if (!ok) return null;
+  const matched = await bcrypt.compare(password, user.passwordHash);
+  if (!matched) return { ok: false, reason: "invalid" };
 
   return {
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    role: user.role,
-    createdAt: user.createdAt,
+    ok: true,
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      isActive: user.isActive,
+      createdAt: user.createdAt,
+    },
   };
 }
 
