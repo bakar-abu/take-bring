@@ -121,6 +121,10 @@
     "accept": "Acceptă toate",
     "reject": "Refuz"
   },
+  "floatingContact": {
+    "callAria": "Sună Take & Bring la {phone}",
+    "whatsappAria": "Discută cu Take & Bring pe WhatsApp"
+  },
   "footer": {
     "findUsSocial": "Find us on social media",
     "company": "Company",

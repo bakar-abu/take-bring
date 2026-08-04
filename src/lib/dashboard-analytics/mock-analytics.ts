@@ -127,6 +127,18 @@ const SNAPSHOT_7D: WebsiteAnalyticsSnapshot = {
     { id: "calculator", label: "Calculate price", clicks: 94, conversions: 14 },
     { id: "call", label: "Call", clicks: 71, conversions: 0 },
     { id: "whatsapp", label: "WhatsApp", clicks: 58, conversions: 0 },
+    {
+      id: "floating-call",
+      label: "Floating Call",
+      clicks: 34,
+      conversions: 0,
+    },
+    {
+      id: "floating-whatsapp",
+      label: "Floating WhatsApp",
+      clicks: 41,
+      conversions: 0,
+    },
     { id: "track", label: "Track shipment", clicks: 43, conversions: 0 },
   ],
   topPages: [
@@ -296,6 +308,18 @@ const SNAPSHOT_30D: WebsiteAnalyticsSnapshot = {
     { id: "calculator", label: "Calculate price", clicks: 356, conversions: 48 },
     { id: "call", label: "Call", clicks: 268, conversions: 0 },
     { id: "whatsapp", label: "WhatsApp", clicks: 214, conversions: 0 },
+    {
+      id: "floating-call",
+      label: "Floating Call",
+      clicks: 128,
+      conversions: 0,
+    },
+    {
+      id: "floating-whatsapp",
+      label: "Floating WhatsApp",
+      clicks: 156,
+      conversions: 0,
+    },
     { id: "track", label: "Track shipment", clicks: 176, conversions: 0 },
   ],
   topPages: [

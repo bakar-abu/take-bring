@@ -121,6 +121,10 @@
     "accept": "Accept all",
     "reject": "Reject"
   },
+  "floatingContact": {
+    "callAria": "Call Take & Bring at {phone}",
+    "whatsappAria": "Chat with Take & Bring on WhatsApp"
+  },
   "footer": {
     "findUsSocial": "Find us on social media",
     "company": "Company",
