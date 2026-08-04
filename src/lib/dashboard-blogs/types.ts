@@ -19,7 +19,9 @@ export type DashboardBlog = {
   dateLabel: string;
   bodyHtml: string;
   coverImageUrl: string;
+  coverImageAssetId?: string | null;
   viewsCount: number;
+  publishedAt?: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -35,4 +37,5 @@ export type BlogEditorInput = {
   dateLabel: string;
   bodyHtml: string;
   coverImageUrl: string;
+  coverImageAssetId?: string | null;
 };
