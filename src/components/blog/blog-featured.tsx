@@ -3,22 +3,27 @@
 import React, { useRef } from "react";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
-import { ArrowRight, Clock } from "lucide-react";
+import { ArrowRight, Clock, FileText } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
-import { BLOG_POSTS, formatBlogDate } from "@/config/blog";
+import { formatBlogDate } from "@/config/blog";
+import type { PublicBlogPost } from "@/lib/public-blogs";
 import { SectionTag } from "./blog-hero";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-export function BlogFeatured() {
+function displayDate(post: PublicBlogPost, locale: string) {
+  if (post.dateLabel?.trim()) return post.dateLabel.trim();
+  return formatBlogDate(post.dateIso.slice(0, 10), locale);
+}
+
+export function BlogFeatured({ post }: { post: PublicBlogPost | null }) {
   const t = useTranslations("blogPage");
   const locale = useLocale();
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
 
-  const post = BLOG_POSTS.find((p) => p.featured) ?? BLOG_POSTS[0];
-  const Icon = post.icon;
+  if (!post) return null;
 
   return (
     <section className="bg-white pt-16 md:pt-24" aria-labelledby="blog-featured-heading">
@@ -45,9 +50,10 @@ export function BlogFeatured() {
           >
             <div className="relative aspect-[16/10] overflow-hidden lg:aspect-auto lg:min-h-[360px]">
               <Image
-                src={post.image}
-                alt={t(`posts.${post.slug}.title`)}
+                src={post.coverImageUrl}
+                alt={post.title}
                 fill
+                unoptimized
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 priority
@@ -56,13 +62,13 @@ export function BlogFeatured() {
                 className="absolute left-5 top-5 inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold text-logo-bg shadow-lg"
                 style={{ background: post.accent }}
               >
-                <Icon className="h-4 w-4" strokeWidth={2.2} />
-                {t(`posts.${post.slug}.category`)}
+                <FileText className="h-4 w-4" strokeWidth={2.2} />
+                {post.category}
               </span>
             </div>
             <div className="flex flex-col justify-center p-7 md:p-10">
               <div className="mb-4 flex items-center gap-3 text-xs font-semibold text-foreground/55">
-                <span>{formatBlogDate(post.date, locale)}</span>
+                <span>{displayDate(post, locale)}</span>
                 <span className="h-1 w-1 rounded-full bg-foreground/30" />
                 <span className="inline-flex items-center gap-1">
                   <Clock className="h-3.5 w-3.5" />
@@ -70,10 +76,10 @@ export function BlogFeatured() {
                 </span>
               </div>
               <h3 className="text-2xl font-extrabold leading-tight text-logo-bg transition-colors group-hover:text-primary-dark md:text-3xl">
-                {t(`posts.${post.slug}.title`)}
+                {post.title}
               </h3>
               <p className="mt-4 text-base leading-relaxed text-foreground/65">
-                {t(`posts.${post.slug}.excerpt`)}
+                {post.excerpt}
               </p>
               <span className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-primary-dark">
                 {t("readMore")}

@@ -1,11 +1,17 @@
 import { JsonLd } from "@/components/shared/json-ld";
-import { BLOG_POSTS, BLOG_PAGE } from "@/config/blog";
+import { BLOG_PAGE } from "@/config/blog";
 import { buildBreadcrumbJsonLd, buildWebPageJsonLd } from "@/lib/seo/metadata";
 import { buildLocalizedUrl } from "@/lib/seo-helpers";
+import type { PublicBlogPost } from "@/lib/public-blogs";
 import { getTranslations } from "next-intl/server";
 
-export async function BlogSeo({ locale }: { locale: string }) {
-  const t = await getTranslations({ locale, namespace: "blogPage" });
+export async function BlogSeo({
+  locale,
+  posts,
+}: {
+  locale: string;
+  posts: PublicBlogPost[];
+}) {
   const tMeta = await getTranslations({ locale, namespace: "metadata.blog" });
   const tNav = await getTranslations({ locale, namespace: "nav" });
 
@@ -18,11 +24,11 @@ export async function BlogSeo({ locale }: { locale: string }) {
     name: tMeta("title"),
     description: tMeta("description"),
     url: pageUrl,
-    blogPost: BLOG_POSTS.map((post) => ({
+    blogPost: posts.map((post) => ({
       "@type": "BlogPosting",
-      headline: t(`posts.${post.slug}.title`),
-      description: t(`posts.${post.slug}.excerpt`),
-      datePublished: post.date,
+      headline: post.title,
+      description: post.excerpt,
+      datePublished: post.dateIso,
       url: `${pageUrl}/${post.slug}`,
       author: { "@type": "Organization", name: "Take & Bring" },
     })),

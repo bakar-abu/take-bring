@@ -1,8 +1,11 @@
 import { BlogListPage, BlogSeo } from "@/components/blog";
 import { BLOG_PAGE } from "@/config/blog";
 import { generatePageMetadata } from "@/lib/seo/page-helpers";
+import { getPublishedBlogs } from "@/lib/public-blogs";
 import { setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
+
+export const dynamic = "force-dynamic";
 
 type PageProps = {
   params: Promise<{ locale: string }>;
@@ -23,10 +26,12 @@ export default async function BlogPage({ params }: PageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
 
+  const posts = await getPublishedBlogs();
+
   return (
     <>
-      <BlogSeo locale={locale} />
-      <BlogListPage />
+      <BlogSeo locale={locale} posts={posts} />
+      <BlogListPage posts={posts} />
     </>
   );
 }

@@ -3,17 +3,28 @@
 import React, { useRef } from "react";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
-import { ArrowUpRight, Clock } from "lucide-react";
+import { ArrowUpRight, Clock, FileText } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
-import { formatBlogDate, type BlogPost } from "@/config/blog";
+import { formatBlogDate } from "@/config/blog";
+import type { PublicBlogPost } from "@/lib/public-blogs";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-export function BlogCard({ post, index }: { post: BlogPost; index: number }) {
+function displayDate(post: PublicBlogPost, locale: string) {
+  if (post.dateLabel?.trim()) return post.dateLabel.trim();
+  return formatBlogDate(post.dateIso.slice(0, 10), locale);
+}
+
+export function BlogCard({
+  post,
+  index,
+}: {
+  post: PublicBlogPost;
+  index: number;
+}) {
   const t = useTranslations("blogPage");
   const locale = useLocale();
-  const Icon = post.icon;
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
 
@@ -31,9 +42,10 @@ export function BlogCard({ post, index }: { post: BlogPost; index: number }) {
       >
         <div className="relative aspect-[16/10] overflow-hidden">
           <Image
-            src={post.image}
-            alt={t(`posts.${post.slug}.title`)}
+            src={post.coverImageUrl}
+            alt={post.title}
             fill
+            unoptimized
             className="object-cover transition-transform duration-500 group-hover:scale-105"
             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
@@ -42,13 +54,13 @@ export function BlogCard({ post, index }: { post: BlogPost; index: number }) {
             className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold text-logo-bg shadow-lg"
             style={{ background: post.accent }}
           >
-            <Icon className="h-3.5 w-3.5" strokeWidth={2.2} />
-            {t(`posts.${post.slug}.category`)}
+            <FileText className="h-3.5 w-3.5" strokeWidth={2.2} />
+            {post.category}
           </span>
         </div>
         <div className="flex flex-1 flex-col p-6">
           <div className="mb-3 flex items-center gap-3 text-xs font-semibold text-foreground/55">
-            <span>{formatBlogDate(post.date, locale)}</span>
+            <span>{displayDate(post, locale)}</span>
             <span className="h-1 w-1 rounded-full bg-foreground/30" />
             <span className="inline-flex items-center gap-1">
               <Clock className="h-3.5 w-3.5" />
@@ -56,10 +68,10 @@ export function BlogCard({ post, index }: { post: BlogPost; index: number }) {
             </span>
           </div>
           <h3 className="text-lg font-extrabold leading-snug text-logo-bg transition-colors group-hover:text-primary-dark">
-            {t(`posts.${post.slug}.title`)}
+            {post.title}
           </h3>
           <p className="mt-2 flex-1 text-sm leading-relaxed text-foreground/65">
-            {t(`posts.${post.slug}.excerpt`)}
+            {post.excerpt}
           </p>
           <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-primary-dark">
             {t("readMore")}
