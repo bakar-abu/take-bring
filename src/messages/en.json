@@ -49,7 +49,9 @@
     "numberLabel": "Phone number",
     "numberPlaceholder": "Your phone number",
     "sendingRequest": "Sending your quote request",
-    "requestSentMessage": "Your request has been sent. You will get a call shortly."
+    "requestSentMessage": "Your request has been sent. You will get a call shortly.",
+    "toastSubmitted": "Your mail is submitted",
+    "sendError": "Could not send your request. Please try again."
   },
   "slideshow": {
     "freightTitle": "Freight forwarding",
@@ -152,7 +154,7 @@
     "tag": "About Company",
     "title": "About Company",
     "imageAlt": "Take & Bring logistics depot with delivery fleet and warehouse operations",
-    "paragraph1": "For more than 20 years, we have been a trusted partner in optimizing every part of transport and logistics for customers worldwide. Our foundation is built on deep industry expertise, innovative technology, and an unwavering commitment to absolute reliability. At TimeZone, we approach your logistics challenges with passion and precision to secure our shared success.",
+    "paragraph1": "For more than 20 years, we have been a trusted partner in optimizing every part of transport and logistics for customers worldwide. Our foundation is built on deep industry expertise, innovative technology, and an unwavering commitment to absolute reliability. At Take & Bring, we approach your logistics challenges with passion and precision to secure our shared success.",
     "paragraph2": "Our core competencies focus on delivering high-performance solutions:",
     "competenciesAriaLabel": "Core competencies",
     "competencyCourierTitle": "Courier service",
@@ -521,7 +523,9 @@
     "submitButton": "Request Quote",
     "submitSending": "Sending...",
     "mapAriaLabel": "Map showing company location",
-    "mapPlaceholder": "Map will be displayed here"
+    "mapPlaceholder": "Map will be displayed here",
+    "successMessage": "Your query has been submitted. Our representative will contact you within 2 hours.",
+    "errorMessage": "We are having trouble sending your query. Please contact us via mail or WhatsApp."
   },
   "newsletterSection": {
     "tag": "Newsletter",
@@ -529,7 +533,10 @@
     "subtitle": "Get logistics tips and offers in your inbox.",
     "emailPlaceholder": "Your email",
     "subscribe": "Subscribe",
-    "privacyNote": "We respect your privacy. Unsubscribe anytime."
+    "privacyNote": "We respect your privacy. Unsubscribe anytime.",
+    "successMessage": "Thanks for subscribing!",
+    "errorMessage": "Could not subscribe. Please try again.",
+    "toastSubmitted": "Your mail is submitted"
   },
   "missionVisionSection": {
     "tag": "Our purpose",
@@ -1592,7 +1599,8 @@
           "Track KPIs and consolidate with one strong partner for the best rates."
         ]
       }
-    }
+    },
+    "emptyState": "No published posts yet."
   },
   "contactPage": {
     "heroTag": "Contact us",
@@ -1756,5 +1764,27 @@
         ]
       }
     ]
+  },
+  "common": {
+    "mailSubmittedToast": "Your mail is submitted",
+    "sendErrorGeneric": "Could not send your request. Please try again.",
+    "subscribeErrorGeneric": "Could not subscribe. Please try again.",
+    "captchaTitle": "Quick verification",
+    "captchaSubtitle": "Solve this to confirm you're human.",
+    "captchaQuestion": "What is {question}?",
+    "captchaIncorrect": "Incorrect answer. Please try again.",
+    "captchaAnswerPlaceholder": "Your answer",
+    "captchaVerify": "Verify",
+    "captchaVerifying": "Verifying...",
+    "captchaCloseVerification": "Close verification",
+    "captchaClose": "Close",
+    "dismiss": "Dismiss",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "goToSlide": "Go to slide {n}",
+    "blogEmpty": "No published posts yet.",
+    "captchaCancel": "Cancel",
+    "captchaVerifySend": "Verify & send",
+    "captchaSending": "Sending..."
   }
 }

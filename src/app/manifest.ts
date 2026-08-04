@@ -7,7 +7,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: siteConfig.name,
     short_name: "Take & Bring",
-    description: "Courier & Logistics Services",
+    description: "Kurier- und Logistikdienstleistungen | Courier & Logistics | Curier & Logistică",
     start_url: "/",
     display: "standalone",
     background_color: "#ffffff",

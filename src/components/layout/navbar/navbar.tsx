@@ -85,6 +85,7 @@ function NavLink({
 
 export function Navbar() {
   const t = useTranslations("nav");
+  const tCommon = useTranslations("common");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -152,7 +153,7 @@ export function Navbar() {
             onClick={() => setMobileMenuOpen((open) => !open)}
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-foreground hover:bg-primary-light/30 focus:outline-none focus:ring-2 focus:ring-primary md:hidden"
             aria-expanded={mobileMenuOpen}
-            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-label={mobileMenuOpen ? tCommon("closeMenu") : tCommon("openMenu")}
           >
             <i
               className={cn(

@@ -46,18 +46,18 @@ export function NewsletterSection() {
       } | null;
 
       if (!response.ok || !data?.ok) {
-        throw new Error(data?.error || "Could not subscribe. Please try again.");
+        throw new Error(data?.error || t("errorMessage"));
       }
 
       setCaptchaOpen(false);
       setSubmitted(true);
       setEmail("");
-      showToast("Your mail is submitted");
+      showToast(t("toastSubmitted"));
     } catch (err) {
       setError(
         err instanceof Error && err.message
           ? err.message
-          : "Could not subscribe. Please try again.",
+          : t("errorMessage"),
       );
     } finally {
       setIsSubmitting(false);
