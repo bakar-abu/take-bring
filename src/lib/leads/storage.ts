@@ -1,68 +1,93 @@
-import { randomUUID } from "crypto";
-import { promises as fs } from "fs";
-import path from "path";
+import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { normalizeLeadInput } from "@/lib/leads/helpers";
-import type { Lead, LeadInput, LeadListItem } from "@/lib/leads/types";
+import {
+  mapLeadRow,
+  toLeadListItem,
+  type LeadRow,
+} from "@/lib/leads/map";
+import type {
+  Lead,
+  LeadInput,
+  LeadListItem,
+  LeadStatus,
+} from "@/lib/leads/types";
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const LEADS_FILE = path.join(DATA_DIR, "leads.json");
-
-async function ensureStore() {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  try {
-    await fs.access(LEADS_FILE);
-  } catch {
-    await fs.writeFile(LEADS_FILE, "[]\n", "utf8");
-  }
-}
-
-async function readLeads(): Promise<Lead[]> {
-  await ensureStore();
-  const raw = await fs.readFile(LEADS_FILE, "utf8");
-  try {
-    const parsed = JSON.parse(raw) as Lead[];
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
-
-async function writeLeads(leads: Lead[]) {
-  await ensureStore();
-  await fs.writeFile(LEADS_FILE, `${JSON.stringify(leads, null, 2)}\n`, "utf8");
-}
+const LEAD_SELECT =
+  "id, created_at, updated_at, type, status, form_key, source_page, source_label, full_name, email, phone, whatsapp, inquiry_type, message, pickup_address, delivery_address, length, width, height" as const;
 
 export async function createLead(input: LeadInput): Promise<Lead> {
-  const lead: Lead = {
-    id: randomUUID(),
-    createdAt: new Date().toISOString(),
-    ...normalizeLeadInput(input),
-  };
+  const normalized = normalizeLeadInput(input);
+  const supabase = getSupabaseAdmin();
 
-  const leads = await readLeads();
-  leads.unshift(lead);
-  await writeLeads(leads);
-  return lead;
+  const { data, error } = await supabase
+    .from("leads")
+    .insert({
+      type: normalized.type,
+      status: "NEW",
+      form_key: normalized.formKey,
+      source_page: normalized.sourcePage,
+      source_label: normalized.sourceLabel,
+      full_name: normalized.fullName,
+      email: normalized.email,
+      phone: normalized.phone,
+      whatsapp: normalized.whatsapp,
+      inquiry_type: normalized.inquiryType,
+      message: normalized.message,
+      pickup_address: normalized.pickupAddress,
+      delivery_address: normalized.deliveryAddress,
+      length: normalized.length,
+      width: normalized.width,
+      height: normalized.height,
+    })
+    .select(LEAD_SELECT)
+    .single();
+
+  if (error) throw new Error(error.message);
+  return mapLeadRow(data as LeadRow);
 }
 
 export async function listLeads(): Promise<LeadListItem[]> {
-  const leads = await readLeads();
-  return leads.map((lead) => ({
-    id: lead.id,
-    createdAt: lead.createdAt,
-    fullName: lead.fullName,
-    email: lead.email,
-    phone: lead.phone,
-    pickupAddress: lead.pickupAddress,
-    deliveryAddress: lead.deliveryAddress,
-    sourceLabel: lead.sourceLabel,
-    sourcePage: lead.sourcePage,
-    type: lead.type,
-    formKey: lead.formKey,
-  }));
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase
+    .from("leads")
+    .select(LEAD_SELECT)
+    .order("created_at", { ascending: false });
+
+  if (error) throw new Error(error.message);
+  return (data ?? []).map((row) => toLeadListItem(mapLeadRow(row as LeadRow)));
 }
 
 export async function getLeadById(id: string): Promise<Lead | null> {
-  const leads = await readLeads();
-  return leads.find((lead) => lead.id === id) ?? null;
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase
+    .from("leads")
+    .select(LEAD_SELECT)
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error) throw new Error(error.message);
+  if (!data) return null;
+  return mapLeadRow(data as LeadRow);
+}
+
+export async function updateLeadStatus(
+  id: string,
+  status: LeadStatus,
+): Promise<Lead> {
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase
+    .from("leads")
+    .update({ status })
+    .eq("id", id)
+    .select(LEAD_SELECT)
+    .single();
+
+  if (error) throw new Error(error.message);
+  return mapLeadRow(data as LeadRow);
+}
+
+export async function deleteLead(id: string): Promise<void> {
+  const supabase = getSupabaseAdmin();
+  const { error } = await supabase.from("leads").delete().eq("id", id);
+  if (error) throw new Error(error.message);
 }

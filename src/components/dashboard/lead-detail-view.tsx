@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { LeadDetailActions } from "@/components/dashboard/lead-detail-actions";
 import { displayLeadValue } from "@/lib/leads/helpers";
 import type { Lead } from "@/lib/leads/types";
 
@@ -72,12 +73,16 @@ export function LeadDetailView({ lead }: LeadDetailViewProps) {
               {displayLeadValue(lead.sourceLabel)}
             </p>
           </div>
-          <span className="rounded-full bg-primary/20 px-3 py-1 text-xs font-bold uppercase tracking-wide text-logo-bg">
-            {lead.type.replace("-", " ")}
-          </span>
+          <div className="flex flex-col items-end gap-3">
+            <span className="rounded-full bg-primary/20 px-3 py-1 text-xs font-bold uppercase tracking-wide text-logo-bg">
+              {lead.type.replace("-", " ")}
+            </span>
+            <LeadDetailActions lead={lead} />
+          </div>
         </div>
 
         <dl>
+          <DetailRow label="Status" value={lead.status} />
           <DetailRow label="Customer name" value={lead.fullName} />
           <DetailRow label="Email" value={lead.email} />
           <DetailRow label="Phone" value={lead.phone} />

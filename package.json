@@ -11,7 +11,8 @@
     "lint": "eslint .",
     "test:mail": "node scripts/test-mail.cjs",
     "seed:admin": "node scripts/seed-admin-user.cjs",
-    "migrate:blogs": "node scripts/migrate-blogs.cjs"
+    "migrate:blogs": "node scripts/migrate-blogs.cjs",
+    "migrate:leads": "node scripts/migrate-leads.cjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.0",
