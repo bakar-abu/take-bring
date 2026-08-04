@@ -3,6 +3,7 @@ import {
   LOCALE_LABELS,
   PAGE_LABELS,
   SERVICE_ANALYTICS,
+  serviceIdForPath,
 } from "@/lib/dashboard-analytics/constants";
 import { listAnalyticsEventsSince } from "@/lib/dashboard-analytics/storage";
 import type {
@@ -107,15 +108,15 @@ export async function getAnalyticsSnapshot(
     const locale =
       event.locale === "ro" || event.locale === "en" || event.locale === "de"
         ? event.locale
-        : "de";
+        : "ro";
     const id = event.visitor_id || event.session_id || event.id;
     localeBuckets[locale].visitors.add(id);
   }
 
-  // Approximate locale leads by source page locale prefix when present
+  // Unprefixed source pages are Romanian (default locale).
   for (const lead of currentLeads) {
     const match = lead.sourcePage.match(/^\/(en|de|ro)(?=\/|$)/);
-    const locale = (match?.[1] as "ro" | "de" | "en" | undefined) ?? "de";
+    const locale = (match?.[1] as "ro" | "de" | "en" | undefined) ?? "ro";
     localeBuckets[locale].leads += 1;
   }
 
@@ -153,6 +154,8 @@ export async function getAnalyticsSnapshot(
 
   const pageViewCounts = new Map<string, number>();
   const pageSessions = new Map<string, Set<string>>();
+  const serviceViewCounts = new Map<string, number>();
+
   for (const event of currentEvents) {
     if (event.event_type !== "page_view") continue;
     const path = stripLocalePrefix(event.path);
@@ -160,18 +163,28 @@ export async function getAnalyticsSnapshot(
     const set = pageSessions.get(path) ?? new Set<string>();
     set.add(event.session_id || event.visitor_id || event.id);
     pageSessions.set(path, set);
+
+    const serviceId = serviceIdForPath(path);
+    if (serviceId) {
+      serviceViewCounts.set(
+        serviceId,
+        (serviceViewCounts.get(serviceId) ?? 0) + 1,
+      );
+    }
   }
 
   const services = SERVICE_ANALYTICS.map((service) => {
-    const views = pageViewCounts.get(service.path) ?? 0;
+    const views = serviceViewCounts.get(service.id) ?? 0;
     const formKeys = service.formKeys as readonly string[];
     const leads = currentLeads.filter((lead) =>
       formKeys.includes(lead.formKey),
     ).length;
+    const paths = service.paths as readonly string[];
     return {
       id: service.id,
       label: service.label,
-      path: service.path,
+      // Show all locale URLs so EN/RO visits are obvious in the dashboard.
+      path: paths.join(" · "),
       views,
       leads,
     };

@@ -33,7 +33,7 @@ function cleanPath(path: string) {
 function normalizeLocale(locale: string) {
   const value = locale.trim().toLowerCase();
   if (value === "ro" || value === "de" || value === "en") return value;
-  return "de";
+  return "ro";
 }
 
 export async function insertAnalyticsEvent(
@@ -43,7 +43,7 @@ export async function insertAnalyticsEvent(
   const { error } = await supabase.from("analytics_events").insert({
     event_type: input.eventType,
     path: cleanPath(input.path || "/"),
-    locale: normalizeLocale(input.locale || "de"),
+    locale: normalizeLocale(input.locale || "ro"),
     referrer: (input.referrer || "").slice(0, 500),
     cta_id: (input.ctaId || "").slice(0, 120),
     consent_value: input.consentValue || "",

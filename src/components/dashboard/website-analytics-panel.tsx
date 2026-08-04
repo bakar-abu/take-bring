@@ -361,7 +361,7 @@ export function WebsiteAnalyticsPanel({
       <div className="grid gap-4 lg:grid-cols-2">
         <SectionCard
           title="Traffic by locale"
-          description="RO is default; DE is HQ market. Compare visit share vs lead share."
+          description="RO (Romanian) is default on `/`. EN is `/en`, DE (German HQ) is `/de`. Compare visit share vs lead share."
         >
           <ul className="space-y-4">
             {snapshot.locales.map((row) => (
@@ -462,8 +462,12 @@ export function WebsiteAnalyticsPanel({
                   <td className="px-1 py-2.5 font-semibold text-logo-bg">
                     {row.label}
                   </td>
-                  <td className="hidden truncate px-1 py-2.5 text-foreground/55 sm:table-cell">
-                    {row.path}
+                  <td className="hidden px-1 py-2.5 text-xs leading-relaxed text-foreground/55 sm:table-cell">
+                    {row.path.split(" · ").map((p) => (
+                      <div key={p} className="font-mono">
+                        {p}
+                      </div>
+                    ))}
                   </td>
                   <td className="px-1 py-2.5 text-foreground/80">
                     {formatNumber(row.views)}
