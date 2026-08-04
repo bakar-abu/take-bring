@@ -42,7 +42,9 @@ function getInitials(name: string) {
  * Headless column definitions for dashboard users.
  */
 export function createUsersColumns(options?: {
+  onEditUser?: (user: DashboardUser) => void;
   onDeleteUser?: (user: DashboardUser) => void;
+  busyUserId?: string | null;
 }): ColumnDef<DashboardUser>[] {
   return [
     {
@@ -144,9 +146,12 @@ export function createUsersColumns(options?: {
         <div className="flex gap-1">
           <button
             type="button"
-            disabled
-            title="Edit user — coming soon"
-            className="inline-flex cursor-not-allowed items-center gap-1 rounded-md border border-black/10 px-2 py-1 text-[11px] font-semibold text-foreground/35"
+            onClick={(event) => {
+              event.stopPropagation();
+              options?.onEditUser?.(row.original);
+            }}
+            disabled={options?.busyUserId === row.original.id}
+            className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-black/10 px-2 py-1 text-[11px] font-semibold text-logo-bg/80 transition-colors hover:border-primary/40 disabled:cursor-not-allowed disabled:opacity-45"
           >
             <Pencil className="h-3 w-3" aria-hidden />
             Edit
@@ -157,10 +162,11 @@ export function createUsersColumns(options?: {
               event.stopPropagation();
               options?.onDeleteUser?.(row.original);
             }}
-            className="inline-flex items-center gap-1 rounded-md border border-red-200 bg-red-50 px-2 py-1 text-[11px] font-semibold text-red-700 transition-colors hover:bg-red-100"
+            disabled={options?.busyUserId === row.original.id}
+            className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-red-200 bg-red-50 px-2 py-1 text-[11px] font-semibold text-red-700 transition-colors hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-45"
           >
             <Trash2 className="h-3 w-3" aria-hidden />
-            Delete
+            {options?.busyUserId === row.original.id ? "Working..." : "Delete"}
           </button>
         </div>
       ),

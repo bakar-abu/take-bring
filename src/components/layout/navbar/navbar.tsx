@@ -1,6 +1,5 @@
 "use client";
 
-import takeBringLogo from "@/assets/images/take-bring-logo.png";
 import { DeliveryCtaButton } from "@/components/ui/delivery-cta-button";
 import { siteConfig } from "@/config/site";
 import { Link, usePathname } from "@/lib/i18n/navigation";
@@ -11,6 +10,9 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { LocaleDropdown } from "./locale-dropdown";
 import { ServicesDropdown } from "./services-dropdown";
+
+const BRAND_LOGO =
+  "/images/c__Users_abuza_AppData_Roaming_Cursor_User_workspaceStorage_2e410bc3959c12af5b1f43beac22d1e6_images_logo-png-768x153-a88831ff-1cf3-42a5-b7a0-9271339be69d.webp";
 
 function NavbarLogo({
   className,
@@ -25,9 +27,11 @@ function NavbarLogo({
       className={cn("relative flex shrink-0 items-center", className)}
     >
       <Image
-        src={takeBringLogo}
+        src={BRAND_LOGO}
         alt={`${siteConfig.name} logo`}
         priority
+        width={180}
+        height={52}
         className={cn("h-8 w-auto object-contain object-left md:h-14", imageClassName)}
       />
     </Link>

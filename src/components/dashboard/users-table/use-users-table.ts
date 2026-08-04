@@ -29,7 +29,9 @@ function resolveUpdater<T>(updater: Updater<T>, previous: T): T {
 type UseUsersTableOptions = {
   data: DashboardUser[];
   pageSize?: number;
+  onEditUser?: (user: DashboardUser) => void;
   onDeleteUser?: (user: DashboardUser) => void;
+  busyUserId?: string | null;
 };
 
 /**
@@ -38,11 +40,13 @@ type UseUsersTableOptions = {
 export function useUsersTable({
   data,
   pageSize = 8,
+  onEditUser,
   onDeleteUser,
+  busyUserId,
 }: UseUsersTableOptions) {
   const columns = useMemo(
-    () => createUsersColumns({ onDeleteUser }),
-    [onDeleteUser],
+    () => createUsersColumns({ onEditUser, onDeleteUser, busyUserId }),
+    [onDeleteUser, onEditUser, busyUserId],
   );
 
   const [sorting, setSorting] = useState<SortingState>([

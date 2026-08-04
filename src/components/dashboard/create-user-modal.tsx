@@ -12,7 +12,15 @@ import {
 type CreateUserModalProps = {
   open: boolean;
   onClose: () => void;
-  onCreate: (
+  mode?: "create" | "edit";
+  submitLabel?: string;
+  pending?: boolean;
+  initialValues?: {
+    name: string;
+    email: string;
+    role: DashboardUserRole;
+  };
+  onSubmit: (
     input: CreateDashboardUserInput,
   ) => boolean | void | Promise<boolean | void>;
 };
@@ -25,7 +33,11 @@ const fieldClassName =
 export function CreateUserModal({
   open,
   onClose,
-  onCreate,
+  mode = "create",
+  submitLabel,
+  pending = false,
+  initialValues,
+  onSubmit,
 }: CreateUserModalProps) {
   const titleId = useId();
   const nameRef = useRef<HTMLInputElement>(null);
@@ -38,15 +50,15 @@ export function CreateUserModal({
 
   useEffect(() => {
     if (!open) return;
-    setName("");
-    setEmail("");
+    setName(initialValues?.name ?? "");
+    setEmail(initialValues?.email ?? "");
     setPassword("");
-    setRole("Viewer");
+    setRole(initialValues?.role ?? "Viewer");
     setShowPassword(false);
     setError(null);
     const timer = window.setTimeout(() => nameRef.current?.focus(), 50);
     return () => window.clearTimeout(timer);
-  }, [open]);
+  }, [open, initialValues]);
 
   useEffect(() => {
     if (!open) return;
@@ -59,12 +71,17 @@ export function CreateUserModal({
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (pending) return;
     setError(null);
     const trimmedName = name.trim();
     const trimmedEmail = email.trim();
 
-    if (!trimmedName || !trimmedEmail || !password) {
-      setError("Please fill in name, email, and password.");
+    if (!trimmedName || !trimmedEmail || (mode === "create" && !password)) {
+      setError(
+        mode === "create"
+          ? "Please fill in name, email, and password."
+          : "Please fill in name and email.",
+      );
       return;
     }
 
@@ -73,12 +90,12 @@ export function CreateUserModal({
       return;
     }
 
-    if (password.length < 8) {
+    if (password.length > 0 && password.length < 8) {
       setError("Password must be at least 8 characters.");
       return;
     }
 
-    const created = await onCreate({
+    const created = await onSubmit({
       name: trimmedName,
       email: trimmedEmail,
       password,
@@ -124,11 +141,12 @@ export function CreateUserModal({
                   id={titleId}
                   className="text-xl font-extrabold tracking-tight text-logo-bg"
                 >
-                  Create user
+                  {mode === "edit" ? "Edit user" : "Create user"}
                 </h2>
                 <p className="mt-1 text-sm text-foreground/55">
-                  Add a dashboard account with a role. Password is collected for
-                  UI preview only — login is enabled after backend integration.
+                  {mode === "edit"
+                    ? "Update user details. Leave password empty if you don't want to change it."
+                    : "Add a dashboard account with a role."}
                 </p>
               </div>
               <button
@@ -164,6 +182,7 @@ export function CreateUserModal({
                   name="email"
                   autoComplete="off"
                   required
+                  disabled={mode === "edit"}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@take-bring.eu"
@@ -179,10 +198,14 @@ export function CreateUserModal({
                   type={showPassword ? "text" : "password"}
                   name="password"
                   autoComplete="new-password"
-                  required
+                  required={mode === "create"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="At least 6 characters"
+                  placeholder={
+                    mode === "edit"
+                      ? "Leave blank to keep current password"
+                      : "At least 8 characters"
+                  }
                   className={`${fieldClassName} pr-11`}
                 />
                 <button
@@ -232,15 +255,17 @@ export function CreateUserModal({
                 <button
                   type="button"
                   onClick={onClose}
+                  disabled={pending}
                   className="rounded-lg border border-black/15 px-4 py-2.5 text-sm font-semibold text-logo-bg transition-colors hover:border-primary/40"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="rounded-lg bg-logo-bg px-4 py-2.5 text-sm font-bold text-white transition-opacity hover:opacity-90"
+                  disabled={pending}
+                  className="rounded-lg bg-logo-bg px-4 py-2.5 text-sm font-bold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  Create user
+                  {pending ? "Saving..." : submitLabel ?? (mode === "edit" ? "Save changes" : "Create user")}
                 </button>
               </div>
             </form>
