@@ -30,6 +30,7 @@ yarn-error.log*
 
 # env files (use local .env — never commit secrets)
 .env*
+!.env.example
 
 # typescript
 *.tsbuildinfo
