@@ -54,6 +54,8 @@ export function OverviewPanel({
   const [blogCount, setBlogCount] = useState(0);
   const [publishedCount, setPublishedCount] = useState(0);
   const [draftCount, setDraftCount] = useState(0);
+  const [analyticsLive, setAnalyticsLive] = useState(false);
+  const [analyticsVisitors, setAnalyticsVisitors] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -73,7 +75,22 @@ export function OverviewPanel({
         // Keep zeros on failure
       }
     }
+    async function loadAnalytics() {
+      try {
+        const response = await fetch("/api/dashboard/analytics?period=30d");
+        const data = (await response.json()) as {
+          ok?: boolean;
+          snapshot?: { kpis?: { visitors?: number } };
+        };
+        if (cancelled || !response.ok || !data.ok) return;
+        setAnalyticsLive(true);
+        setAnalyticsVisitors(data.snapshot?.kpis?.visitors ?? 0);
+      } catch {
+        setAnalyticsLive(false);
+      }
+    }
     void loadBlogStats();
+    void loadAnalytics();
     return () => {
       cancelled = true;
     };
@@ -121,8 +138,12 @@ export function OverviewPanel({
         />
         <StatCard
           label="Analytics"
-          value="Live"
-          hint="Traffic & conversions"
+          value={analyticsLive ? String(analyticsVisitors) : "—"}
+          hint={
+            analyticsLive
+              ? "Visitors (30d) · live first-party"
+              : "Connecting to analytics…"
+          }
           href="/tb-dashboard/website-analytics"
           icon={BarChart3}
         />
@@ -156,7 +177,11 @@ export function OverviewPanel({
           <GlanceLink
             href="/tb-dashboard/website-analytics"
             title="Site performance"
-            text="Locale mix, service demand, CTAs, and Clarity UX checks."
+            text={
+              analyticsLive
+                ? `${analyticsVisitors.toLocaleString()} visitors (30d) · Clarity + first-party events.`
+                : "Locale mix, service demand, CTAs, and Clarity UX checks."
+            }
           />
         </div>
       </section>

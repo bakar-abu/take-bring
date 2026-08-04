@@ -6,6 +6,7 @@ import { Inter } from "next/font/google";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/shared/json-ld";
 import { CookieConsent } from "@/components/shared/cookie-consent";
+import { AnalyticsTracker } from "@/components/shared/analytics-tracker";
 import { MicrosoftClarity } from "@/components/shared/microsoft-clarity";
 import { ToastProvider } from "@/components/shared/toast";
 import { Footer } from "@/components/layout/footer";
@@ -108,6 +109,7 @@ export default async function LocaleLayout({
             <main>{children}</main>
             <Footer />
             <CookieConsent />
+            <AnalyticsTracker />
             <MicrosoftClarity />
           </ToastProvider>
         </NextIntlClientProvider>
