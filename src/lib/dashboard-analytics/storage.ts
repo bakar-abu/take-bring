@@ -12,6 +12,10 @@ export type AnalyticsEventRow = {
   consent_value: string;
   session_id: string;
   visitor_id: string;
+  country: string;
+  device: string;
+  browser: string;
+  os: string;
   meta: Record<string, unknown> | null;
 };
 
@@ -36,6 +40,10 @@ function normalizeLocale(locale: string) {
   return "ro";
 }
 
+function cleanTag(value: string | undefined, max = 40) {
+  return (value || "").trim().slice(0, max);
+}
+
 export async function insertAnalyticsEvent(
   input: AnalyticsEventInput,
 ): Promise<void> {
@@ -49,6 +57,10 @@ export async function insertAnalyticsEvent(
     consent_value: input.consentValue || "",
     session_id: (input.sessionId || "").slice(0, 120),
     visitor_id: (input.visitorId || "").slice(0, 120),
+    country: cleanTag(input.country, 8).toUpperCase(),
+    device: cleanTag(input.device),
+    browser: cleanTag(input.browser),
+    os: cleanTag(input.os),
     meta: input.meta ?? {},
   });
 
@@ -62,12 +74,18 @@ export async function listAnalyticsEventsSince(
   const { data, error } = await supabase
     .from("analytics_events")
     .select(
-      "id, created_at, event_type, path, locale, referrer, cta_id, consent_value, session_id, visitor_id, meta",
+      "id, created_at, event_type, path, locale, referrer, cta_id, consent_value, session_id, visitor_id, country, device, browser, os, meta",
     )
     .gte("created_at", sinceIso)
     .order("created_at", { ascending: false })
     .limit(20000);
 
   if (error) throw new Error(error.message);
-  return (data ?? []) as AnalyticsEventRow[];
+  return (data ?? []).map((row) => ({
+    ...(row as AnalyticsEventRow),
+    country: (row as AnalyticsEventRow).country ?? "",
+    device: (row as AnalyticsEventRow).device ?? "",
+    browser: (row as AnalyticsEventRow).browser ?? "",
+    os: (row as AnalyticsEventRow).os ?? "",
+  }));
 }

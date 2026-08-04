@@ -116,7 +116,7 @@
   },
   "cookies": {
     "title": "We value your privacy",
-    "description": "We use cookies to enhance your browsing experience, analyse site traffic, and personalise content. By clicking \"Accept\", you consent to our use of cookies.",
+    "description": "We use cookies to enhance your browsing experience, analyse site traffic (including approximate country from your IP — not GPS), device/browser type, and personalise content. By clicking \"Accept\", you consent to our use of cookies.",
     "learnMore": "Learn more",
     "accept": "Accept all",
     "reject": "Reject"

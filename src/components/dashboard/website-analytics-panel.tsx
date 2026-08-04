@@ -227,6 +227,18 @@ export function WebsiteAnalyticsPanel({
     ...snapshot.locales.map((row) => row.visitors),
     1,
   );
+  const maxCountryVisitors = Math.max(
+    ...(snapshot.countries?.map((row) => row.visitors) ?? [0]),
+    1,
+  );
+  const maxDeviceVisitors = Math.max(
+    ...(snapshot.devices?.map((row) => row.visitors) ?? [0]),
+    1,
+  );
+  const maxBrowserVisitors = Math.max(
+    ...(snapshot.browsers?.map((row) => row.visitors) ?? [0]),
+    1,
+  );
   const maxLeadSource = Math.max(
     ...snapshot.leadSources.map((row) => row.leads),
     1,
@@ -351,7 +363,7 @@ export function WebsiteAnalyticsPanel({
               label="Consent rate"
               value={`${snapshot.kpis.consentRate}%`}
               source={trafficSource}
-              footer="Cookie accept rate → Clarity coverage"
+              footer="Cookie accept rate → analytics coverage"
               icon={<Eye className="h-4 w-4 text-primary-dark" aria-hidden />}
             />
           </>
@@ -427,6 +439,90 @@ export function WebsiteAnalyticsPanel({
               </tbody>
             </table>
           </div>
+          )}
+        </SectionCard>
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-3">
+        <SectionCard
+          title="Visitors by country"
+          description="Approximate country from IP (CDN header). No GPS / location permission."
+        >
+          {(snapshot.countries?.length ?? 0) === 0 ? (
+            <div className="rounded-xl border border-dashed border-black/10 px-4 py-8 text-center text-sm text-foreground/55">
+              No country data yet. New consented visits on Vercel populate this.
+            </div>
+          ) : (
+            <ul className="space-y-3">
+              {(snapshot.countries ?? []).map((row) => (
+                <li key={row.key}>
+                  <div className="mb-1.5 flex items-center justify-between gap-3 text-sm">
+                    <span className="font-semibold text-logo-bg">
+                      {row.label}
+                      {row.key !== "unknown" && row.key.length === 2 ? (
+                        <span className="ml-1.5 font-mono text-xs font-normal text-foreground/45">
+                          {row.key}
+                        </span>
+                      ) : null}
+                    </span>
+                    <span className="text-foreground/60">
+                      {formatNumber(row.visitors)} ({row.sharePct}%)
+                    </span>
+                  </div>
+                  <Bar value={row.visitors} max={maxCountryVisitors} />
+                </li>
+              ))}
+            </ul>
+          )}
+        </SectionCard>
+
+        <SectionCard
+          title="Devices"
+          description="Desktop / mobile / tablet from the browser User-Agent."
+        >
+          {(snapshot.devices?.length ?? 0) === 0 ? (
+            <div className="rounded-xl border border-dashed border-black/10 px-4 py-8 text-center text-sm text-foreground/55">
+              No device data yet.
+            </div>
+          ) : (
+            <ul className="space-y-3">
+              {(snapshot.devices ?? []).map((row) => (
+                <li key={row.key}>
+                  <div className="mb-1.5 flex items-center justify-between gap-3 text-sm">
+                    <span className="font-semibold text-logo-bg">{row.label}</span>
+                    <span className="text-foreground/60">
+                      {formatNumber(row.visitors)} ({row.sharePct}%)
+                    </span>
+                  </div>
+                  <Bar value={row.visitors} max={maxDeviceVisitors} />
+                </li>
+              ))}
+            </ul>
+          )}
+        </SectionCard>
+
+        <SectionCard
+          title="Browsers"
+          description="Browser family from the User-Agent — free first-party, not Clarity."
+        >
+          {(snapshot.browsers?.length ?? 0) === 0 ? (
+            <div className="rounded-xl border border-dashed border-black/10 px-4 py-8 text-center text-sm text-foreground/55">
+              No browser data yet.
+            </div>
+          ) : (
+            <ul className="space-y-3">
+              {(snapshot.browsers ?? []).map((row) => (
+                <li key={row.key}>
+                  <div className="mb-1.5 flex items-center justify-between gap-3 text-sm">
+                    <span className="font-semibold text-logo-bg">{row.label}</span>
+                    <span className="text-foreground/60">
+                      {formatNumber(row.visitors)} ({row.sharePct}%)
+                    </span>
+                  </div>
+                  <Bar value={row.visitors} max={maxBrowserVisitors} />
+                </li>
+              ))}
+            </ul>
           )}
         </SectionCard>
       </div>

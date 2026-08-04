@@ -9,6 +9,10 @@ export type AnalyticsEventInput = {
   consentValue?: "accepted" | "rejected" | "";
   sessionId?: string;
   visitorId?: string;
+  country?: string;
+  device?: string;
+  browser?: string;
+  os?: string;
   meta?: Record<string, unknown>;
 };
 

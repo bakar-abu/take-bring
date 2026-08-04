@@ -5,9 +5,11 @@ import {
   SERVICE_ANALYTICS,
   serviceIdForPath,
 } from "@/lib/dashboard-analytics/constants";
+import { countryLabel } from "@/lib/dashboard-analytics/client-context";
 import { listAnalyticsEventsSince } from "@/lib/dashboard-analytics/storage";
 import type {
   AnalyticsPeriod,
+  BreakdownRow,
   WebsiteAnalyticsSnapshot,
 } from "@/lib/dashboard-analytics/types";
 import { formKeyLabel } from "@/lib/email-templates";
@@ -51,6 +53,43 @@ function countUniqueVisitors(
     if (id) ids.add(id);
   }
   return ids.size;
+}
+
+function buildBreakdown(
+  events: Array<{
+    event_type: string;
+    visitor_id: string;
+    session_id: string;
+    id: string;
+    country?: string;
+    device?: string;
+    browser?: string;
+  }>,
+  field: "country" | "device" | "browser",
+  labelFor: (key: string) => string,
+  limit = 12,
+): BreakdownRow[] {
+  const buckets = new Map<string, Set<string>>();
+  for (const event of events) {
+    if (event.event_type !== "page_view") continue;
+    const raw = (event[field] || "").trim();
+    const key = raw || "unknown";
+    const id = event.visitor_id || event.session_id || event.id;
+    const set = buckets.get(key) ?? new Set<string>();
+    set.add(id);
+    buckets.set(key, set);
+  }
+
+  const total = [...buckets.values()].reduce((sum, set) => sum + set.size, 0);
+  return [...buckets.entries()]
+    .map(([key, set]) => ({
+      key,
+      label: key === "unknown" ? "Unknown" : labelFor(key),
+      visitors: set.size,
+      sharePct: total ? Math.round((set.size / total) * 100) : 0,
+    }))
+    .sort((a, b) => b.visitors - a.visitors)
+    .slice(0, limit);
 }
 
 export async function getAnalyticsSnapshot(
@@ -97,7 +136,10 @@ export async function getAnalyticsSnapshot(
       ? Number(((leadsCount / visitors) * 100).toFixed(2))
       : 0;
 
-  const localeBuckets: Record<"ro" | "de" | "en", { visitors: Set<string>; leads: number }> = {
+  const localeBuckets: Record<
+    "ro" | "de" | "en",
+    { visitors: Set<string>; leads: number }
+  > = {
     ro: { visitors: new Set(), leads: 0 },
     de: { visitors: new Set(), leads: 0 },
     en: { visitors: new Set(), leads: 0 },
@@ -137,6 +179,15 @@ export async function getAnalyticsSnapshot(
         : 0,
     };
   });
+
+  const countries = buildBreakdown(
+    currentEvents,
+    "country",
+    (code) => countryLabel(code),
+    12,
+  );
+  const devices = buildBreakdown(currentEvents, "device", (key) => key, 6);
+  const browsers = buildBreakdown(currentEvents, "browser", (key) => key, 8);
 
   const leadCounts = new Map<string, number>();
   for (const lead of currentLeads) {
@@ -183,7 +234,6 @@ export async function getAnalyticsSnapshot(
     return {
       id: service.id,
       label: service.label,
-      // Show all locale URLs so EN/RO visits are obvious in the dashboard.
       path: paths.join(" · "),
       views,
       leads,
@@ -262,6 +312,9 @@ export async function getAnalyticsSnapshot(
       leadsChangePct: pctChange(leadsCount, previousLeadsCount),
     },
     locales,
+    countries,
+    devices,
+    browsers,
     leadSources,
     services,
     ctas,
