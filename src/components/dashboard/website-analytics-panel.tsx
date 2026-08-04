@@ -582,7 +582,7 @@ export function WebsiteAnalyticsPanel({
       <div className="grid gap-4 lg:grid-cols-2">
         <SectionCard
           title="CTA performance"
-          description="How visitors prefer to reach you — forms, call, WhatsApp, calculator."
+          description="How visitors prefer to reach you — forms, floating Call / WhatsApp, calculator."
         >
           <ul className="space-y-4">
             {snapshot.ctas.map((row) => (

@@ -9,6 +9,7 @@ import { CookieConsent } from "@/components/shared/cookie-consent";
 import { AnalyticsTracker } from "@/components/shared/analytics-tracker";
 import { MicrosoftClarity } from "@/components/shared/microsoft-clarity";
 import { ToastProvider } from "@/components/shared/toast";
+import { FloatingContactWidgets } from "@/components/widgets/floating-contact-widgets";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
 import { siteConfig } from "@/config/site";
@@ -108,6 +109,7 @@ export default async function LocaleLayout({
             <Header />
             <main>{children}</main>
             <Footer />
+            <FloatingContactWidgets />
             <CookieConsent />
             <AnalyticsTracker />
             <MicrosoftClarity />

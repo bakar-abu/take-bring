@@ -121,6 +121,10 @@
     "accept": "Alle akzeptieren",
     "reject": "Ablehnen"
   },
+  "floatingContact": {
+    "callAria": "Take & Bring anrufen unter {phone}",
+    "whatsappAria": "Mit Take & Bring per WhatsApp chatten"
+  },
   "footer": {
     "findUsSocial": "Folgen Sie uns in den sozialen Medien",
     "company": "Unternehmen",

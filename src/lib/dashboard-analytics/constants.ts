@@ -70,6 +70,8 @@ export const CTA_LABELS: Record<string, string> = {
   calculator: "Calculate price",
   call: "Call",
   whatsapp: "WhatsApp",
+  "floating-call": "Floating Call",
+  "floating-whatsapp": "Floating WhatsApp",
   track: "Track shipment",
   newsletter: "Newsletter",
   contact: "Contact form",

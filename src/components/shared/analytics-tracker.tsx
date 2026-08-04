@@ -148,6 +148,9 @@ export function AnalyticsTracker() {
         locale: detectLocale(window.location.pathname),
         sessionId: readOrCreateId(SESSION_KEY),
         visitorId: readOrCreateId(VISITOR_KEY),
+        meta: ctaId.startsWith("floating-")
+          ? { source: "floating_widget" }
+          : {},
       });
     };
 
