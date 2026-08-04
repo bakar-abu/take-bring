@@ -4,23 +4,17 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ExternalLink, ImagePlus, Save } from "lucide-react";
+import { ArrowLeft, ExternalLink, ImagePlus, Loader2, Save } from "lucide-react";
 import { useToast } from "@/components/shared/toast";
 import {
   blogSlugHint,
   isValidBlogSlug,
   slugifyBlogTitle,
 } from "@/lib/dashboard-blogs/helpers";
-import {
-  addDashboardBlogImage,
-  createDashboardBlog,
-  getDashboardBlogById,
-  listDashboardBlogImages,
-  updateDashboardBlog,
-} from "@/lib/dashboard-blogs/storage";
 import type {
   BlogImageAsset,
   BlogStatus,
+  DashboardBlog,
 } from "@/lib/dashboard-blogs/types";
 
 const BlogBodyEditor = dynamic(
@@ -53,6 +47,7 @@ function resetBlogForm(setters: {
   setSeoDescription: (v: string) => void;
   setBodyHtml: (v: string) => void;
   setSelectedImageUrl: (v: string | null) => void;
+  setSelectedImageId: (v: string | null) => void;
 }) {
   setters.setBlogTitle("");
   setters.setBlogSlug("");
@@ -64,6 +59,7 @@ function resetBlogForm(setters: {
   setters.setSeoDescription("");
   setters.setBodyHtml("");
   setters.setSelectedImageUrl(null);
+  setters.setSelectedImageId(null);
 }
 
 /**
@@ -78,6 +74,7 @@ export function BlogEditorPanel({ blogId }: BlogEditorPanelProps) {
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmittingBlog, setIsSubmittingBlog] = useState(false);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [images, setImages] = useState<BlogImageAsset[]>([]);
   const [blogTitle, setBlogTitle] = useState("");
   const [blogSlug, setBlogSlug] = useState("");
@@ -89,6 +86,7 @@ export function BlogEditorPanel({ blogId }: BlogEditorPanelProps) {
   const [seoDescription, setSeoDescription] = useState("");
   const [bodyHtml, setBodyHtml] = useState("");
   const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
+  const [selectedImageId, setSelectedImageId] = useState<string | null>(null);
   const [slugTouched, setSlugTouched] = useState(false);
 
   const slugIsValid = isValidBlogSlug(blogSlug);
@@ -96,57 +94,113 @@ export function BlogEditorPanel({ blogId }: BlogEditorPanelProps) {
   const previewSlug = blogSlug.trim() || slugifyBlogTitle(blogTitle);
 
   useEffect(() => {
-    setIsLoading(true);
-    try {
-      const loadedImages = listDashboardBlogImages();
-      setImages(loadedImages);
+    let cancelled = false;
 
-      if (blogId) {
-        const blog = getDashboardBlogById(blogId);
-        if (!blog) {
-          showToast("Blog not found.");
-          router.replace("/tb-dashboard/blogs");
-          return;
+    async function loadInitialData() {
+      setIsLoading(true);
+      try {
+        const imagesRes = await fetch("/api/dashboard/blog-images");
+        const imagesData = (await imagesRes.json()) as {
+          ok?: boolean;
+          error?: string;
+          images?: BlogImageAsset[];
+        };
+        if (!imagesRes.ok || !imagesData.ok) {
+          throw new Error(imagesData.error || "Unable to load images.");
         }
+        if (cancelled) return;
+        setImages(imagesData.images ?? []);
 
-        setBlogTitle(blog.title);
-        setBlogSlug(blog.slug);
-        setBlogExcerpt(blog.excerpt);
-        setBlogStatus(blog.status);
-        setSeoTitle(blog.seoTitle);
-        setSeoDescription(blog.seoDescription);
-        setBlogCategory(blog.category);
-        setBlogDate(blog.dateLabel);
-        setBodyHtml(blog.bodyHtml);
-        setSelectedImageUrl(blog.coverImageUrl || null);
-        setSlugTouched(true);
-      } else {
-        resetBlogForm({
-          setBlogTitle,
-          setBlogSlug,
-          setBlogExcerpt,
-          setBlogCategory,
-          setBlogDate,
-          setBlogStatus,
-          setSeoTitle,
-          setSeoDescription,
-          setBodyHtml,
-          setSelectedImageUrl,
-        });
-        setSlugTouched(false);
+        if (blogId) {
+          const blogRes = await fetch(`/api/dashboard/blogs/${blogId}`);
+          const blogData = (await blogRes.json()) as {
+            ok?: boolean;
+            error?: string;
+            blog?: DashboardBlog;
+          };
+          if (!blogRes.ok || !blogData.ok || !blogData.blog) {
+            throw new Error(blogData.error || "Blog not found.");
+          }
+          if (cancelled) return;
+          const blog = blogData.blog;
+          setBlogTitle(blog.title);
+          setBlogSlug(blog.slug);
+          setBlogExcerpt(blog.excerpt);
+          setBlogStatus(blog.status);
+          setSeoTitle(blog.seoTitle);
+          setSeoDescription(blog.seoDescription);
+          setBlogCategory(blog.category);
+          setBlogDate(blog.dateLabel);
+          setBodyHtml(blog.bodyHtml);
+          setSelectedImageUrl(blog.coverImageUrl || null);
+          setSelectedImageId(blog.coverImageAssetId ?? null);
+          setSlugTouched(true);
+        } else {
+          resetBlogForm({
+            setBlogTitle,
+            setBlogSlug,
+            setBlogExcerpt,
+            setBlogCategory,
+            setBlogDate,
+            setBlogStatus,
+            setSeoTitle,
+            setSeoDescription,
+            setBodyHtml,
+            setSelectedImageUrl,
+            setSelectedImageId,
+          });
+          setSlugTouched(false);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          showToast(
+            error instanceof Error ? error.message : "Unable to load editor.",
+          );
+          if (blogId) router.replace("/tb-dashboard/blogs");
+        }
+      } finally {
+        if (!cancelled) setIsLoading(false);
       }
-    } finally {
-      setIsLoading(false);
     }
+
+    void loadInitialData();
+    return () => {
+      cancelled = true;
+    };
   }, [blogId, router, showToast]);
 
   async function handleUploadImage(file: File) {
-    const image = await addDashboardBlogImage(file);
-    setImages((prev) => [image, ...prev]);
-    showToast("Image uploaded.");
+    if (isUploadingImage) return;
+    setIsUploadingImage(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("altText", file.name);
+
+      const response = await fetch("/api/dashboard/blog-images", {
+        method: "POST",
+        body: formData,
+      });
+      const data = (await response.json()) as {
+        ok?: boolean;
+        error?: string;
+        image?: BlogImageAsset;
+      };
+      if (!response.ok || !data.ok || !data.image) {
+        throw new Error(data.error || "Upload failed.");
+      }
+
+      setImages((prev) => [data.image!, ...prev]);
+      setSelectedImageUrl(data.image.publicUrl);
+      setSelectedImageId(data.image.id);
+      showToast("Image uploaded (WebP).");
+    } finally {
+      setIsUploadingImage(false);
+    }
   }
 
-  function handleSaveBlog() {
+  async function handleSaveBlog() {
+    if (isSubmittingBlog) return;
     if (!blogTitle.trim()) {
       showToast("Blog title is required.");
       return;
@@ -173,22 +227,34 @@ export function BlogEditorPanel({ blogId }: BlogEditorPanelProps) {
         dateLabel: blogDate,
         bodyHtml,
         coverImageUrl: selectedImageUrl,
+        coverImageAssetId: selectedImageId,
       };
 
-      // TODO(integrate): replace local storage helpers with real blog APIs.
-      if (isEditMode && blogId) {
-        const updated = updateDashboardBlog(blogId, payload);
-        if (!updated) {
-          showToast("Unable to update blog.");
-          return;
-        }
-        showToast("Blog updated.");
-      } else {
-        createDashboardBlog(payload);
-        showToast("Blog created.");
+      const response = await fetch(
+        isEditMode && blogId
+          ? `/api/dashboard/blogs/${blogId}`
+          : "/api/dashboard/blogs",
+        {
+          method: isEditMode ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        },
+      );
+      const data = (await response.json()) as {
+        ok?: boolean;
+        error?: string;
+        blog?: DashboardBlog;
+      };
+
+      if (!response.ok || !data.ok || !data.blog) {
+        showToast(data.error || "Unable to save blog.");
+        return;
       }
 
+      showToast(isEditMode ? "Blog updated." : "Blog created.");
       router.push("/tb-dashboard/blogs");
+    } catch {
+      showToast("Unable to save blog.");
     } finally {
       setIsSubmittingBlog(false);
     }
@@ -197,7 +263,10 @@ export function BlogEditorPanel({ blogId }: BlogEditorPanelProps) {
   if (isLoading) {
     return (
       <div className="rounded-2xl border border-black/10 bg-white p-6 shadow-sm">
-        <p className="text-sm text-foreground/55">Loading blog editor...</p>
+        <p className="inline-flex items-center gap-2 text-sm text-foreground/55">
+          <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+          Loading blog editor...
+        </p>
       </div>
     );
   }
@@ -208,7 +277,7 @@ export function BlogEditorPanel({ blogId }: BlogEditorPanelProps) {
         <button
           type="button"
           onClick={() => router.push("/tb-dashboard/blogs")}
-          className="mb-3 inline-flex items-center gap-1.5 text-sm font-semibold text-logo-bg/70 transition-colors hover:text-logo-bg"
+          className="mb-3 inline-flex cursor-pointer items-center gap-1.5 text-sm font-semibold text-logo-bg/70 transition-colors hover:text-logo-bg"
         >
           <ArrowLeft className="h-4 w-4" aria-hidden />
           Back
@@ -334,18 +403,28 @@ export function BlogEditorPanel({ blogId }: BlogEditorPanelProps) {
         <div className="rounded-2xl border border-black/10 bg-white p-5 shadow-sm lg:col-span-4">
           <p className="text-sm font-semibold text-logo-bg">Images Bucket</p>
           <p className="mt-1 text-xs text-foreground/55">
-            Select one cover image. Uploads are stored as base64 in browser
-            localStorage for this UI preview only — they will not sync across
-            devices until the backend image API is integrated.
+            Uploads are converted to WebP and served from /api/images (no Next
+            image optimizer). Select one cover image.
           </p>
 
-          <label className="mt-3 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-primary/50 px-3 py-2 text-sm font-semibold text-logo-bg hover:bg-primary/10">
-            <ImagePlus size={15} />
-            Upload Image
+          <label
+            className={`mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-primary/50 px-3 py-2 text-sm font-semibold text-logo-bg hover:bg-primary/10 ${
+              isUploadingImage
+                ? "cursor-not-allowed opacity-70"
+                : "cursor-pointer"
+            }`}
+          >
+            {isUploadingImage ? (
+              <Loader2 size={15} className="animate-spin" aria-hidden />
+            ) : (
+              <ImagePlus size={15} />
+            )}
+            {isUploadingImage ? "Uploading..." : "Upload Image"}
             <input
               type="file"
               accept="image/*"
               className="hidden"
+              disabled={isUploadingImage || isSubmittingBlog}
               onChange={async (e) => {
                 const file = e.target.files?.[0];
                 if (!file) return;
@@ -363,7 +442,9 @@ export function BlogEditorPanel({ blogId }: BlogEditorPanelProps) {
 
           <div className="mt-3 max-h-[420px] space-y-3 overflow-y-auto pr-1">
             {images.map((image) => {
-              const isSelected = selectedImageUrl === image.publicUrl;
+              const isSelected =
+                selectedImageId === image.id ||
+                selectedImageUrl === image.publicUrl;
               return (
                 <div
                   key={image.id}
@@ -374,14 +455,18 @@ export function BlogEditorPanel({ blogId }: BlogEditorPanelProps) {
                       src={image.publicUrl}
                       alt={image.altText ?? "Blog image"}
                       fill
-                      unoptimized={image.publicUrl.startsWith("data:")}
+                      unoptimized
                       className="object-cover"
                     />
                   </div>
                   <button
                     type="button"
-                    onClick={() => setSelectedImageUrl(image.publicUrl)}
-                    className={`mt-2 w-full rounded-md px-2 py-1 text-xs font-semibold ${
+                    disabled={isSubmittingBlog}
+                    onClick={() => {
+                      setSelectedImageUrl(image.publicUrl);
+                      setSelectedImageId(image.id);
+                    }}
+                    className={`mt-2 w-full cursor-pointer rounded-md px-2 py-1 text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-60 ${
                       isSelected
                         ? "bg-logo-bg text-white"
                         : "border border-black/15 text-logo-bg"
@@ -396,11 +481,15 @@ export function BlogEditorPanel({ blogId }: BlogEditorPanelProps) {
 
           <button
             type="button"
-            onClick={handleSaveBlog}
-            disabled={isSubmittingBlog}
-            className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-logo-bg px-4 py-2 text-sm font-semibold text-white disabled:opacity-70"
+            onClick={() => void handleSaveBlog()}
+            disabled={isSubmittingBlog || isUploadingImage}
+            className="mt-4 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-logo-bg px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-70"
           >
-            <Save size={16} />
+            {isSubmittingBlog ? (
+              <Loader2 size={16} className="animate-spin" aria-hidden />
+            ) : (
+              <Save size={16} />
+            )}
             {isSubmittingBlog
               ? "Saving Blog..."
               : isEditMode

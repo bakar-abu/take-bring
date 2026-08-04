@@ -128,7 +128,7 @@ export async function requireDashboardRole(...allowed: DashboardUserRole[]) {
     return {
       ok: false as const,
       status: 403 as const,
-      error: "Forbidden. Admin role required.",
+      error: `Forbidden. Requires one of: ${allowed.join(", ")}.`,
     };
   }
 

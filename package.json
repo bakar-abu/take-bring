@@ -10,7 +10,8 @@
     "start": "next start",
     "lint": "eslint .",
     "test:mail": "node scripts/test-mail.cjs",
-    "seed:admin": "node scripts/seed-admin-user.cjs"
+    "seed:admin": "node scripts/seed-admin-user.cjs",
+    "migrate:blogs": "node scripts/migrate-blogs.cjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.0",
@@ -33,6 +34,7 @@
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "remixicon": "^4.9.1",
+    "sharp": "^0.35.3",
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {

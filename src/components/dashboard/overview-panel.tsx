@@ -10,7 +10,7 @@ import {
   UserPlus,
   Users,
 } from "lucide-react";
-import { listDashboardBlogs } from "@/lib/dashboard-blogs/storage";
+import type { DashboardBlog } from "@/lib/dashboard-blogs/types";
 import { MOCK_USERS } from "@/lib/dashboard-users/mock-users";
 import { siteConfig } from "@/config/site";
 
@@ -56,11 +56,27 @@ export function OverviewPanel({
   const [draftCount, setDraftCount] = useState(0);
 
   useEffect(() => {
-    // TODO(integrate): fetch blog stats from API instead of local mock storage.
-    const blogs = listDashboardBlogs();
-    setBlogCount(blogs.length);
-    setPublishedCount(blogs.filter((b) => b.status === "PUBLISHED").length);
-    setDraftCount(blogs.filter((b) => b.status === "DRAFT").length);
+    let cancelled = false;
+    async function loadBlogStats() {
+      try {
+        const response = await fetch("/api/dashboard/blogs");
+        const data = (await response.json()) as {
+          ok?: boolean;
+          blogs?: DashboardBlog[];
+        };
+        if (cancelled || !response.ok || !data.ok) return;
+        const blogs = data.blogs ?? [];
+        setBlogCount(blogs.length);
+        setPublishedCount(blogs.filter((b) => b.status === "PUBLISHED").length);
+        setDraftCount(blogs.filter((b) => b.status === "DRAFT").length);
+      } catch {
+        // Keep zeros on failure
+      }
+    }
+    void loadBlogStats();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const userCount = MOCK_USERS.length;
