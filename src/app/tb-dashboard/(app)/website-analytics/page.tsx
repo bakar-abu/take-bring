@@ -1,15 +1,30 @@
 import { WebsiteAnalyticsPanel } from "@/components/dashboard/website-analytics-panel";
+import { getAnalyticsSnapshot } from "@/lib/dashboard-analytics/snapshot";
 import { listLeads } from "@/lib/leads/storage";
+import type { LeadListItem } from "@/lib/leads/types";
+import type { WebsiteAnalyticsSnapshot } from "@/lib/dashboard-analytics/types";
 
-// TODO(integrate): When GA4/Clarity APIs are wired, pass real traffic snapshots
-// instead of relying on mock analytics inside the panel.
+export const dynamic = "force-dynamic";
 
 export default async function WebsiteAnalyticsPage() {
-  const storedLeads = await listLeads();
   const clarityProjectId = process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID?.trim();
+
+  let initialSnapshot: WebsiteAnalyticsSnapshot | null = null;
+  let storedLeads: LeadListItem[] = [];
+  try {
+    const [snapshot, leads] = await Promise.all([
+      getAnalyticsSnapshot("30d"),
+      listLeads(),
+    ]);
+    initialSnapshot = snapshot;
+    storedLeads = leads;
+  } catch (error) {
+    console.error("[website-analytics]", error);
+  }
 
   return (
     <WebsiteAnalyticsPanel
+      initialSnapshot={initialSnapshot}
       storedLeads={storedLeads}
       clarityProjectId={clarityProjectId}
     />

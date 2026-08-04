@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -12,7 +12,6 @@ import {
   Users,
 } from "lucide-react";
 import { getMockAnalyticsSnapshot } from "@/lib/dashboard-analytics/mock-analytics";
-import { applyRealLeadSources } from "@/lib/dashboard-analytics/merge-leads";
 import type {
   AnalyticsPeriod,
   WebsiteAnalyticsSnapshot,
@@ -21,6 +20,7 @@ import type { LeadListItem } from "@/lib/leads/types";
 import { cn } from "@/lib/utils";
 
 type WebsiteAnalyticsPanelProps = {
+  initialSnapshot: WebsiteAnalyticsSnapshot | null;
   storedLeads: LeadListItem[];
   clarityProjectId?: string;
 };
@@ -159,32 +159,69 @@ function KpiSkeleton() {
 }
 
 export function WebsiteAnalyticsPanel({
+  initialSnapshot,
   storedLeads,
   clarityProjectId,
 }: WebsiteAnalyticsPanelProps) {
   const [period, setPeriod] = useState<AnalyticsPeriod>("30d");
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [snapshot, setSnapshot] = useState<WebsiteAnalyticsSnapshot>(
+    initialSnapshot ?? getMockAnalyticsSnapshot("30d"),
+  );
+  const [source, setSource] = useState<"live" | "mock">(
+    initialSnapshot ? "live" : "mock",
+  );
+  const [error, setError] = useState<string | null>(null);
+
+  async function loadSnapshot(nextPeriod: AnalyticsPeriod) {
+    setIsRefreshing(true);
+    setError(null);
+    try {
+      const response = await fetch(
+        `/api/dashboard/analytics?period=${nextPeriod}`,
+      );
+      const data = (await response.json()) as {
+        ok?: boolean;
+        error?: string;
+        snapshot?: WebsiteAnalyticsSnapshot;
+        source?: "live" | "mock";
+      };
+      if (!response.ok || !data.ok || !data.snapshot) {
+        throw new Error(data.error || "Could not load analytics.");
+      }
+      setSnapshot(data.snapshot);
+      setSource("live");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not load analytics.");
+      // Keep last good snapshot; fall back to empty live zeros via mock only if none
+      if (!initialSnapshot) {
+        setSnapshot(getMockAnalyticsSnapshot(nextPeriod));
+        setSource("mock");
+      }
+    } finally {
+      setIsRefreshing(false);
+    }
+  }
 
   useEffect(() => {
-    if (!isRefreshing) return;
-    const timer = window.setTimeout(() => setIsRefreshing(false), 320);
-    return () => window.clearTimeout(timer);
-  }, [isRefreshing, period]);
+    void loadSnapshot(period);
+    const timer = window.setInterval(() => {
+      if (document.visibilityState === "visible") {
+        void loadSnapshot(period);
+      }
+    }, 30000);
+    return () => window.clearInterval(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- reload when period changes
+  }, [period]);
 
   function handlePeriodChange(next: AnalyticsPeriod) {
     if (next === period) return;
-    setIsRefreshing(true);
     setPeriod(next);
   }
 
   const hasStoredLeads = storedLeads.length > 0;
-  const leadsSource: DataSource = hasStoredLeads ? "live" : "mock";
-
-  const snapshot: WebsiteAnalyticsSnapshot = useMemo(() => {
-    // TODO(integrate): load traffic/CTA/page metrics from GA4 or Clarity API.
-    const mock = getMockAnalyticsSnapshot(period);
-    return applyRealLeadSources(mock, storedLeads);
-  }, [period, storedLeads]);
+  const leadsSource: DataSource = source === "live" || hasStoredLeads ? "live" : "mock";
+  const trafficSource: DataSource = source;
 
   const maxLocaleVisitors = Math.max(
     ...snapshot.locales.map((row) => row.visitors),
@@ -215,10 +252,12 @@ export function WebsiteAnalyticsPanel({
             Website Analytics
           </h2>
           <p className="mt-1 text-sm text-foreground/55">
-            Traffic, conversions, and service demand. Traffic metrics are mock
-            until GA4 integration; lead counts use stored submissions when
-            available.
+            Live first-party traffic (consent-gated), real leads, and Clarity
+            session insights. Auto-refreshes every 30 seconds.
           </p>
+          {error ? (
+            <p className="mt-2 text-sm text-red-600">{error}</p>
+          ) : null}
         </div>
 
         <div
@@ -251,13 +290,13 @@ export function WebsiteAnalyticsPanel({
         </div>
       </div>
 
-      <div className="flex gap-3 rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-950">
+      <div className="flex gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-950">
         <Info className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
         <p>
-          <strong>Preview mode:</strong> visitors, CTA clicks, page views, and
-          blog metrics are mock snapshots. Leads by source merge real data from{" "}
-          <code className="rounded bg-white/70 px-1">data/leads.json</code> when
-          forms have been submitted.
+          <strong>Live mode:</strong> page views and CTA clicks are stored in
+          Supabase after cookie consent. Leads come from the leads inbox.
+          Microsoft Clarity ({clarityProjectId || "not configured"}) provides
+          session replays.
         </p>
       </div>
 
@@ -268,7 +307,7 @@ export function WebsiteAnalyticsPanel({
         )}
         aria-busy={isRefreshing}
       >
-        {isRefreshing ? (
+        {isRefreshing && !snapshot.kpis ? (
           <>
             <KpiSkeleton />
             <KpiSkeleton />
@@ -280,7 +319,7 @@ export function WebsiteAnalyticsPanel({
             <KpiCard
               label="Visitors"
               value={formatNumber(snapshot.kpis.visitors)}
-              source="mock"
+              source={trafficSource}
               changePct={snapshot.kpis.visitorsChangePct}
               icon={<Users className="h-4 w-4 text-primary-dark" aria-hidden />}
             />
@@ -291,7 +330,7 @@ export function WebsiteAnalyticsPanel({
               changePct={snapshot.kpis.leadsChangePct}
               footer={
                 hasStoredLeads
-                  ? `${storedLeads.length} stored submission(s) merged`
+                  ? `${storedLeads.length} total stored submission(s)`
                   : "Submit a test form to see live lead counts"
               }
               icon={
@@ -304,15 +343,15 @@ export function WebsiteAnalyticsPanel({
             <KpiCard
               label="Conversion rate"
               value={`${snapshot.kpis.conversionRate.toFixed(2)}%`}
-              source={hasStoredLeads ? "mixed" : "mock"}
-              footer="Leads ÷ visitors (mock visitors denominator)"
+              source={trafficSource === "live" ? "live" : "mock"}
+              footer="Leads ÷ visitors (same period)"
               icon={<Percent className="h-4 w-4 text-primary-dark" aria-hidden />}
             />
             <KpiCard
               label="Consent rate"
               value={`${snapshot.kpis.consentRate}%`}
-              source="mock"
-              footer="Cookie accept → Clarity coverage"
+              source={trafficSource}
+              footer="Cookie accept rate → Clarity coverage"
               icon={<Eye className="h-4 w-4 text-primary-dark" aria-hidden />}
             />
           </>
@@ -343,13 +382,7 @@ export function WebsiteAnalyticsPanel({
         <SectionCard
           title="Leads by source"
           description="Which form / page produces inquiries — use this to prioritize pages."
-          action={
-            hasStoredLeads ? (
-              <DataSourceBadge source="live" />
-            ) : (
-              <DataSourceBadge source="mock" />
-            )
-          }
+          action={<DataSourceBadge source={leadsSource} />}
         >
           {snapshot.leadSources.length === 0 ? (
             <div className="rounded-xl border border-dashed border-black/10 px-4 py-10 text-center text-sm text-foreground/55">
@@ -586,10 +619,9 @@ export function WebsiteAnalyticsPanel({
       </div>
 
       <p className="text-xs text-foreground/40">
-        {/* TODO(integrate): Replace mock traffic/CTA/page metrics with GA4 + event
-            tracking; keep lead-source merge from first-party lead storage. */}
-        Traffic, CTA, and page metrics are mock for UI preview. Lead counts
-        update from stored website submissions when available.
+        First-party events power KPIs after cookie consent. Clarity project{" "}
+        {clarityProjectId || "xnbmal94h3"} is used for session replays. Data
+        refreshes automatically every 30 seconds while this page is open.
       </p>
     </div>
   );
