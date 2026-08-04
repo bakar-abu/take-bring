@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
 import {
-  DASHBOARD_SESSION_COOKIE,
-  SESSION_MAX_AGE_SECONDS,
-  createDashboardSessionToken,
-  validateDashboardCredentials,
+  createTokenPair,
+  setAuthCookies,
 } from "@/lib/dashboard-auth";
+import { authenticateUser } from "@/lib/dashboard-users/storage";
 
 export async function POST(request: Request) {
   let body: { email?: string; password?: string };
@@ -28,36 +27,39 @@ export async function POST(request: Request) {
     );
   }
 
-  const result = validateDashboardCredentials(email, password);
+  let user;
+  try {
+    user = await authenticateUser(email, password);
+  } catch (err) {
+    const message =
+      err instanceof Error ? err.message : "Login service unavailable.";
+    return NextResponse.json({ ok: false, error: message }, { status: 503 });
+  }
 
-  if (!result.ok) {
-    if (result.error === "not_configured") {
-      return NextResponse.json(
-        {
-          ok: false,
-          error:
-            "Dashboard login is not configured. Set DASHBOARD_EMAIL and DASHBOARD_PASSWORD.",
-        },
-        { status: 503 },
-      );
-    }
-
+  if (!user) {
     return NextResponse.json(
       { ok: false, error: "Invalid email or password." },
       { status: 401 },
     );
   }
 
-  const response = NextResponse.json({ ok: true });
-  response.cookies.set({
-    name: DASHBOARD_SESSION_COOKIE,
-    value: createDashboardSessionToken(email.trim().toLowerCase()),
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: SESSION_MAX_AGE_SECONDS,
+  const tokens = await createTokenPair({
+    id: user.id,
+    email: user.email,
+    role: user.role,
+    name: user.name,
   });
 
+  const response = NextResponse.json({
+    ok: true,
+    user: {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+    },
+  });
+
+  setAuthCookies(response, tokens);
   return response;
 }

@@ -12,7 +12,9 @@ import {
 type CreateUserModalProps = {
   open: boolean;
   onClose: () => void;
-  onCreate: (input: CreateDashboardUserInput) => boolean | void;
+  onCreate: (
+    input: CreateDashboardUserInput,
+  ) => boolean | void | Promise<boolean | void>;
 };
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -55,8 +57,9 @@ export function CreateUserModal({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open, onClose]);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setError(null);
     const trimmedName = name.trim();
     const trimmedEmail = email.trim();
 
@@ -70,12 +73,12 @@ export function CreateUserModal({
       return;
     }
 
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters.");
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters.");
       return;
     }
 
-    const created = onCreate({
+    const created = await onCreate({
       name: trimmedName,
       email: trimmedEmail,
       password,

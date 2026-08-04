@@ -17,6 +17,7 @@ import type { DashboardUser } from "@/lib/dashboard-users/types";
 type UsersDataGridProps = {
   users: DashboardUser[];
   onCreateClick?: () => void;
+  onDeleteUser?: (user: DashboardUser) => void;
 };
 
 function SortIcon({ sorted }: { sorted: false | "asc" | "desc" }) {
@@ -28,7 +29,11 @@ function SortIcon({ sorted }: { sorted: false | "asc" | "desc" }) {
 /**
  * Product UI for the headless TanStack users table (same format as leads).
  */
-export function UsersDataGrid({ users, onCreateClick }: UsersDataGridProps) {
+export function UsersDataGrid({
+  users,
+  onCreateClick,
+  onDeleteUser,
+}: UsersDataGridProps) {
   const {
     table,
     activeRoleFilter,
@@ -36,7 +41,7 @@ export function UsersDataGrid({ users, onCreateClick }: UsersDataGridProps) {
     selectedCount,
     sortedSummary,
     filteredSummary,
-  } = useUsersTable({ data: users });
+  } = useUsersTable({ data: users, onDeleteUser });
 
   const resetFilters = () => {
     onRoleQuickFilterChange("all");

@@ -1,99 +1,153 @@
 import { cookies } from "next/headers";
-import { createHmac, timingSafeEqual } from "crypto";
+import type { NextResponse } from "next/server";
 import {
+  ACCESS_TOKEN_MAX_AGE_SECONDS,
+  DASHBOARD_ACCESS_COOKIE,
+  DASHBOARD_PATH,
+  DASHBOARD_REFRESH_COOKIE,
   DASHBOARD_SESSION_COOKIE,
+  REFRESH_TOKEN_MAX_AGE_SECONDS,
   SESSION_MAX_AGE_SECONDS,
 } from "@/lib/dashboard-constants";
+import {
+  signAccessToken,
+  signRefreshToken,
+  verifyAccessToken,
+  verifyRefreshToken,
+  type TokenPayload,
+} from "@/lib/dashboard-jwt";
+import type { DashboardUserRole } from "@/lib/dashboard-users/types";
 
 export {
   DASHBOARD_SESSION_COOKIE,
+  DASHBOARD_ACCESS_COOKIE,
+  DASHBOARD_REFRESH_COOKIE,
   DASHBOARD_PATH,
   SESSION_MAX_AGE_SECONDS,
+  ACCESS_TOKEN_MAX_AGE_SECONDS,
+  REFRESH_TOKEN_MAX_AGE_SECONDS,
 } from "@/lib/dashboard-constants";
 
-function getSessionSecret() {
-  return (
-    process.env.DASHBOARD_SESSION_SECRET ||
-    "take-bring-dashboard-dev-secret"
-  );
+function cookieBase() {
+  return {
+    httpOnly: true,
+    sameSite: "lax" as const,
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+  };
 }
 
-function signPayload(payload: string) {
-  return createHmac("sha256", getSessionSecret())
-    .update(payload)
-    .digest("hex");
+export async function createTokenPair(user: TokenPayload) {
+  const [accessToken, refreshToken] = await Promise.all([
+    signAccessToken(user),
+    signRefreshToken(user),
+  ]);
+  return { accessToken, refreshToken };
 }
 
-export function createDashboardSessionToken(email: string) {
-  const issuedAt = Date.now().toString();
-  const payload = `${email}|${issuedAt}`;
-  return `${payload}|${signPayload(payload)}`;
+export function setAuthCookies(
+  response: NextResponse,
+  tokens: { accessToken: string; refreshToken: string },
+) {
+  const base = cookieBase();
+  response.cookies.set({
+    ...base,
+    name: DASHBOARD_ACCESS_COOKIE,
+    value: tokens.accessToken,
+    maxAge: ACCESS_TOKEN_MAX_AGE_SECONDS,
+  });
+  response.cookies.set({
+    ...base,
+    name: DASHBOARD_REFRESH_COOKIE,
+    value: tokens.refreshToken,
+    maxAge: REFRESH_TOKEN_MAX_AGE_SECONDS,
+  });
+  // Clear legacy session cookie if present
+  response.cookies.set({
+    ...base,
+    name: DASHBOARD_SESSION_COOKIE,
+    value: "",
+    maxAge: 0,
+  });
 }
 
-export function verifyDashboardSessionToken(token: string | undefined) {
-  if (!token) return false;
-
-  const parts = token.split("|");
-  if (parts.length !== 3) return false;
-
-  const [email, issuedAt, signature] = parts;
-  if (!email || !issuedAt || !signature) return false;
-
-  const expected = signPayload(`${email}|${issuedAt}`);
-  try {
-    const a = Buffer.from(signature);
-    const b = Buffer.from(expected);
-    if (a.length !== b.length || !timingSafeEqual(a, b)) return false;
-  } catch {
-    return false;
+export function clearAuthCookies(response: NextResponse) {
+  const base = cookieBase();
+  for (const name of [
+    DASHBOARD_ACCESS_COOKIE,
+    DASHBOARD_REFRESH_COOKIE,
+    DASHBOARD_SESSION_COOKIE,
+  ]) {
+    response.cookies.set({ ...base, name, value: "", maxAge: 0 });
   }
-
-  const ageMs = Date.now() - Number(issuedAt);
-  if (
-    !Number.isFinite(ageMs) ||
-    ageMs < 0 ||
-    ageMs > SESSION_MAX_AGE_SECONDS * 1000
-  ) {
-    return false;
-  }
-
-  return true;
-}
-
-export function getEmailFromDashboardSessionToken(token: string | undefined) {
-  if (!verifyDashboardSessionToken(token)) return null;
-  return token?.split("|")[0] ?? null;
 }
 
 export async function getDashboardUser() {
   const jar = await cookies();
-  const token = jar.get(DASHBOARD_SESSION_COOKIE)?.value;
-  const email = getEmailFromDashboardSessionToken(token);
+  const access = jar.get(DASHBOARD_ACCESS_COOKIE)?.value;
+  const fromAccess = await verifyAccessToken(access);
+  if (fromAccess) {
+    return {
+      id: fromAccess.id,
+      email: fromAccess.email,
+      name: fromAccess.name || fromAccess.email,
+      role: fromAccess.role,
+    };
+  }
 
-  if (!email) return null;
+  const refresh = jar.get(DASHBOARD_REFRESH_COOKIE)?.value;
+  const fromRefresh = await verifyRefreshToken(refresh);
+  if (!fromRefresh) return null;
 
-  return { email };
+  // Access expired but refresh valid — treat as authenticated (refresh route rotates tokens)
+  return {
+    id: fromRefresh.id,
+    email: fromRefresh.email,
+    name: fromRefresh.name || fromRefresh.email,
+    role: fromRefresh.role,
+  };
 }
 
 export async function isDashboardAuthenticated() {
-  const user = await getDashboardUser();
-  return user !== null;
+  return (await getDashboardUser()) !== null;
 }
 
-export function validateDashboardCredentials(email: string, password: string) {
-  const expectedEmail = process.env.DASHBOARD_EMAIL?.trim().toLowerCase();
-  const expectedPassword = process.env.DASHBOARD_PASSWORD;
+export async function requireDashboardUser() {
+  const user = await getDashboardUser();
+  if (!user) {
+    return { ok: false as const, status: 401 as const, error: "Unauthorized." };
+  }
+  return { ok: true as const, user };
+}
 
-  if (!expectedEmail || !expectedPassword) {
-    return { ok: false as const, error: "not_configured" };
+export async function requireDashboardRole(...allowed: DashboardUserRole[]) {
+  const auth = await requireDashboardUser();
+  if (!auth.ok) return auth;
+
+  if (!allowed.includes(auth.user.role)) {
+    return {
+      ok: false as const,
+      status: 403 as const,
+      error: "Forbidden. Admin role required.",
+    };
   }
 
-  const emailOk = email.trim().toLowerCase() === expectedEmail;
-  const passwordOk = password === expectedPassword;
+  return auth;
+}
 
-  if (!emailOk || !passwordOk) {
-    return { ok: false as const, error: "invalid_credentials" };
-  }
+/** @deprecated HMAC session removed — JWT cookies are used instead. */
+export function createDashboardSessionToken(_user: unknown) {
+  return "";
+}
 
-  return { ok: true as const };
+export function verifyDashboardSessionToken(_token: string | undefined) {
+  return false;
+}
+
+export function getEmailFromDashboardSessionToken(_token: string | undefined) {
+  return null;
+}
+
+export function validateDashboardCredentials(_email: string, _password: string) {
+  return { ok: false as const, error: "not_configured" as const };
 }

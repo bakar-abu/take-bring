@@ -117,6 +117,75 @@ export async function sendNewsletterEmails(email: string) {
   });
 }
 
+export type DashboardInvitePayload = {
+  fullName: string;
+  email: string;
+  password: string;
+  role: string;
+  loginUrl: string;
+};
+
+export async function sendDashboardUserInviteEmail(
+  payload: DashboardInvitePayload,
+) {
+  if (!isSmtpConfigured()) {
+    throw new Error(
+      "SMTP is not configured. Set SMTP_HOST, SMTP_USER, SMTP_PASS, and MAIL_TO.",
+    );
+  }
+
+  const fromUser = requireEnv("SMTP_USER");
+  const fromName = process.env.MAIL_FROM_NAME?.trim() || "Take & Bring Website";
+  const companyTo = process.env.MAIL_TO?.trim() || fromUser;
+  const transporter = createMailTransporter();
+
+  const subject = "Your Take & Bring dashboard account";
+  const text = [
+    `Hello ${payload.fullName},`,
+    "",
+    "An administrator created a dashboard account for you.",
+    "",
+    `Login URL: ${payload.loginUrl}`,
+    `Email: ${payload.email}`,
+    `Temporary password: ${payload.password}`,
+    `Role: ${payload.role}`,
+    "",
+    "Please sign in and change your password after your first login if possible.",
+    "",
+    "— Take & Bring",
+  ].join("\n");
+
+  const html = `
+    <p>Hello ${escapeHtml(payload.fullName)},</p>
+    <p>An administrator created a dashboard account for you.</p>
+    <ul>
+      <li><strong>Login URL:</strong> <a href="${escapeHtml(payload.loginUrl)}">${escapeHtml(payload.loginUrl)}</a></li>
+      <li><strong>Email:</strong> ${escapeHtml(payload.email)}</li>
+      <li><strong>Temporary password:</strong> ${escapeHtml(payload.password)}</li>
+      <li><strong>Role:</strong> ${escapeHtml(payload.role)}</li>
+    </ul>
+    <p>Please sign in and change your password after your first login if possible.</p>
+    <p>— Take &amp; Bring</p>
+  `;
+
+  await transporter.sendMail({
+    from: `"${fromName}" <${fromUser}>`,
+    to: payload.email,
+    replyTo: companyTo,
+    subject,
+    text,
+    html,
+  });
+}
+
+function escapeHtml(value: string) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
 /** @deprecated Use sendNewsletterEmails */
 export async function sendNewsletterEmail(email: string) {
   return sendNewsletterEmails(email);
