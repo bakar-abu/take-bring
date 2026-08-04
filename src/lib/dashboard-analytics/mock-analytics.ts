@@ -23,6 +23,24 @@ const SNAPSHOT_7D: WebsiteAnalyticsSnapshot = {
     { locale: "de", label: "German", visitors: 698, leads: 21, sharePct: 38 },
     { locale: "en", label: "English", visitors: 332, leads: 7, sharePct: 18 },
   ],
+  countries: [
+    { key: "RO", label: "Romania", visitors: 740, sharePct: 40 },
+    { key: "DE", label: "Germany", visitors: 620, sharePct: 34 },
+    { key: "AT", label: "Austria", visitors: 180, sharePct: 10 },
+    { key: "NL", label: "Netherlands", visitors: 120, sharePct: 7 },
+    { key: "unknown", label: "Unknown", visitors: 182, sharePct: 9 },
+  ],
+  devices: [
+    { key: "Desktop", label: "Desktop", visitors: 980, sharePct: 53 },
+    { key: "Mobile", label: "Mobile", visitors: 720, sharePct: 39 },
+    { key: "Tablet", label: "Tablet", visitors: 142, sharePct: 8 },
+  ],
+  browsers: [
+    { key: "Chrome", label: "Chrome", visitors: 980, sharePct: 53 },
+    { key: "Safari", label: "Safari", visitors: 410, sharePct: 22 },
+    { key: "Firefox", label: "Firefox", visitors: 220, sharePct: 12 },
+    { key: "Edge", label: "Edge", visitors: 232, sharePct: 13 },
+  ],
   leadSources: [
     {
       formKey: "price-calculator-form",
@@ -165,6 +183,26 @@ const SNAPSHOT_30D: WebsiteAnalyticsSnapshot = {
     { locale: "ro", label: "Romanian", visitors: 3102, leads: 62, sharePct: 43 },
     { locale: "de", label: "German", visitors: 2896, leads: 78, sharePct: 40 },
     { locale: "en", label: "English", visitors: 1242, leads: 28, sharePct: 17 },
+  ],
+  countries: [
+    { key: "RO", label: "Romania", visitors: 2900, sharePct: 40 },
+    { key: "DE", label: "Germany", visitors: 2520, sharePct: 35 },
+    { key: "AT", label: "Austria", visitors: 620, sharePct: 9 },
+    { key: "NL", label: "Netherlands", visitors: 410, sharePct: 6 },
+    { key: "FR", label: "France", visitors: 280, sharePct: 4 },
+    { key: "unknown", label: "Unknown", visitors: 510, sharePct: 6 },
+  ],
+  devices: [
+    { key: "Desktop", label: "Desktop", visitors: 3920, sharePct: 54 },
+    { key: "Mobile", label: "Mobile", visitors: 2780, sharePct: 38 },
+    { key: "Tablet", label: "Tablet", visitors: 540, sharePct: 8 },
+  ],
+  browsers: [
+    { key: "Chrome", label: "Chrome", visitors: 3880, sharePct: 54 },
+    { key: "Safari", label: "Safari", visitors: 1520, sharePct: 21 },
+    { key: "Firefox", label: "Firefox", visitors: 840, sharePct: 12 },
+    { key: "Edge", label: "Edge", visitors: 720, sharePct: 10 },
+    { key: "Other", label: "Other", visitors: 280, sharePct: 3 },
   ],
   leadSources: [
     {

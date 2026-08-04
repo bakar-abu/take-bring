@@ -116,7 +116,7 @@
   },
   "cookies": {
     "title": "Ihre Privatsphäre ist uns wichtig",
-    "description": "Wir verwenden Cookies, um Ihr Surferlebnis zu verbessern, den Website-Verkehr zu analysieren und Inhalte zu personalisieren. Mit einem Klick auf \"Akzeptieren\" stimmen Sie der Verwendung von Cookies zu.",
+    "description": "Wir verwenden Cookies, um Ihr Surferlebnis zu verbessern, den Website-Verkehr zu analysieren (einschließlich ungefähres Land anhand Ihrer IP-Adresse — kein GPS), Gerät/Browser zu erkennen und Inhalte zu personalisieren. Mit einem Klick auf \"Akzeptieren\" stimmen Sie der Verwendung von Cookies zu.",
     "learnMore": "Mehr erfahren",
     "accept": "Alle akzeptieren",
     "reject": "Ablehnen"

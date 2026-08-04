@@ -116,7 +116,7 @@
   },
   "cookies": {
     "title": "Confidențialitatea ta contează",
-    "description": "Folosim cookie-uri pentru a-ți îmbunătăți experiența de navigare, a analiza traficul și a personaliza conținutul. Apăsând \"Accept\", ești de acord cu utilizarea cookie-urilor.",
+    "description": "Folosim cookie-uri pentru a-ți îmbunătăți experiența de navigare, a analiza traficul (inclusiv țara aproximativă pe baza IP-ului — fără GPS), tipul de dispozitiv/browser și a personaliza conținutul. Apăsând \"Accept\", ești de acord cu utilizarea cookie-urilor.",
     "learnMore": "Află mai multe",
     "accept": "Acceptă toate",
     "reject": "Refuz"

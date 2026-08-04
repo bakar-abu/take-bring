@@ -53,10 +53,20 @@ export type BlogContentRow = {
   ctaClicks: number;
 };
 
+export type BreakdownRow = {
+  key: string;
+  label: string;
+  visitors: number;
+  sharePct: number;
+};
+
 export type WebsiteAnalyticsSnapshot = {
   period: AnalyticsPeriod;
   kpis: AnalyticsKpis;
   locales: LocaleTraffic[];
+  countries: BreakdownRow[];
+  devices: BreakdownRow[];
+  browsers: BreakdownRow[];
   leadSources: LeadSourceRow[];
   services: ServiceDemandRow[];
   ctas: CtaPerformanceRow[];

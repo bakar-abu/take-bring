@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { clientContextFromRequest } from "@/lib/dashboard-analytics/client-context";
 import { insertAnalyticsEvent } from "@/lib/dashboard-analytics/storage";
 import type { AnalyticsEventType } from "@/lib/dashboard-analytics/constants";
 
@@ -43,10 +44,12 @@ export async function POST(request: Request) {
       }
     }
 
+    const context = clientContextFromRequest(request);
+
     await insertAnalyticsEvent({
       eventType,
       path: asString(body.path) || "/",
-      locale: asString(body.locale) || "de",
+      locale: asString(body.locale) || "ro",
       referrer: asString(body.referrer),
       ctaId: asString(body.ctaId),
       consentValue:
@@ -56,6 +59,10 @@ export async function POST(request: Request) {
           : "",
       sessionId: asString(body.sessionId),
       visitorId: asString(body.visitorId),
+      country: context.country,
+      device: context.device,
+      browser: context.browser,
+      os: context.os,
       meta:
         body.meta && typeof body.meta === "object"
           ? (body.meta as Record<string, unknown>)

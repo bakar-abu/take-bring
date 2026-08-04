@@ -13,7 +13,8 @@
     "seed:admin": "node scripts/seed-admin-user.cjs",
     "migrate:blogs": "node scripts/migrate-blogs.cjs",
     "migrate:leads": "node scripts/migrate-leads.cjs",
-    "migrate:analytics": "node scripts/migrate-analytics.cjs"
+    "migrate:analytics": "node scripts/migrate-analytics.cjs",
+    "migrate:analytics-context": "node scripts/migrate-analytics-context.cjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.0",
