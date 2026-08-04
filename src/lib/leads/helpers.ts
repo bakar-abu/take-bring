@@ -39,7 +39,7 @@ export function resolveLeadType(formKey: string): LeadType {
 
 export function normalizeLeadInput(
   input: LeadInput,
-): Omit<Lead, "id" | "createdAt"> {
+): Omit<Lead, "id" | "createdAt" | "updatedAt" | "status"> {
   const formKey = input.formKey.trim() || "contact_form";
   const sourcePage = resolveSourcePage(formKey, input.sourcePage);
   const type = input.type || resolveLeadType(formKey);

@@ -1,9 +1,15 @@
 export type LeadType = "contact" | "newsletter" | "price-calculator";
 
+export type LeadStatus = "NEW" | "READ" | "ARCHIVED";
+
+export const LEAD_STATUSES: LeadStatus[] = ["NEW", "READ", "ARCHIVED"];
+
 export type Lead = {
   id: string;
   createdAt: string;
+  updatedAt?: string;
   type: LeadType;
+  status: LeadStatus;
   formKey: string;
   sourcePage: string;
   sourceLabel: string;
@@ -50,4 +56,5 @@ export type LeadListItem = Pick<
   | "sourcePage"
   | "type"
   | "formKey"
+  | "status"
 >;

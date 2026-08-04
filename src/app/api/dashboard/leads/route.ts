@@ -1,14 +1,24 @@
 import { NextResponse } from "next/server";
-import { isDashboardAuthenticated } from "@/lib/dashboard-auth";
+import { requireDashboardUser } from "@/lib/dashboard-auth";
 import { listLeads } from "@/lib/leads/storage";
 
 export const runtime = "nodejs";
 
 export async function GET() {
-  if (!(await isDashboardAuthenticated())) {
-    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+  const auth = await requireDashboardUser();
+  if (!auth.ok) {
+    return NextResponse.json(
+      { ok: false, error: auth.error },
+      { status: auth.status },
+    );
   }
 
-  const leads = await listLeads();
-  return NextResponse.json({ ok: true, leads });
+  try {
+    const leads = await listLeads();
+    return NextResponse.json({ ok: true, leads });
+  } catch (err) {
+    const message =
+      err instanceof Error ? err.message : "Could not list leads.";
+    return NextResponse.json({ ok: false, error: message }, { status: 500 });
+  }
 }

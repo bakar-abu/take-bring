@@ -14,17 +14,6 @@ function isValidEmail(email: string): boolean {
 
 export async function POST(request: Request) {
   try {
-    if (!isSmtpConfigured()) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error:
-            "Email is not configured yet. Add SMTP_PASS in .env and restart the server.",
-        },
-        { status: 503 },
-      );
-    }
-
     const body = (await request.json()) as Record<string, unknown>;
 
     if (asString(body.website)) {
@@ -50,8 +39,22 @@ export async function POST(request: Request) {
       inquiryType: "Newsletter",
     });
 
-    await sendNewsletterEmails(email);
-    return NextResponse.json({ ok: true });
+    let emailSent = false;
+    let emailError: string | null = null;
+    if (isSmtpConfigured()) {
+      try {
+        await sendNewsletterEmails(email);
+        emailSent = true;
+      } catch (err) {
+        emailError =
+          err instanceof Error ? err.message : "Could not send email.";
+        console.error("[api/newsletter] email failed", err);
+      }
+    } else {
+      emailError = "SMTP is not configured; lead saved without email.";
+    }
+
+    return NextResponse.json({ ok: true, emailSent, emailError });
   } catch (error) {
     console.error("[api/newsletter]", error);
     return NextResponse.json(

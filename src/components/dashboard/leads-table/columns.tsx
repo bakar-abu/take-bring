@@ -2,7 +2,7 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { displayLeadValue } from "@/lib/leads/helpers";
-import type { LeadListItem, LeadType } from "@/lib/leads/types";
+import type { LeadListItem, LeadStatus, LeadType } from "@/lib/leads/types";
 
 export const LEAD_TYPE_FILTERS: Array<{
   id: "all" | LeadType;
@@ -38,6 +38,19 @@ export function leadTypeBadgeClass(type: LeadType) {
       return "text-sky-700 ring-1 ring-sky-600/30";
     default:
       return "text-logo-bg/70 ring-1 ring-black/15";
+  }
+}
+
+function leadStatusBadgeClass(status: LeadStatus) {
+  switch (status) {
+    case "NEW":
+      return "bg-amber-100 text-amber-800 ring-1 ring-amber-600/20";
+    case "READ":
+      return "bg-emerald-100 text-emerald-800 ring-1 ring-emerald-600/20";
+    case "ARCHIVED":
+      return "bg-black/5 text-logo-bg/70 ring-1 ring-black/10";
+    default:
+      return "bg-black/5 text-logo-bg/70";
   }
 }
 
@@ -106,6 +119,21 @@ export function createLeadsColumns(): ColumnDef<LeadListItem>[] {
       filterFn: (row, columnId, filterValue) => {
         if (!filterValue || filterValue === "all") return true;
         return row.getValue(columnId) === filterValue;
+      },
+    },
+    {
+      accessorKey: "status",
+      id: "status",
+      header: "Status",
+      cell: ({ getValue }) => {
+        const status = getValue<LeadStatus>() ?? "NEW";
+        return (
+          <span
+            className={`inline-flex rounded-md px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${leadStatusBadgeClass(status)}`}
+          >
+            {status}
+          </span>
+        );
       },
     },
     {

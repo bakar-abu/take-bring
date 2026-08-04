@@ -1,32 +1,11 @@
 import { Suspense } from "react";
 import { LeadsDataGrid } from "@/components/dashboard/leads-table";
-import { MOCK_LEADS } from "@/lib/leads/mock-leads";
-import type { LeadListItem } from "@/lib/leads/types";
+import { listLeads } from "@/lib/leads/storage";
 
-// TODO(integrate): When wiring real data, delete `src/lib/leads/mock-leads.ts`,
-// remove MOCK_LEADS below, and use:
-//   import { listLeads } from "@/lib/leads/storage";
-//   const leads = await listLeads();
-
-function toListItem(lead: (typeof MOCK_LEADS)[number]): LeadListItem {
-  return {
-    id: lead.id,
-    createdAt: lead.createdAt,
-    fullName: lead.fullName,
-    email: lead.email,
-    phone: lead.phone,
-    pickupAddress: lead.pickupAddress,
-    deliveryAddress: lead.deliveryAddress,
-    sourceLabel: lead.sourceLabel,
-    sourcePage: lead.sourcePage,
-    type: lead.type,
-    formKey: lead.formKey,
-  };
-}
+export const dynamic = "force-dynamic";
 
 export default async function LeadsPage() {
-  // MOCK DATA (UI preview only) — remove when integrating.
-  const leads = MOCK_LEADS.map(toListItem);
+  const leads = await listLeads();
 
   return (
     <div className="space-y-6">
@@ -39,14 +18,10 @@ export default async function LeadsPage() {
         </h2>
         <p className="mt-1 text-sm text-foreground/55">
           Unified view of contact, service, calculator, and newsletter
-          submissions.
+          submissions. New form submissions appear here automatically.
         </p>
       </div>
 
-      {/*
-        stateMode="local" → React owns table state (default).
-        stateMode="url" → syncs q/type/sort/page to the URL for shareable/server state.
-      */}
       <Suspense
         fallback={
           <div className="rounded-2xl border border-black/10 p-8 text-sm text-foreground/60">
