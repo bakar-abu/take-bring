@@ -60,7 +60,8 @@ export const LANDING_SECTION_STATUS: Record<
   hero: "done",
   services: "done",
   shippingDetails: "done",
-  tracking: "done",
+  // Public tracking UI deferred — available on demand later
+  tracking: "not-built",
   about: "done",
   missionVision: "done",
   keyBenefits: "done",

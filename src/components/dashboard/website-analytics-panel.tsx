@@ -704,8 +704,7 @@ export function WebsiteAnalyticsPanel({
               CTAs (Book Express vs Call / WhatsApp).
             </li>
             <li className="rounded-lg border border-black/10 px-3 py-2">
-              Review rage clicks on <strong>/tracking</strong> (page is still a
-              stub) and mobile form fields.
+              Review rage clicks on high-traffic CTAs and mobile form fields.
             </li>
           </ul>
           <p className="mt-4 text-xs text-foreground/45">

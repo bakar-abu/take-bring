@@ -71,7 +71,8 @@ export function ContactMapSection() {
                   inquiryTypePlaceholder: t("inquiryTypePlaceholder"),
                   inquiryOptions: [
                     { value: "quote", label: t("inquiryQuote") },
-                    { value: "tracking", label: t("inquiryTracking") },
+                    // Tracking inquiry deferred — product available on demand later
+                    // { value: "tracking", label: t("inquiryTracking") },
                     { value: "general", label: t("inquiryGeneral") },
                     { value: "other", label: t("inquiryOther") },
                   ],

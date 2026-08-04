@@ -63,7 +63,7 @@
   "metadata": {
     "home": {
       "title": "Take & Bring – Kurier & Logistik",
-      "description": "Sie bestellen – wir liefern pünktlich. Express-Kurier, Spedition, Kühltransporte und Tracking."
+      "description": "Sie bestellen – wir liefern pünktlich. Express-Kurier, Spedition und Kühltransporte in ganz Europa."
     },
     "kuriertransporte": {
       "title": "Kuriertransporte",
@@ -395,8 +395,8 @@
     "step1Description": "Teilen Sie uns Ihre Versanddetails und Anforderungen mit. Erhalten Sie ein sofortiges Angebot und bestätigen Sie Ihre Buchung mit nur wenigen Klicks.",
     "step2Title": "Automatische Routenplanung",
     "step2Description": "Unser intelligentes System optimiert Routen basierend auf Gewicht, Volumen, Fahrzeugtyp und Lieferfenstern für maximale Effizienz.",
-    "step3Title": "Echtzeit-Tracking",
-    "step3Description": "Überwachen Sie Ihre Sendung live über unsere Mobile App mit GPS-Tracking, ETA-Updates und sofortigen Benachrichtigungen bei jedem Meilenstein.",
+    "step3Title": "Proaktive Status-Updates",
+    "step3Description": "Bleiben Sie informiert mit Status-Updates und ETA-Kommunikation von unserem Disponenten-Team bei jedem Meilenstein der Reise.",
     "step4Title": "Digitaler Liefernachweis",
     "step4Description": "Erhalten Sie sofortige Lieferbestätigung mit digitalen Unterschriften, Fotodokumentation und Zeitstempel für vollständige Transparenz.",
     "step5Title": "Analysen & Berichte",
@@ -419,9 +419,9 @@
   "whatYouGetSection": {
     "tag": "Ihr Mehrwert",
     "title": "Alles, was Sie für reibungslose Logistik benötigen",
-    "subtitle": "Wir bieten zuverlässige Transportlösungen, die Logistik einfacher, effizienter und transparenter machen. Mit professionellen Transportservices und modernen Tracking-Systemen können Unternehmen ihre Waren schnell bewegen und jederzeit den Überblick über ihre Sendungen behalten.",
-    "item1Title": "Echtzeit-Tracking",
-    "item1Description": "Überwachen Sie Sendungen und Lieferfahrzeuge in Echtzeit für maximale Transparenz.",
+    "subtitle": "Wir bieten zuverlässige Transportlösungen, die Logistik einfacher, effizienter und transparenter machen. Mit professionellen Transportservices und klarer Kommunikation können Unternehmen ihre Waren schnell bewegen und während der gesamten Reise informiert bleiben.",
+    "item1Title": "Liefertransparenz",
+    "item1Description": "Klare Status-Updates und proaktive Kommunikation, damit Sie jederzeit wissen, wo Ihre Sendung steht.",
     "item2Title": "Professionelle Fahrzeugflotte",
     "item2Description": "Zuverlässige Transportfahrzeuge für den sicheren Transport verschiedener Sendungsarten.",
     "item3Title": "Express-Services",
@@ -489,8 +489,8 @@
     "answerLabel": "Antwort:",
     "q1": "Wie kann ich Ihre Logistikservices buchen?",
     "a1": "Sie können unser Team kontaktieren, um Transportservices wie Freight Forwarding, Kurierdienst, Kühltransport oder lokale Lieferungen zu organisieren. Wir planen den Transport entsprechend Ihren Anforderungen.",
-    "q2": "Wie kann ich meine Sendungen verfolgen?",
-    "a2": "Sendungen können über unser Tracking-System verfolgt werden, sodass Sie den Status Ihrer Lieferung jederzeit in Echtzeit sehen können.",
+    "q2": "Wie erhalte ich Updates zu meiner Sendung?",
+    "a2": "Kontaktieren Sie unser Support-Team mit Ihrer Sendungsreferenz — wir geben Status-Updates und ETA per Telefon, E-Mail oder WhatsApp.",
     "q3": "Bieten Sie internationalen Versand an?",
     "a3": "Ja, wir bieten internationalen Versand und Freight-Forwarding-Services an, damit Unternehmen Waren effizient über nationale und internationale Routen transportieren können.",
     "q4": "Welche Arten von Waren können Sie transportieren?",
