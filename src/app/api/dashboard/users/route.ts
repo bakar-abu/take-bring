@@ -1,14 +1,23 @@
 import { NextResponse } from "next/server";
 import { requireDashboardRole } from "@/lib/dashboard-auth";
-import {
-  createDashboardUser,
-  listProfiles,
-} from "@/lib/dashboard-users/storage";
+import { createUser, listUsers } from "@/lib/dashboard-users/storage";
 import {
   DASHBOARD_USER_ROLES,
   type CreateDashboardUserInput,
   type DashboardUserRole,
 } from "@/lib/dashboard-users/types";
+import { isSmtpConfigured, sendDashboardUserInviteEmail } from "@/lib/mail";
+import { siteConfig } from "@/config/site";
+
+function buildLoginUrl(request: Request) {
+  const configured = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
+  if (configured) return `${configured}/tb-dashboard`;
+  try {
+    return new URL("/tb-dashboard", request.url).toString();
+  } catch {
+    return `${siteConfig.url}/tb-dashboard`;
+  }
+}
 
 export async function GET() {
   const auth = await requireDashboardRole("Admin");
@@ -20,7 +29,7 @@ export async function GET() {
   }
 
   try {
-    const users = await listProfiles();
+    const users = await listUsers();
     return NextResponse.json({ ok: true, users });
   } catch (err) {
     const message =
@@ -68,12 +77,36 @@ export async function POST(request: Request) {
   }
 
   try {
-    const user = await createDashboardUser({ name, email, password, role });
-    return NextResponse.json({ ok: true, user }, { status: 201 });
+    const user = await createUser({ name, email, password, role });
+
+    let emailSent = false;
+    let emailError: string | null = null;
+    if (isSmtpConfigured()) {
+      try {
+        await sendDashboardUserInviteEmail({
+          fullName: name.trim(),
+          email: email.trim().toLowerCase(),
+          password,
+          role,
+          loginUrl: buildLoginUrl(request),
+        });
+        emailSent = true;
+      } catch (err) {
+        emailError =
+          err instanceof Error ? err.message : "Could not send invite email.";
+      }
+    } else {
+      emailError = "SMTP is not configured; invite email was not sent.";
+    }
+
+    return NextResponse.json(
+      { ok: true, user, emailSent, emailError },
+      { status: 201 },
+    );
   } catch (err) {
     const message =
       err instanceof Error ? err.message : "Could not create user.";
-    const status = /already|exists|registered/i.test(message) ? 409 : 400;
+    const status = /already exists/i.test(message) ? 409 : 400;
     return NextResponse.json({ ok: false, error: message }, { status });
   }
 }

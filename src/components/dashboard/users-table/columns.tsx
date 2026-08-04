@@ -41,7 +41,9 @@ function getInitials(name: string) {
 /**
  * Headless column definitions for dashboard users.
  */
-export function createUsersColumns(): ColumnDef<DashboardUser>[] {
+export function createUsersColumns(options?: {
+  onDeleteUser?: (user: DashboardUser) => void;
+}): ColumnDef<DashboardUser>[] {
   return [
     {
       id: "select",
@@ -138,12 +140,12 @@ export function createUsersColumns(): ColumnDef<DashboardUser>[] {
       enableSorting: false,
       enableHiding: false,
       header: "Actions",
-      cell: () => (
+      cell: ({ row }) => (
         <div className="flex gap-1">
           <button
             type="button"
             disabled
-            title="Edit user — available after backend integration"
+            title="Edit user — coming soon"
             className="inline-flex cursor-not-allowed items-center gap-1 rounded-md border border-black/10 px-2 py-1 text-[11px] font-semibold text-foreground/35"
           >
             <Pencil className="h-3 w-3" aria-hidden />
@@ -151,9 +153,11 @@ export function createUsersColumns(): ColumnDef<DashboardUser>[] {
           </button>
           <button
             type="button"
-            disabled
-            title="Delete user — available after backend integration"
-            className="inline-flex cursor-not-allowed items-center gap-1 rounded-md border border-black/10 px-2 py-1 text-[11px] font-semibold text-foreground/35"
+            onClick={(event) => {
+              event.stopPropagation();
+              options?.onDeleteUser?.(row.original);
+            }}
+            className="inline-flex items-center gap-1 rounded-md border border-red-200 bg-red-50 px-2 py-1 text-[11px] font-semibold text-red-700 transition-colors hover:bg-red-100"
           >
             <Trash2 className="h-3 w-3" aria-hidden />
             Delete

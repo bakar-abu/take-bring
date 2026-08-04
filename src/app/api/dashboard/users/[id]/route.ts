@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { requireDashboardRole } from "@/lib/dashboard-auth";
 import {
-  deleteDashboardUser,
-  getProfileById,
-  updateDashboardUser,
+  deleteUser,
+  getUserById,
+  updateUser,
 } from "@/lib/dashboard-users/storage";
 import {
   DASHBOARD_USER_ROLES,
@@ -23,7 +23,7 @@ export async function GET(_request: Request, context: RouteContext) {
 
   const { id } = await context.params;
   try {
-    const user = await getProfileById(id);
+    const user = await getUserById(id);
     if (!user) {
       return NextResponse.json(
         { ok: false, error: "User not found." },
@@ -69,7 +69,7 @@ export async function PATCH(request: Request, context: RouteContext) {
   }
 
   try {
-    const user = await updateDashboardUser(id, {
+    const user = await updateUser(id, {
       name: body.name,
       role: body.role as DashboardUserRole | undefined,
       password: body.password,
@@ -102,7 +102,7 @@ export async function DELETE(_request: Request, context: RouteContext) {
   }
 
   try {
-    await deleteDashboardUser(id);
+    await deleteUser(id);
     return NextResponse.json({ ok: true });
   } catch (err) {
     const message =

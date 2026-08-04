@@ -1,63 +1,68 @@
-import { createClient } from "@supabase/supabase-js";
+import bcrypt from "bcryptjs";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
-import type { CreateDashboardUserInput, DashboardUser } from "@/lib/dashboard-users/types";
+import type {
+  CreateDashboardUserInput,
+  DashboardUser,
+  DashboardUserRole,
+} from "@/lib/dashboard-users/types";
 import {
   isDashboardUserRole,
-  mapProfileToDashboardUser,
-  type ProfileRow,
+  mapUserRowToDashboardUser,
+  type UserRow,
 } from "@/lib/dashboard-users/profile";
 
-function createAuthClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
-  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
-  if (!url || !anon) {
-    throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY");
-  }
-  return createClient(url, anon, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  });
-}
+const BCRYPT_ROUNDS = 12;
 
-export async function listProfiles(): Promise<DashboardUser[]> {
+const USER_SELECT =
+  "id, email, full_name, role, created_at, updated_at" as const;
+
+export async function listUsers(): Promise<DashboardUser[]> {
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
-    .from("profiles")
-    .select("id, email, full_name, role, created_at, updated_at")
+    .from("users")
+    .select(USER_SELECT)
     .order("created_at", { ascending: false });
 
   if (error) throw new Error(error.message);
-  return ((data ?? []) as ProfileRow[]).map(mapProfileToDashboardUser);
+  return (data ?? []).map((row) =>
+    mapUserRowToDashboardUser(row as Omit<UserRow, "password_hash">),
+  );
 }
 
-export async function getProfileById(id: string): Promise<DashboardUser | null> {
+export async function getUserById(id: string): Promise<DashboardUser | null> {
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
-    .from("profiles")
-    .select("id, email, full_name, role, created_at, updated_at")
+    .from("users")
+    .select(USER_SELECT)
     .eq("id", id)
     .maybeSingle();
 
   if (error) throw new Error(error.message);
   if (!data) return null;
-  return mapProfileToDashboardUser(data as ProfileRow);
+  return mapUserRowToDashboardUser(data as Omit<UserRow, "password_hash">);
 }
 
-export async function getProfileByEmail(
+export async function getUserByEmail(
   email: string,
-): Promise<DashboardUser | null> {
+): Promise<(DashboardUser & { passwordHash: string }) | null> {
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
-    .from("profiles")
-    .select("id, email, full_name, role, created_at, updated_at")
+    .from("users")
+    .select("id, email, full_name, role, created_at, updated_at, password_hash")
     .eq("email", email.trim().toLowerCase())
     .maybeSingle();
 
   if (error) throw new Error(error.message);
   if (!data) return null;
-  return mapProfileToDashboardUser(data as ProfileRow);
+
+  const row = data as UserRow;
+  return {
+    ...mapUserRowToDashboardUser(row),
+    passwordHash: row.password_hash,
+  };
 }
 
-export async function createDashboardUser(
+export async function createUser(
   input: CreateDashboardUserInput,
 ): Promise<DashboardUser> {
   if (!isDashboardUserRole(input.role)) {
@@ -72,40 +77,33 @@ export async function createDashboardUser(
     throw new Error("Name, email, and password (min 8 chars) are required.");
   }
 
+  const existing = await getUserByEmail(email);
+  if (existing) {
+    throw new Error("A user with this email already exists.");
+  }
+
+  const passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS);
   const supabase = getSupabaseAdmin();
 
-  const { data: authData, error: authError } =
-    await supabase.auth.admin.createUser({
-      email,
-      password,
-      email_confirm: true,
-      user_metadata: { full_name: name, role: input.role },
-    });
-
-  if (authError || !authData.user) {
-    throw new Error(authError?.message || "Could not create auth user.");
-  }
-
-  const { data: profile, error: profileError } = await supabase
-    .from("profiles")
+  const { data, error } = await supabase
+    .from("users")
     .insert({
-      id: authData.user.id,
       email,
       full_name: name,
+      password_hash: passwordHash,
       role: input.role,
     })
-    .select("id, email, full_name, role, created_at, updated_at")
+    .select(USER_SELECT)
     .single();
 
-  if (profileError || !profile) {
-    await supabase.auth.admin.deleteUser(authData.user.id);
-    throw new Error(profileError?.message || "Could not create profile.");
+  if (error || !data) {
+    throw new Error(error?.message || "Could not create user.");
   }
 
-  return mapProfileToDashboardUser(profile as ProfileRow);
+  return mapUserRowToDashboardUser(data as Omit<UserRow, "password_hash">);
 }
 
-export async function updateDashboardUser(
+export async function updateUser(
   id: string,
   patch: {
     name?: string;
@@ -113,22 +111,16 @@ export async function updateDashboardUser(
     password?: string;
   },
 ): Promise<DashboardUser> {
-  const supabase = getSupabaseAdmin();
+  const updates: {
+    full_name?: string;
+    role?: DashboardUserRole;
+    password_hash?: string;
+  } = {};
 
-  if (patch.password) {
-    if (patch.password.length < 8) {
-      throw new Error("Password must be at least 8 characters.");
-    }
-    const { error } = await supabase.auth.admin.updateUserById(id, {
-      password: patch.password,
-    });
-    if (error) throw new Error(error.message);
-  }
-
-  const updates: { full_name?: string; role?: string } = {};
   if (typeof patch.name === "string" && patch.name.trim()) {
     updates.full_name = patch.name.trim();
   }
+
   if (typeof patch.role === "string") {
     if (!isDashboardUserRole(patch.role)) {
       throw new Error("Invalid role.");
@@ -136,51 +128,71 @@ export async function updateDashboardUser(
     updates.role = patch.role;
   }
 
-  if (Object.keys(updates).length > 0) {
-    const { error } = await supabase.from("profiles").update(updates).eq("id", id);
-    if (error) throw new Error(error.message);
+  if (typeof patch.password === "string" && patch.password.length > 0) {
+    if (patch.password.length < 8) {
+      throw new Error("Password must be at least 8 characters.");
+    }
+    updates.password_hash = await bcrypt.hash(patch.password, BCRYPT_ROUNDS);
   }
 
-  const user = await getProfileById(id);
-  if (!user) throw new Error("User not found.");
-  return user;
-}
+  if (Object.keys(updates).length === 0) {
+    const user = await getUserById(id);
+    if (!user) throw new Error("User not found.");
+    return user;
+  }
 
-export async function deleteDashboardUser(id: string): Promise<void> {
   const supabase = getSupabaseAdmin();
-  const { error } = await supabase.auth.admin.deleteUser(id);
+  const { data, error } = await supabase
+    .from("users")
+    .update(updates)
+    .eq("id", id)
+    .select(USER_SELECT)
+    .maybeSingle();
+
   if (error) throw new Error(error.message);
-  // profiles cascade via FK
+  if (!data) throw new Error("User not found.");
+  return mapUserRowToDashboardUser(data as Omit<UserRow, "password_hash">);
 }
 
-export async function authenticateDashboardUser(
+export async function deleteUser(id: string): Promise<void> {
+  const supabase = getSupabaseAdmin();
+  const { error, count } = await supabase
+    .from("users")
+    .delete({ count: "exact" })
+    .eq("id", id);
+
+  if (error) throw new Error(error.message);
+  if (count === 0) throw new Error("User not found.");
+}
+
+export async function authenticateUser(
   email: string,
   password: string,
 ): Promise<DashboardUser | null> {
-  const authClient = createAuthClient();
-  const normalized = email.trim().toLowerCase();
+  const user = await getUserByEmail(email);
+  if (!user) return null;
 
-  const { data, error } = await authClient.auth.signInWithPassword({
-    email: normalized,
-    password,
-  });
+  const ok = await bcrypt.compare(password, user.passwordHash);
+  if (!ok) return null;
 
-  if (error || !data.user) return null;
-
-  const profile = await getProfileById(data.user.id);
-  if (profile) return profile;
-
-  const metaRole = data.user.user_metadata?.role;
-  const metaName = data.user.user_metadata?.full_name;
-  if (typeof metaRole === "string" && isDashboardUserRole(metaRole)) {
-    return {
-      id: data.user.id,
-      email: normalized,
-      name: typeof metaName === "string" ? metaName : normalized,
-      role: metaRole,
-      createdAt: data.user.created_at,
-    };
-  }
-
-  return null;
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    createdAt: user.createdAt,
+  };
 }
+
+/** @deprecated use listUsers */
+export const listProfiles = listUsers;
+/** @deprecated use getUserById */
+export const getProfileById = getUserById;
+/** @deprecated use createUser */
+export const createDashboardUser = createUser;
+/** @deprecated use updateUser */
+export const updateDashboardUser = updateUser;
+/** @deprecated use deleteUser */
+export const deleteDashboardUser = deleteUser;
+/** @deprecated use authenticateUser */
+export const authenticateDashboardUser = authenticateUser;

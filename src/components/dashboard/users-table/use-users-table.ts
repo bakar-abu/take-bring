@@ -29,13 +29,21 @@ function resolveUpdater<T>(updater: Updater<T>, previous: T): T {
 type UseUsersTableOptions = {
   data: DashboardUser[];
   pageSize?: number;
+  onDeleteUser?: (user: DashboardUser) => void;
 };
 
 /**
  * Headless TanStack Table controller for users.
  */
-export function useUsersTable({ data, pageSize = 8 }: UseUsersTableOptions) {
-  const columns = useMemo(() => createUsersColumns(), []);
+export function useUsersTable({
+  data,
+  pageSize = 8,
+  onDeleteUser,
+}: UseUsersTableOptions) {
+  const columns = useMemo(
+    () => createUsersColumns({ onDeleteUser }),
+    [onDeleteUser],
+  );
 
   const [sorting, setSorting] = useState<SortingState>([
     { id: "createdAt", desc: true },

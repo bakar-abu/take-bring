@@ -1,16 +1,8 @@
 import { NextResponse } from "next/server";
-import { DASHBOARD_SESSION_COOKIE } from "@/lib/dashboard-constants";
+import { clearAuthCookies } from "@/lib/dashboard-auth";
 
 export async function POST() {
   const response = NextResponse.json({ ok: true });
-  response.cookies.set({
-    name: DASHBOARD_SESSION_COOKIE,
-    value: "",
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: 0,
-  });
+  clearAuthCookies(response);
   return response;
 }

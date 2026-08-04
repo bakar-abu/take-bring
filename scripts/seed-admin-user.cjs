@@ -1,25 +1,16 @@
 /**
- * Apply profiles migration + seed Admin user.
+ * Apply users migration + seed Admin (custom auth, bcrypt).
  *
  * Usage: node scripts/seed-admin-user.cjs
- *
- * Requires in .env:
- *   NEXT_PUBLIC_SUPABASE_URL
- *   SUPABASE_SERVICE_ROLE_KEY
- *   DATABASE_URL  (optional — for SQL migration; or run 001_profiles.sql in SQL Editor first)
- *   SEED_ADMIN_EMAIL (default admin@take-bring.eu)
- *   SEED_ADMIN_PASSWORD (default 12345678)
- *   SEED_ADMIN_NAME (default Admin)
  */
 const fs = require("fs");
 const path = require("path");
+const bcrypt = require("bcryptjs");
 const { createClient } = require("@supabase/supabase-js");
 
 function loadEnv() {
   const envPath = path.join(__dirname, "..", ".env");
-  if (!fs.existsSync(envPath)) {
-    throw new Error("Missing .env");
-  }
+  if (!fs.existsSync(envPath)) throw new Error("Missing .env");
   for (const line of fs.readFileSync(envPath, "utf8").split(/\r?\n/)) {
     const trimmed = line.trim();
     if (!trimmed || trimmed.startsWith("#")) continue;
@@ -40,7 +31,9 @@ function loadEnv() {
 async function runMigrationIfPossible() {
   const databaseUrl = process.env.DATABASE_URL?.trim();
   if (!databaseUrl) {
-    console.log("DATABASE_URL not set — skip SQL migrate (run 001_profiles.sql in Supabase SQL Editor if needed).");
+    console.log(
+      "DATABASE_URL not set — run supabase/migrations/002_users.sql in SQL Editor if needed.",
+    );
     return;
   }
 
@@ -57,7 +50,7 @@ async function runMigrationIfPossible() {
     "..",
     "supabase",
     "migrations",
-    "001_profiles.sql",
+    "002_users.sql",
   );
   const sql = fs.readFileSync(sqlPath, "utf8");
   const client = new pg.Client({
@@ -67,7 +60,7 @@ async function runMigrationIfPossible() {
   await client.connect();
   try {
     await client.query(sql);
-    console.log("Applied 001_profiles.sql");
+    console.log("Applied 002_users.sql");
   } finally {
     await client.end();
   }
@@ -80,66 +73,60 @@ async function seedAdmin() {
     throw new Error("Missing Supabase URL or service role key in .env");
   }
 
-  const email = (
-    process.env.SEED_ADMIN_EMAIL || "admin@take-bring.eu"
-  )
+  const email = (process.env.SEED_ADMIN_EMAIL || "admin@take-bring.eu")
     .trim()
     .toLowerCase();
   const password = process.env.SEED_ADMIN_PASSWORD || "12345678";
   const fullName = process.env.SEED_ADMIN_NAME || "Admin";
   const role = "Admin";
+  const passwordHash = await bcrypt.hash(password, 12);
 
   const supabase = createClient(url, serviceKey, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 
-  const { data: listed, error: listError } = await supabase.auth.admin.listUsers({
-    page: 1,
-    perPage: 200,
-  });
-  if (listError) throw new Error(listError.message);
+  const { data: existing, error: findError } = await supabase
+    .from("users")
+    .select("id")
+    .eq("email", email)
+    .maybeSingle();
 
-  let user = listed.users.find((u) => u.email?.toLowerCase() === email);
-
-  if (!user) {
-    const { data, error } = await supabase.auth.admin.createUser({
-      email,
-      password,
-      email_confirm: true,
-      user_metadata: { full_name: fullName, role },
-    });
-    if (error || !data.user) {
-      throw new Error(error?.message || "createUser failed");
-    }
-    user = data.user;
-    console.log("Created auth user:", email);
-  } else {
-    const { error } = await supabase.auth.admin.updateUserById(user.id, {
-      password,
-      email_confirm: true,
-      user_metadata: { full_name: fullName, role },
-    });
-    if (error) throw new Error(error.message);
-    console.log("Updated existing auth user password/metadata:", email);
-  }
-
-  const { error: upsertError } = await supabase.from("profiles").upsert(
-    {
-      id: user.id,
-      email,
-      full_name: fullName,
-      role,
-    },
-    { onConflict: "id" },
-  );
-
-  if (upsertError) {
+  if (findError) {
     throw new Error(
-      `Profile upsert failed: ${upsertError.message}. Ensure 001_profiles.sql has been applied.`,
+      `users table lookup failed: ${findError.message}. Apply 002_users.sql first.`,
     );
   }
 
-  console.log("Admin profile ready:", { email, role, id: user.id });
+  if (existing?.id) {
+    const { error } = await supabase
+      .from("users")
+      .update({
+        full_name: fullName,
+        role,
+        password_hash: passwordHash,
+      })
+      .eq("id", existing.id);
+    if (error) throw new Error(error.message);
+    console.log("Updated admin user:", email, existing.id);
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("users")
+    .insert({
+      email,
+      full_name: fullName,
+      role,
+      password_hash: passwordHash,
+    })
+    .select("id")
+    .single();
+
+  if (error || !data) {
+    throw new Error(error?.message || "Could not insert admin user.");
+  }
+
+  console.log("Created admin user:", { email, role, id: data.id });
 }
 
 async function main() {

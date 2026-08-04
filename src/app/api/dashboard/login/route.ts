@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
 import {
-  DASHBOARD_SESSION_COOKIE,
-  SESSION_MAX_AGE_SECONDS,
-  createDashboardSessionToken,
+  createTokenPair,
+  setAuthCookies,
 } from "@/lib/dashboard-auth";
-import { authenticateDashboardUser } from "@/lib/dashboard-users/storage";
+import { authenticateUser } from "@/lib/dashboard-users/storage";
 
 export async function POST(request: Request) {
   let body: { email?: string; password?: string };
@@ -30,7 +29,7 @@ export async function POST(request: Request) {
 
   let user;
   try {
-    user = await authenticateDashboardUser(email, password);
+    user = await authenticateUser(email, password);
   } catch (err) {
     const message =
       err instanceof Error ? err.message : "Login service unavailable.";
@@ -44,6 +43,13 @@ export async function POST(request: Request) {
     );
   }
 
+  const tokens = await createTokenPair({
+    id: user.id,
+    email: user.email,
+    role: user.role,
+    name: user.name,
+  });
+
   const response = NextResponse.json({
     ok: true,
     user: {
@@ -54,19 +60,6 @@ export async function POST(request: Request) {
     },
   });
 
-  response.cookies.set({
-    name: DASHBOARD_SESSION_COOKIE,
-    value: createDashboardSessionToken({
-      id: user.id,
-      email: user.email,
-      role: user.role,
-    }),
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: SESSION_MAX_AGE_SECONDS,
-  });
-
+  setAuthCookies(response, tokens);
   return response;
 }

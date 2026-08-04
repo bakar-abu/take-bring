@@ -1,118 +1,115 @@
 import { cookies } from "next/headers";
-import { createHmac, timingSafeEqual } from "crypto";
+import type { NextResponse } from "next/server";
 import {
+  ACCESS_TOKEN_MAX_AGE_SECONDS,
+  DASHBOARD_ACCESS_COOKIE,
+  DASHBOARD_PATH,
+  DASHBOARD_REFRESH_COOKIE,
   DASHBOARD_SESSION_COOKIE,
+  REFRESH_TOKEN_MAX_AGE_SECONDS,
   SESSION_MAX_AGE_SECONDS,
 } from "@/lib/dashboard-constants";
+import {
+  signAccessToken,
+  signRefreshToken,
+  verifyAccessToken,
+  verifyRefreshToken,
+  type TokenPayload,
+} from "@/lib/dashboard-jwt";
 import type { DashboardUserRole } from "@/lib/dashboard-users/types";
-import { isDashboardUserRole } from "@/lib/dashboard-users/profile";
-import { getProfileById } from "@/lib/dashboard-users/storage";
 
 export {
   DASHBOARD_SESSION_COOKIE,
+  DASHBOARD_ACCESS_COOKIE,
+  DASHBOARD_REFRESH_COOKIE,
   DASHBOARD_PATH,
   SESSION_MAX_AGE_SECONDS,
+  ACCESS_TOKEN_MAX_AGE_SECONDS,
+  REFRESH_TOKEN_MAX_AGE_SECONDS,
 } from "@/lib/dashboard-constants";
 
-export type DashboardSessionPayload = {
-  id: string;
-  email: string;
-  role: DashboardUserRole;
-};
-
-function getSessionSecret() {
-  return (
-    process.env.DASHBOARD_SESSION_SECRET ||
-    "take-bring-dashboard-dev-secret"
-  );
+function cookieBase() {
+  return {
+    httpOnly: true,
+    sameSite: "lax" as const,
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+  };
 }
 
-function signPayload(payload: string) {
-  return createHmac("sha256", getSessionSecret())
-    .update(payload)
-    .digest("hex");
+export async function createTokenPair(user: TokenPayload) {
+  const [accessToken, refreshToken] = await Promise.all([
+    signAccessToken(user),
+    signRefreshToken(user),
+  ]);
+  return { accessToken, refreshToken };
 }
 
-/** Session format: id|email|role|issuedAt|signature */
-export function createDashboardSessionToken(user: DashboardSessionPayload) {
-  const issuedAt = Date.now().toString();
-  const payload = `${user.id}|${user.email}|${user.role}|${issuedAt}`;
-  return `${payload}|${signPayload(payload)}`;
+export function setAuthCookies(
+  response: NextResponse,
+  tokens: { accessToken: string; refreshToken: string },
+) {
+  const base = cookieBase();
+  response.cookies.set({
+    ...base,
+    name: DASHBOARD_ACCESS_COOKIE,
+    value: tokens.accessToken,
+    maxAge: ACCESS_TOKEN_MAX_AGE_SECONDS,
+  });
+  response.cookies.set({
+    ...base,
+    name: DASHBOARD_REFRESH_COOKIE,
+    value: tokens.refreshToken,
+    maxAge: REFRESH_TOKEN_MAX_AGE_SECONDS,
+  });
+  // Clear legacy session cookie if present
+  response.cookies.set({
+    ...base,
+    name: DASHBOARD_SESSION_COOKIE,
+    value: "",
+    maxAge: 0,
+  });
 }
 
-export function parseDashboardSessionToken(
-  token: string | undefined,
-): DashboardSessionPayload | null {
-  if (!token) return null;
-
-  const parts = token.split("|");
-  if (parts.length !== 5) return null;
-
-  const [id, email, role, issuedAt, signature] = parts;
-  if (!id || !email || !role || !issuedAt || !signature) return null;
-  if (!isDashboardUserRole(role)) return null;
-
-  const expected = signPayload(`${id}|${email}|${role}|${issuedAt}`);
-  try {
-    const a = Buffer.from(signature);
-    const b = Buffer.from(expected);
-    if (a.length !== b.length || !timingSafeEqual(a, b)) return null;
-  } catch {
-    return null;
+export function clearAuthCookies(response: NextResponse) {
+  const base = cookieBase();
+  for (const name of [
+    DASHBOARD_ACCESS_COOKIE,
+    DASHBOARD_REFRESH_COOKIE,
+    DASHBOARD_SESSION_COOKIE,
+  ]) {
+    response.cookies.set({ ...base, name, value: "", maxAge: 0 });
   }
-
-  const ageMs = Date.now() - Number(issuedAt);
-  if (
-    !Number.isFinite(ageMs) ||
-    ageMs < 0 ||
-    ageMs > SESSION_MAX_AGE_SECONDS * 1000
-  ) {
-    return null;
-  }
-
-  return { id, email, role };
-}
-
-export function verifyDashboardSessionToken(token: string | undefined) {
-  return parseDashboardSessionToken(token) !== null;
-}
-
-export function getEmailFromDashboardSessionToken(token: string | undefined) {
-  return parseDashboardSessionToken(token)?.email ?? null;
 }
 
 export async function getDashboardUser() {
   const jar = await cookies();
-  const token = jar.get(DASHBOARD_SESSION_COOKIE)?.value;
-  const session = parseDashboardSessionToken(token);
-  if (!session) return null;
-
-  // Refresh name from profile when available
-  try {
-    const profile = await getProfileById(session.id);
-    if (profile) {
-      return {
-        id: profile.id,
-        email: profile.email,
-        name: profile.name,
-        role: profile.role,
-      };
-    }
-  } catch {
-    // fall through to session-only user
+  const access = jar.get(DASHBOARD_ACCESS_COOKIE)?.value;
+  const fromAccess = await verifyAccessToken(access);
+  if (fromAccess) {
+    return {
+      id: fromAccess.id,
+      email: fromAccess.email,
+      name: fromAccess.name || fromAccess.email,
+      role: fromAccess.role,
+    };
   }
 
+  const refresh = jar.get(DASHBOARD_REFRESH_COOKIE)?.value;
+  const fromRefresh = await verifyRefreshToken(refresh);
+  if (!fromRefresh) return null;
+
+  // Access expired but refresh valid — treat as authenticated (refresh route rotates tokens)
   return {
-    id: session.id,
-    email: session.email,
-    name: session.email,
-    role: session.role,
+    id: fromRefresh.id,
+    email: fromRefresh.email,
+    name: fromRefresh.name || fromRefresh.email,
+    role: fromRefresh.role,
   };
 }
 
 export async function isDashboardAuthenticated() {
-  const user = await getDashboardUser();
-  return user !== null;
+  return (await getDashboardUser()) !== null;
 }
 
 export async function requireDashboardUser() {
@@ -123,9 +120,7 @@ export async function requireDashboardUser() {
   return { ok: true as const, user };
 }
 
-export async function requireDashboardRole(
-  ...allowed: DashboardUserRole[]
-) {
+export async function requireDashboardRole(...allowed: DashboardUserRole[]) {
   const auth = await requireDashboardUser();
   if (!auth.ok) return auth;
 
@@ -140,7 +135,19 @@ export async function requireDashboardRole(
   return auth;
 }
 
-/** @deprecated Env login removed — use authenticateDashboardUser via login API. */
+/** @deprecated HMAC session removed — JWT cookies are used instead. */
+export function createDashboardSessionToken(_user: unknown) {
+  return "";
+}
+
+export function verifyDashboardSessionToken(_token: string | undefined) {
+  return false;
+}
+
+export function getEmailFromDashboardSessionToken(_token: string | undefined) {
+  return null;
+}
+
 export function validateDashboardCredentials(_email: string, _password: string) {
   return { ok: false as const, error: "not_configured" as const };
 }
