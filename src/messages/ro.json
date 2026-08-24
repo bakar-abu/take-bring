@@ -127,16 +127,6 @@
     "callAria": "Sună Take & Bring la {phone}",
     "whatsappAria": "Discută cu Take & Bring pe WhatsApp"
   },
-  "tawkChat": {
-    "title": "Chat Take & Bring",
-    "greeting": "Bună! Alegeți o întrebare sau începeți un chat.",
-    "q1": "Cum pot rezerva o livrare?",
-    "q2": "Cum pot urmări expedierea?",
-    "q3": "Oferiți transport internațional?",
-    "openChat": "Discutați cu noi",
-    "openAria": "Deschide întrebările chatului live",
-    "close": "Închide meniul de chat"
-  },
   "footer": {
     "findUsSocial": "Urmăriți-ne pe rețelele sociale",
     "company": "Companie",
