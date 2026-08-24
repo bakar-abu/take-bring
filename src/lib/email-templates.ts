@@ -32,6 +32,9 @@ export function formKeyLabel(formKey: string): string {
     industries_lead_form: "Industries page",
     service_lead_form: "Service page",
     landing_newsletter_form: "Newsletter",
+    chatbot_lead: "Website chatbot",
+    whatsapp_click: "Chatbot WhatsApp click",
+    phone_click: "Chatbot phone click",
   };
 
   if (map[formKey]) return map[formKey];
