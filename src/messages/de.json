@@ -127,16 +127,6 @@
     "callAria": "Take & Bring anrufen unter {phone}",
     "whatsappAria": "Mit Take & Bring per WhatsApp chatten"
   },
-  "tawkChat": {
-    "title": "Take & Bring Chat",
-    "greeting": "Hallo! Wählen Sie eine Frage oder starten Sie einen Chat.",
-    "q1": "Wie kann ich eine Lieferung buchen?",
-    "q2": "Wie kann ich meine Sendung verfolgen?",
-    "q3": "Bieten Sie internationalen Versand an?",
-    "openChat": "Mit uns chatten",
-    "openAria": "Live-Chat-Fragen öffnen",
-    "close": "Chat-Menü schließen"
-  },
   "footer": {
     "findUsSocial": "Folgen Sie uns in den sozialen Medien",
     "company": "Unternehmen",
