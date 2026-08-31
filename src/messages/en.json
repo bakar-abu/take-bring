@@ -127,6 +127,21 @@
     "callAria": "Call Take & Bring at {phone}",
     "whatsappAria": "Chat with Take & Bring on WhatsApp"
   },
+  "exitIntent": {
+    "badge": "Limited offer",
+    "title": "Wait — before you go",
+    "subtitle": "Get a faster quote and a welcome discount on your first booking.",
+    "offerLabel": "First booking discount",
+    "offerValue": "10% off your first transport",
+    "offerHint": "Mention code TB10 when you request your quote. Valid for new customers.",
+    "helpTitle": "Need help right now?",
+    "helpSubtitle": "Talk to our team on WhatsApp or call us — we're available for urgent shipments.",
+    "whatsappCta": "WhatsApp us",
+    "callCta": "Call us",
+    "quoteCta": "Claim 10% & get quote",
+    "dismiss": "No thanks, continue browsing",
+    "whatsappPrefill": "Hi Take & Bring, I saw the TB10 first-booking offer and need a quote."
+  },
   "footer": {
     "findUsSocial": "Find us on social media",
     "company": "Company",

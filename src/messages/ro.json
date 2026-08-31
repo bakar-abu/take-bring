@@ -127,6 +127,21 @@
     "callAria": "Sună Take & Bring la {phone}",
     "whatsappAria": "Discută cu Take & Bring pe WhatsApp"
   },
+  "exitIntent": {
+    "badge": "Ofertă limitată",
+    "title": "Stai — înainte să pleci",
+    "subtitle": "Obține o ofertă mai rapidă și un discount de bun venit la prima rezervare.",
+    "offerLabel": "Discount prima rezervare",
+    "offerValue": "10% reducere la primul transport",
+    "offerHint": "Menționează codul TB10 când soliciți oferta. Valabil pentru clienți noi.",
+    "helpTitle": "Ai nevoie de ajutor acum?",
+    "helpSubtitle": "Scrie-ne pe WhatsApp sau sună-ne — suntem disponibili pentru expedieri urgente.",
+    "whatsappCta": "WhatsApp",
+    "callCta": "Sună",
+    "quoteCta": "Revendică 10% & cere ofertă",
+    "dismiss": "Nu, mulțumesc, continui navigarea",
+    "whatsappPrefill": "Bună Take & Bring, am văzut oferta TB10 pentru prima rezervare și am nevoie de o ofertă."
+  },
   "footer": {
     "findUsSocial": "Urmăriți-ne pe rețelele sociale",
     "company": "Companie",
