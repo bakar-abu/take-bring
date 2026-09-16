@@ -13,6 +13,7 @@ const FORM_SOURCE_FALLBACK: Record<string, string> = {
   phone_click: "/",
   "service-lead-freight": "/spedition-lkw",
   "service-lead-refrigerated": "/kuehltransporte",
+  "service-lead-foodDelivery": "/lebensmittel-lieferservice",
   "service-lead-courier": "/kuriertransporte",
   "service-lead-regularTours": "/feste-routen",
   "service-lead-international": "/internationaler-versand",

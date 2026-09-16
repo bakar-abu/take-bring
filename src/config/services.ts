@@ -6,7 +6,6 @@ import {
   Clock,
   FileText,
   Globe,
-  MapPin,
   Package,
   Plane,
   Route,
@@ -17,12 +16,14 @@ import {
   Thermometer,
   Truck,
   Users,
+  UtensilsCrossed,
   Zap,
 } from "lucide-react";
 
 export type ServiceId =
   | "freight"
   | "refrigerated"
+  | "foodDelivery"
   | "courier"
   | "regularTours"
   | "international";
@@ -61,6 +62,7 @@ export type ServiceConfig = {
 export const SERVICE_IDS: ServiceId[] = [
   "freight",
   "refrigerated",
+  "foodDelivery",
   "courier",
   "regularTours",
   "international",
@@ -130,6 +132,48 @@ export const SERVICES: Record<ServiceId, ServiceConfig> = {
     ],
     stepIcons: [Thermometer, Truck, Snowflake, Smartphone, CheckCircle],
     inquiryType: "refrigerated",
+  },
+  foodDelivery: {
+    id: "foodDelivery",
+    path: "/lebensmittel-lieferservice",
+    metadataKey: "lebensmittelLieferservice",
+    keywords: [
+      "food delivery",
+      "cold chain",
+      "HACCP",
+      "refrigerated food",
+      "gastronomy",
+    ],
+    accent: "#5cb8a8",
+    heroVariant: "centered",
+    fleetVariant: "reefer",
+    stepsVariant: "vertical",
+    stepCount: 5,
+    heroImage: "/images/service-food-delivery-hero.webp",
+    operationsImage: "/images/service-food-delivery-operations.webp",
+    fleetItems: [
+      { id: "fleet1", image: "/images/service-food-delivery-fleet.webp" },
+      {
+        id: "fleet2",
+        image: "/images/service-food-delivery-fleet.webp",
+        popular: true,
+      },
+      { id: "fleet3", image: "/images/service-food-delivery-fleet.webp" },
+    ],
+    advantageImages: [
+      "/images/service-food-delivery-benefit-haccp.webp",
+      "/images/service-food-delivery-benefit-monitoring.webp",
+      "/images/service-food-delivery-benefit-sameday.webp",
+      "/images/service-food-delivery-benefit-support.webp",
+    ],
+    manageFeatures: [
+      { id: "manage1", icon: Thermometer },
+      { id: "manage2", icon: Snowflake },
+      { id: "manage3", icon: UtensilsCrossed },
+      { id: "manage4", icon: FileText },
+    ],
+    stepIcons: [FileText, Thermometer, Truck, Smartphone, CheckCircle],
+    inquiryType: "foodDelivery",
   },
   courier: {
     id: "courier",

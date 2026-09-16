@@ -10,6 +10,7 @@ export type ServiceLink = {
     | "courier"
     | "freight"
     | "refrigerated"
+    | "foodDelivery"
     | "regularTours"
     | "international";
   href: AppPathname;
@@ -23,6 +24,11 @@ export const serviceLinks: ServiceLink[] = [
     labelKey: "refrigerated",
     href: "/kuehltransporte",
     icon: "ri-snowy-line",
+  },
+  {
+    labelKey: "foodDelivery",
+    href: "/lebensmittel-lieferservice",
+    icon: "ri-restaurant-line",
   },
   {
     labelKey: "regularTours",
