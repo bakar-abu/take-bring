@@ -46,6 +46,17 @@ export const SERVICE_ANALYTICS = [
     formKeys: ["service-lead-refrigerated"],
   },
   {
+    id: "foodDelivery",
+    label: "Food delivery",
+    path: "/lebensmittel-lieferservice",
+    paths: [
+      "/lebensmittel-lieferservice",
+      "/food-delivery-service",
+      "/livrare-alimente",
+    ],
+    formKeys: ["service-lead-foodDelivery"],
+  },
+  {
     id: "regularTours",
     label: "Regular tours",
     path: "/feste-routen",

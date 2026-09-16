@@ -14,6 +14,7 @@ import {
   Ship,
   Snowflake,
   Truck,
+  UtensilsCrossed,
   type LucideIcon,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -23,6 +24,7 @@ const SERVICE_ICONS: Record<(typeof serviceLinks)[number]["labelKey"], LucideIco
   courier: Package,
   freight: Truck,
   refrigerated: Snowflake,
+  foodDelivery: UtensilsCrossed,
   regularTours: Route,
   international: Ship,
 };
@@ -49,6 +51,12 @@ const SERVICE_FEATURES: Record<
     "refrigeratedFeature3",
     "refrigeratedFeature4",
   ],
+  foodDelivery: [
+    "foodDeliveryFeature1",
+    "foodDeliveryFeature2",
+    "foodDeliveryFeature3",
+    "foodDeliveryFeature4",
+  ],
   regularTours: [
     "expressDirectFeature1",
     "expressDirectFeature2",
@@ -70,6 +78,7 @@ const SERVICE_DESC_KEYS: Record<
   courier: "expressCourierDesc",
   freight: "offerFreightDesc",
   refrigerated: "refrigeratedDesc",
+  foodDelivery: "foodDeliveryDesc",
   regularTours: "offerFixedRoutesDesc",
   international: "offerInternationalDesc",
 };

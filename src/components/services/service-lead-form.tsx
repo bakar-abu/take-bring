@@ -62,6 +62,7 @@ export function ServiceLeadForm({ config }: { config: ServiceConfig }) {
                 inquiryOptions: [
                   { value: "freight", label: tForm("inquiryFreight") },
                   { value: "refrigerated", label: tForm("inquiryRefrigerated") },
+                  { value: "foodDelivery", label: tForm("inquiryFoodDelivery") },
                   { value: "courier", label: tForm("inquiryCourier") },
                   { value: "regularTours", label: tForm("inquiryRegularTours") },
                   { value: "international", label: tForm("inquiryInternational") },

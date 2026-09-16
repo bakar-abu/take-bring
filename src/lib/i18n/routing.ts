@@ -23,6 +23,11 @@ export const routing = defineRouting({
       en: "/refrigerated-transport",
       ro: "/transport-frigorific",
     },
+    "/lebensmittel-lieferservice": {
+      de: "/lebensmittel-lieferservice",
+      en: "/food-delivery-service",
+      ro: "/livrare-alimente",
+    },
     "/feste-routen": {
       de: "/feste-routen",
       en: "/regular-tours",
